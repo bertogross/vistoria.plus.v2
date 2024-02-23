@@ -1,0 +1,367 @@
+Changelog
+=========
+
+
+USEFULL
+https://devdojo.com/bobbyiliev/how-to-quickly-change-the-password-for-a-user-in-laravel
+https://laravel-news.com/openai-for-laravel
+
+
+
+
+Version 1.0.39 - [2024/02/23]
+- [Added] surveys\layouts\modal-listing-assignments.blade.php
+- [Updated] SurveysAuditController
+- [Updated] SurveysController
+- [Updated] Survey model
+- [Updated] SurveysAssignmentsController
+- [Updated] SurveyAssignments model
+- [Updated] helpers
+
+
+
+Version 1.0.38 - [2024/01/20]
+- [Changed] vpOnboard users
+- [Removed] vpOnboard app_subusers
+- [Added] vpAppSCHEMA
+
+
+
+Version 1.0.37 - [2024/01/18]
+- [Add] MailerSendController
+
+
+
+Version 1.0.36 - [19/12/2023 - 22/12/2023]
+- [Updated] Audits view
+
+
+
+Version 1.0.35 - [15/12/2023 - 18/12/2023]
+- [Updated] Team view
+- [Added] Audits view
+- [Updated] routes/web.php
+
+
+
+Version 1.0.34 - [2023-12-07 - 14/12/2023]
+- [Started] Code Factorization
+- [Changed] Layout and Routine type for Auditing
+- [Updated] Roles and Capabilities
+- [Updated] routes/web.php
+- [Updated] model/SurveyAssigments
+- [Updated] model/SurveyResponse
+- [Added] Team view
+
+
+
+Version 1.0.33 - [2023-12-02 - 2023-12-06]
+- [Started] Mail with ZOHO Api
+- [Added] Testing environment
+- [Updated] SurveyAssigments
+
+
+
+Version 1.0.32 - [2023-12-01]
+- [Updated] Code Factorization
+
+
+
+Version 1.0.31 - [2023-11-30]
+- [Updated] updateSalesFromSysmo
+- [Added] updateIPCAfromIBGE
+- [Configured] server crontab
+- [Updated] routes/web.php
+- [Updated] routes/api.php
+
+
+
+Version 1.0.30 - [2023-11-30]
+- [Started] Code Factorization
+
+
+
+Version 1.0.29 - [2023-11-29]
+- [Added] SurveyAssigments auditor form
+
+
+
+Version 1.0.28 - [2023-11-28]
+- [Added] AttachmentsController
+- [Added] attachments.js
+- [Updated] HTML: form-surveyor blade page (/surveys)
+- [Updated] routes/web.php
+- [Finished] SurveyAssigments surveyor form
+
+
+
+Version 1.0.27 - [2023-11-21 - 2023-11-27]
+- [Removed] model/SurveyAuditorAssigment
+- [Added] model/SurveyAssigments
+- [Updated] model/SurveyResponse
+- [Updated] custom.css
+- [Updated] routes/web.php
+- [Updated] surveys.js
+- [Updated] HTML: all blade pages (/surveys)
+- [Updated] HTML: form-surveyor blade page (/surveys)
+- [Added] HTML: form-auditor blade page (/surveys)
+- [Updated] SurveyResponsesController
+
+
+
+Version 1.0.26 - [2023-11-18 - 2023-11-27]
+- [Added] Stripe
+- [Updated] settings/account views
+
+
+
+Version 1.0.25 - [2023-11-18]
+- [Added] app-custom.js
+- [Added] Overwrite the native app initModeSetting function
+- [Updated] custom.css
+- [Updated] routes/web.php
+
+
+
+Version 1.0.24 - [2023-11-11 - 2023-11-17]
+- [Added] HTML: blade pages (/surveys/terms)
+- [Added] SurveyTemplatesController and model/SurveyTemplates
+- [Added] model/SurveyResponse
+- [Added] model/SurveyAuditorAssigment
+- [Added] model/SurveyTopic
+- [Added] model/SurveyStep
+- [Updated] SurveyController and model/Survey
+- [Updated] SurveysTermsController and model/SurveyTerms
+- [Updated] all surveys js files
+- [Updated] routes/web.php
+
+
+
+Version 1.0.23 - [2023-11-08 - 2023-11-11]
+- [Removed] SurveysComposeController and model/surveyCompose
+- [Removed] surveys-compose.js
+- [Removed] HTML: blade pages (/surveys/composes)
+- [Updated] HTML: all blade pages (/surveys)
+- [Updated] routes/web.php
+
+
+
+Version 1.0.23 - [2023-11-01 - 2023-11-08]
+- [Updated] HTML: blade page (/surveys/compose) to Composition of the Inspection Form
+- [Added] SurveysComposeController and model/surveyCompose
+- [Added] SurveysTermController and model/surveyTerm
+- [Added] surveys-compose.js
+- [Added] surveys-terms.js
+- [Started] HTML: blade pages (/surveys/terms)
+
+
+
+Version 1.0.22 - [2023-10-31]
+- [Added] HTML: blade pages (/surveys/compose)
+- [Updated] routes/web.php
+
+
+
+Version 1.0.21 - [2023-10-30]
+- [Started] HTML: blade page (/surveys/compose)
+
+
+
+Version 1.0.20 - [2023-10-30]
+- [Added] Scenex API [ http://localhost:8000/surveys/scenex/submit ]
+    - https://bestlaravel.com/p/laravel-open-api
+    - https://github.com/jeandormehl/openapi-gen
+
+    - https://scenex.jina.ai/
+        - https://scenex.jina.ai/api
+            - https://github.com/jina-ai/jinaai-js
+- [Updated] routes/web.php
+- [Updated] routes/api.php
+
+
+
+Version 1.0.19 - [2023-10-29]
+- [Tested] Clarifai API [ http://localhost:8000/surveys/clarifai/submit ]
+    - https://clarifai.com
+        - https://www.clarifai.com/use-cases/predictive-maintenance
+        - https://www.clarifai.com/solutions/ai-in-manufacturing
+        - https://github.com/Clarifai/clarifai-php-grpc/
+        - https://clarifai.com/explore  [find model general-image-recognition]
+        - https://docs.clarifai.com/api-guide/api-overview/api-clients/
+        - https://docs.clarifai.com/api-guide/predict/images/#visual-detection
+        - https://github.com/Rob--W/cors-anywhere
+        - https://github.com/Clarifai/clarifai-php-grpc/
+
+        - https://platform.openai.com/account/api-keys [login contact@upididu.com Google Account]
+- [Updated] routes/web.php
+- [Updated] routes/api.php
+
+
+Version 1.0.18 - [2023-10-28 - 2023-10-29]
+- [Added] Dropbox API with
+    - composer require spatie/dropbox-api
+        - https://github.com/spatie/dropbox-api
+        - https://www.dropbox.com/developers/apps
+            To get a Dropbox App Key, you need to create a Dropbox App in the Dropbox Developer Console. Here are the steps:
+            1. Go to the [Dropbox Developer Console](https://www.dropbox.com/developers/apps).
+            2. Sign in with your Dropbox account or create a new account if you don't have one.
+            3. Click on "Create App".
+            4. Choose "Scoped Access".
+            5. Choose "Full dropbox" or "App folder" depending on your needs.
+            6. Enter a name for your app and click "Create App".
+            7. Once your app is created, you will be taken to the app's settings page. Here you will find your "App key" and "App secret".
+            8. Copy the "App key" and use it in your `.env` file as the value for `DROPBOX_APP_KEY`.
+- [Updated] routes/web.php
+- [Updated] routes/api.php
+
+
+Version 1.0.18 - [2023-10-27]
+- [Failed] Google Drive API (Failed because Google forces you to subscribe to Wrokspace)
+
+
+
+Version 1.0.18 - [2023-10-26]
+- [Updated] Handler.php ( add function render() to redirect user for error page )
+- [Added] views\error\general.blade.php
+- [Added] SurveysController
+- [Added] Survey Model
+- [Added] SurveyMeta Model
+- [Updated] helpers.php
+- [Added] views\surveys
+- [Added] views\layouts\custom-pagination.blade.php
+- [Updated] helpers.js
+- [Added] surveys.js
+
+
+
+Version 1.0.17 - [2023-10-23 - 2023-10-25]
+- [Added] helpers.php ( goalsEmojiChart )
+- [Updated] views\goal-sales\table.blade.php
+- [Added] views\goal-sales\edit-modal.blade.php
+- [Added] views\goal-sales\settings-modal.blade.php
+- [Added] views\goal-sales\single.blade.php
+- [Added] views\goal-sales\slide.blade.php
+- [Updated] GoalSalesController
+- [Updated] SettingsDatabaseController
+- [Updated] goal-sales.js
+- [Updated] helpers.js
+- [Updated] helpers.php
+- [Updated] routes\web.php
+
+
+
+Version 1.0.16 - [2023-10-22]
+- [Updated] helpers.php ( goalsEmojiChart )
+- [Updated] views\goal-sales\table.blade.php
+- [Updated] GoalSalesController
+- [Updated] goal-sales.js
+
+
+
+Version 1.0.15 - [2023-10-19 - 2023-10-22]
+- [Updated] helpers.php
+- [Updated] GoalSalesController
+
+
+
+Version 1.0.14 - [2023-10-18]
+- [Added] SettingsDatabaseController ( get sysmo data from synchronization )
+- [Added] routes\api.php
+- [Updated] helpers.php ( function getERPdata() to interact with function updateSales)
+- [Added] settings-database.js
+- [Updated] settings-database.blade.php ( a new tab-pane synchronization)
+
+
+
+Version 1.0.13 - [2023-10-17]
+- [Added] middleware CheckUserStatus
+- [Updated] LoginController ( Check if the user's status is 0 and prevent login)
+- [Updated] SettingsAccountController
+- [Updated] UserUploadController
+- [Updated] blade templates
+- [Added] settings-account.js
+- [Updated] settings-users.js
+- [Updated] routes\web.php
+
+
+
+Version 1.0.12 - [2023-10-15 - 2023-10-16]
+- [Updated] /settings
+- [Updated] /settings-users
+
+
+
+Version 1.0.12 - [2023-10-15 - 2023-10-16]
+- [Updated] /settings
+- [Updated] /settings-users
+
+
+
+Version 1.0.11 - [2023-10-14]
+- [Added] app\Http\Controllers\SettingsDatabaseController.php
+- [Added] resources\views\settings-database.blade.php
+- [Updated] routes\web.php
+
+
+
+Version 1.0.10 - [2023-10-11]
+- [Added] app\Http\Controllers\PostController.php
+- [Added] app\Models\Post.php
+- [Added] app\Models\PostMeta.php
+- [Added] app\Http\Controllers\SettingsUserController.php
+- [Updated] routes\web.php
+
+
+
+Version 1.0.9 - [2023-10-10]
+- [Updated] Velson 3.4.0
+
+
+
+Version 1.0.8 - [2023-10-08]
+- [Updated] Velson 3.3.0
+
+
+
+Version 1.0.7 - [2023-10-08]
+- [Updated] SetDynamicDatabase
+
+
+
+Version 1.0.6 - [2023-10-07]
+- [Added] SetDynamicDatabase
+
+
+
+Version 1.0.5 - [2023-10-05 - 2023-10-06]
+- [Started] Localhost reconfigured with Laravel Sail and Docker
+- re-hash password https://devdojo.com/bobbyiliev/how-to-quickly-change-the-password-for-a-user-in-laravel
+
+
+
+Version 1.0.4 - [2023-10-04]
+- [Started] Production environment configured with php8.2
+
+
+
+Version 1.0.3 - [2023-10-04]
+- [Removed] Tenancy
+
+
+
+Version 1.0.2 - [2023-09-15]
+-------------------
+- [Updated] Tenancy [https://tenancyforlaravel.com/]
+
+
+
+Version 1.0.1 - [2023-07-24]
+-------------------
+- [Added] Tenancy [https://tenancyforlaravel.com/]
+
+
+
+
+Version 1.0.0 - [2023-07-24]
+-------------------
+- [Started] Localhost configured

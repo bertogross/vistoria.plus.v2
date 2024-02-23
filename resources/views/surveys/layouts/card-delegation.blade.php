@@ -1,0 +1,61 @@
+<div class="card mb-3">
+    <div class="card-header">
+        <h4 class="card-title text-uppercase mb-0 flex-grow-1">
+            Atribuições
+            @if($swapData)
+                <span class="text-theme">{{getCompanyNameById($companyId)}}</span>
+            @else
+                Globais
+            @endif
+        </h4>
+    </div>
+    <div class="card-body h-100 pb-0">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 mb-3">
+                Vistoria:
+                @if (isset($delegation['surveyors']) && !empty($delegation['surveyors']))
+                    @foreach ($delegation['surveyors'] as $key => $value)
+                        @php
+                            $userId = $value['user_id'] ?? null;
+                            $getUserData = $userId ? getUserData($userId) : null;
+                            $userCompanyId = $value['company_id'] ?? null;
+                            $companyName = $userCompanyId ? getCompanyNameById($userCompanyId) : '';
+                        @endphp
+                        @if($userId && $swapData && $companyId == $userCompanyId)
+                            <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Vistoria: {{ $getUserData->name }} : {{ $companyName }}">
+                                <img src="{{ checkUserAvatar($getUserData->avatar) }}" alt="" class="rounded-circle avatar-xxs">
+                            </a>
+                        @elseif($userId && !$swapData)
+                            <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Vistoria: {{ $getUserData->name }} : {{ $companyName }}">
+                                <img src="{{ checkUserAvatar($getUserData->avatar) }}" alt="" class="rounded-circle avatar-xxs">
+                            </a>
+                        @endif
+                    @endforeach
+                @endif
+            </div>
+
+            <div class="col-sm-12 col-md-6 mb-3">
+                Auditoria:
+                @if (isset($delegation['auditors']) && !empty($delegation['auditors']))
+                    @foreach ($delegation['auditors'] as $key => $value)
+                        @php
+                            $userId = $value['user_id'] ?? null;
+                            $getUserData = $userId ? getUserData($userId) : null;
+                            $userCompanyId = $value['company_id'] ?? null;
+                            $companyName = $userCompanyId ? getCompanyNameById($userCompanyId) : '';
+                        @endphp
+                        @if($userId && $swapData && $companyId == $userCompanyId)
+                            <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Auditoria: {{ $getUserData->name }} : {{ $companyName }}">
+                                <img src="{{ checkUserAvatar($getUserData->avatar) }}" alt="" class="rounded-circle avatar-xxs">
+                            </a>
+                        @elseif($userId && !$swapData)
+                            <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Auditoria: {{ $getUserData->name }} : {{ $companyName }}">
+                                <img src="{{ checkUserAvatar($getUserData->avatar) }}" alt="" class="rounded-circle avatar-xxs">
+                            </a>
+                        @endif
+                    @endforeach
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
