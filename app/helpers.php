@@ -1,6 +1,5 @@
 <?php
 
-use Cookie;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\UserMeta;
