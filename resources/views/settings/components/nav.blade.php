@@ -34,11 +34,19 @@
             @endif
             --}}
 
+
             <li class="nav-item">
-                <a class="nav-link menu-link {{ request()->is('settings/storage') ? 'active' : '' }}" href="{{ route('StorageIndexURL') }}">
+                <a class="nav-link menu-link {{ request()->is('settings/companies') ? 'active' : '' }}" href="{{ route('settingsCompaniesIndexURL') }}">
+                    <i class="ri-store-3-fill"></i> <span>Unidades Corporativas</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link menu-link {{ request()->is('settings/storage') ? 'active' : '' }}" href="{{ route('settingsStorageIndexURL') }}">
                     <i class="ri-server-line"></i> <span>Armazenamento</span>
                 </a>
             </li>
+
 
             <!--
             <li class="nav-item">

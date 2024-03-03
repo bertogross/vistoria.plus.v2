@@ -1,7 +1,10 @@
 import {
     toastAlert,
+    sweetAlert,
     bsPopoverTooltip,
-    showPreloader
+    showPreloader,
+    injectScript,
+    multipleModal
 } from './helpers.js';
 
 import {
@@ -11,44 +14,61 @@ import {
 document.addEventListener('DOMContentLoaded', function() {
 
     // Load the content for the user modal
-    function loadUserSettingsModal(userId = null, userTitle = '') {
+    function loadUserSettingsModal(userId = null, userTitle = '', origin = null) {
         var xhr = new XMLHttpRequest();
 
+        showPreloader();
+
         var url = getUserFormContentURL;
-        if (userId) {
-            url += '/' + userId;
-        }
-        xhr.open('GET', url, true);
+
+        // Create FormData and append parameters
+        var formData = new FormData();
+        if (userId !== null) formData.append('userId', userId);
+        if (origin !== null) formData.append('origin', origin);
+
+        // Retrieve CSRF token from meta tag
+        var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        formData.append('_token', token);
+
+        xhr.open('POST', url, true);
         xhr.setRequestHeader('Cache-Control', 'no-cache'); // Set the Cache-Control header to no-cache
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 if(xhr.responseText){
-                    document.getElementById('modalContainer').innerHTML = xhr.responseText;
+
+                    document.getElementById('modalContainer2').innerHTML = xhr.responseText;
 
                     var modalElement = document.getElementById('userModal');
                     var modal = new bootstrap.Modal(modalElement, {
-                        backdrop: 'static',
+                        backdrop: origin ? false : 'static',
                         keyboard: false
                     });
                     modal.show();
 
+                    multipleModal();
+
+                    var modalUserTitle = document.getElementById("modalUserTitle");
+                    var btnSaveUser = document.getElementById("btn-save-user");
+
                     if (userId) {
-                        document.getElementById("modalUserTitle").innerHTML = userTitle ? 'Editar <span class="text-theme">'+ userTitle + '</span>' : 'Editar Usuário';
-                        document.getElementById("btn-save-user").innerHTML = 'Atualizar Usuário';
+                        modalUserTitle.innerHTML = userTitle ? 'Editar <span class="text-theme">'+ userTitle + '</span>' : 'Editar Usuário';
+                        btnSaveUser.innerHTML = 'Atualizar';
 
                         injectScript("/build/js/pages/password-addon.init.js");
+                    } else if (origin == 'survey') {
+                        modalUserTitle.innerHTML = 'Convidar Usuário';
+                        btnSaveUser.innerHTML = 'Enviar Convite';
                     } else {
-                        document.getElementById("modalUserTitle").innerHTML = 'Novo Usuário';
-                        document.getElementById("btn-save-user").innerHTML = 'Adicionar Usuário';
+                        modalUserTitle.innerHTML = 'Novo Usuário';
+                        btnSaveUser.innerHTML = 'Adicionar';
                     }
+
+                    bsPopoverTooltip();
 
                     attachModalEventListeners();
 
                     attachImage("#member-image-input", "#avatar-img", uploadAvatarURL);
                     attachImage("#cover-image-input", "#cover-img", uploadCoverURL);
-
-                    bsPopoverTooltip();
-
                 }else{
                     toastAlert('Não foi possível carregar o conteúdo', 'danger', 10000);
                 }
@@ -56,16 +76,27 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 console.log("Fetching modal content:", xhr.statusText);
             }
+
+            showPreloader(false);
         };
-        xhr.send();
+        xhr.send(formData);
     }
 
     // Event listener for the 'Add User' button
-    if(document.getElementById('btn-add-user')){
-        document.getElementById('btn-add-user').addEventListener('click', function() {
+    /*var addButton = document.getElementById('btn-add-user');
+    if(addButton){
+        addButton.addEventListener('click', function() {
             loadUserSettingsModal();
         });
-    }
+    }*/
+    document.body.addEventListener('click', function(event) {
+        // Check if the clicked element has the ID 'btn-add-user'
+        if (event.target && event.target.id === 'btn-add-user') {
+            var origin = event.target.getAttribute('data-origin');
+
+            loadUserSettingsModal('', '', origin);
+        }
+    });
 
     // Event listeners for each 'Edit User' button
     var editButtons = document.querySelectorAll('.btn-edit-user');
@@ -82,12 +113,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Function to inject a script into the page
-    function injectScript(src) {
-        var script = document.createElement('script');
-        script.src = src;
-        document.body.appendChild(script);
-    }
 
     // Search functionality for the user list
     const searchInput = document.getElementById('searchMemberList');
@@ -114,13 +139,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Attach event listeners for the modal form
     function attachModalEventListeners() {
+
         // Update/Save user from modal form
         const form = document.getElementById('userForm');
-        const btn = document.getElementById('btn-save-user');
+        const btnSaveUser = document.getElementById('btn-save-user');
 
-        if (btn) {
-            btn.addEventListener('click', function(event) {
+        if (btnSaveUser) {
+            btnSaveUser.addEventListener('click', function(event) {
                 event.preventDefault();
+
+                var origin = btnSaveUser.getAttribute('data-origin');
 
                 if (!form.checkValidity()) {
                     event.stopPropagation();
@@ -146,19 +174,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        toastAlert(data.message, 'success', 20000);
 
-                        if(form.dataset.id){
-                            showPreloader();
+                        if(origin == 'survey'){
+                            sweetAlert(data.message, 'Ok!', 'success');
+
+                            // Access surveyReloadUsersTab directly from surveys.js
+                            if (window.surveyReloadUsersTab) {
+                                window.surveyReloadUsersTab(origin);
+                            }
+
+                        }else{
+                            toastAlert(data.message, 'success', 20000);
+
+                            // reload page
+                            if(form.dataset.id){
+                                showPreloader();
+                            }
+
+                            setTimeout(() => {
+                                location.reload();
+                            }, 5000);
+
+                            btnSaveUser.remove();
                         }
 
-                        setTimeout(() => {
-                            location.reload();
-                        }, 5000);
-
-                        document.getElementById('btn-save-user').remove();
                     } else {
-                        toastAlert(data.message, 'danger', 60000);
+                        sweetAlert(data.message);
                     }
                 })
                 .catch(error => {
@@ -168,7 +209,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
-
 
 
     // Filter functionality for switching between list and grid views

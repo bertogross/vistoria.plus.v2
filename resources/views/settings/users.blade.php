@@ -31,7 +31,9 @@
                         <button type="button" id="list-view-button" class="btn btn-soft-theme nav-link  btn-icon fs-14 filter-button"><i class="ri-list-unordered"></i></button>
                         --}}
 
-                        <button id="btn-add-user" class="btn btn-theme"><i class="ri-add-fill me-1 align-bottom"></i> Adicionar</button>
+                        <button type="button" id="btn-add-user" class="btn btn-label right btn-outline-theme float-end waves-effect" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" data-bs-original-title="Adicionar Usuário">
+                            <i class="ri-user-add-line label-icon align-middle fs-16 ms-2"></i>Adicionar
+                        </button>
                     </div>
                 </div>
                 <!--end col-->

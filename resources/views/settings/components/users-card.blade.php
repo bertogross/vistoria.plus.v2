@@ -11,17 +11,20 @@
 
     $profileUrl = route('profileShowURL', ['id' => $userId]) . '?d=' . now()->timestamp;
 
-    if($userId == auth()->id()){
+    $currentConnectionId = getCurrentConnectionByUserId(auth()->id());
+
+    if($userId == $currentConnectionId){
         $status = 'active';
         $userCompanies = getActiveCompanieIds();
         $role = 1;
     }else{
-        $connection = UserConnections::getUserDataFromConnectedAccountId($userId, auth()->id());
+        $connection = UserConnections::getUserDataFromConnectedAccountId($userId, $currentConnectionId);
 
-        $status = $connection->status;
-        $userCompanies = $connection->companies;
-        $role = $connection->role;
+        $status = $connection->status ?? 'active';
+        $userCompanies = $connection->companies ?? getActiveCompanieIds();
+        $role = $connection->role ?? 1;
     }
+
     $roleName = User::getRoleName($role);
 @endphp
 <div class="col" data-search-user-id="{{$userId}}" data-search-user-name="{{$name}}">
@@ -98,7 +101,7 @@
                         <div class="col-12 border-end border-end-dashed mt-4">
                             <h6 class="mb-1 projects-num">Unidade{{ is_array($userCompanies) && count($userCompanies) > 1 ? 's' : '' }} Autorizada{{ is_array($userCompanies) && count($userCompanies) > 1 ? 's' : '' }}</h6>
                             @if (is_array($userCompanies))
-                                <ul class="list-unstyled list-inline text-muted mb-0">
+                                <ul class="list-unstyled list-inline text-muted mb-0" style="min-height: 40px;">
                                     @foreach ($userCompanies as $key => $companyId)
                                         <li class="list-inline-item"><i class="ri-store-3-fill text-theme align-bottom me-1"></i>{{getCompanyNameById($companyId)}}</li>
                                     @endforeach

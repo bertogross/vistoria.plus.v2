@@ -216,7 +216,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function wizardFormSteps(){
         var formSteps = document.querySelectorAll(".form-steps");
-
         if (formSteps){
             Array.from(formSteps).forEach(function (form) {
                 surveyCheckAllFormCheckInputs();
@@ -413,10 +412,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     */
 
-    function surveyCheckAllFormCheckInputs(origin = null) {//
+    function surveyCheckAllFormCheckInputs() {
         // Select all elements with the .form-check-input class
         var checkboxes = document.querySelectorAll('.form-check-input');
-
+        
         // Define a reusable action as a function
         function handleCheckboxChange(checkbox) {
             if (checkbox.classList.contains('form-check-input-companies')) {
@@ -436,11 +435,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         checkboxes.forEach(function(inputCheckbox) {
-            if(origin == 'survey'){
-                // Immediately apply the logic to each checkbox
-                handleCheckboxChange(inputCheckbox);
-            }
-
             // Add a change listener to apply the logic upon future changes
             inputCheckbox.addEventListener('change', function() {
                 handleCheckboxChange(this);
@@ -448,11 +442,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     // Attach it to the window object to get from another file (similar export)
-    //window.surveyCheckAllFormCheckInputs = surveyCheckAllFormCheckInputs;
+    window.surveyCheckAllFormCheckInputs = surveyCheckAllFormCheckInputs;
 
     /*function surveyReloadUsersTab() {
         var loadUsersTabDiv = document.getElementById('load-users-tab');
-
         if (loadUsersTabDiv && surveyReloadUsersTabURL) {
             var surveyId = loadUsersTabDiv.getAttribute('data-survey-id') || ''; // Fallback to empty string if attribute not found
 
@@ -474,12 +467,10 @@ document.addEventListener('DOMContentLoaded', function() {
             xhr.send();
         }
     }*/
-    async function surveyReloadUsersTab(origin = null) {
+    async function surveyReloadUsersTab() {
         const loadUsersTabDiv = document.getElementById('load-users-tab');
-
         if (loadUsersTabDiv && surveyReloadUsersTabURL) {
             const surveyId = loadUsersTabDiv.getAttribute('data-survey-id') || ''; // Fallback to empty string if attribute not found
-
             const fullUrl = surveyId ? `${surveyReloadUsersTabURL}/${surveyId}` : surveyReloadUsersTabURL;
 
             try {
@@ -498,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if(responseText){
                         loadUsersTabDiv.innerHTML = responseText;
 
-                        surveyCheckAllFormCheckInputs(origin);
+                        surveyCheckAllFormCheckInputs();
                     }
                 } else {
                     // Handle HTTP error (response.ok is false)

@@ -74,59 +74,85 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const toggleConnections = document.querySelectorAll('.toggle-connection');
     toggleConnections.forEach(function(toggle) {
-        toggle.addEventListener('change', async function() {
-            if (this.checked) {
+        ['click', 'change'].forEach(eventType => {
+            toggle.addEventListener(eventType, async function() {
+                if (this.checked) {
 
-                showPreloader();
+                    showPreloader();
 
-                //console.log('Selected Connection ID:', this.value);
-                const connectionId = this.value;
+                    //console.log('Selected Connection ID:', this.value);
+                    const connectionId = this.value;
 
-                try {
-                    // Sleep for X miliseconds
-                    let ms = 10;
-                    await new Promise(resolve => setTimeout(resolve, ms));
+                    try {
+                        // Sleep for X miliseconds
+                        let ms = 10;
+                        await new Promise(resolve => setTimeout(resolve, ms));
 
-                    const url = profileChangeConnectionURL;
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        body: JSON.stringify({ id: connectionId }),
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        const url = profileChangeConnectionURL;
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            body: JSON.stringify({ id: connectionId }),
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            }
+                        });
+
+                        if (!response.ok) {
+                            showPreloader(false);
+
+                            throw new Error('Network response was not ok: ' + response.statusText);
                         }
-                    });
 
-                    if (!response.ok) {
-                        showPreloader(false);
+                        const data = await response.json();
 
-                        throw new Error('Network response was not ok: ' + response.statusText);
-                    }
+                        if(data.success){
+                            toastAlert(data.message, 'info');
 
-                    const data = await response.json();
+                            location.reload(true);
+                        }else{
+                            toastAlert(data.message, 'danger');
 
-                    if(data.success){
-                        toastAlert(data.message, 'info');
-
-                        location.reload(true);
-                    }else{
-                        toastAlert(data.message, 'danger');
+                            showPreloader(false);
+                        }
+                    } catch (error) {
+                        toastAlert('Error: ' + error, 'danger');
 
                         showPreloader(false);
+
+                        console.error('Error:', error);
                     }
-                } catch (error) {
-                    toastAlert('Error: ' + error, 'danger');
-
-                    showPreloader(false);
-
-                    console.error('Error:', error);
                 }
-            }
+            });
         });
     });
 
 
+
+    //Check every X seconds if user is authorized to access account
+    setInterval(function() {
+        fetch('/check-authorization')
+            .then(response => response.json()) // Always parse JSON to get the error message
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                console.log('Authorization check successful', data);
+            })
+            .catch(error => {
+                console.error('Authorization check failed', error.message);
+                // Assuming toastAlert is a function you've defined to show error messages
+                toastAlert(error.message, 'danger');
+                // Consider the implications of reloading the page automatically
+                setTimeout(() => {
+                    window.location.reload();
+                }, 4000);
+            });
+    }, 60000 * 5); // 60000 = 60 seconds
+
+
 });
+
 
 // Check the internet connection status and display a toast notification if offline
 function checkInternetConnection() {
@@ -281,7 +307,6 @@ document.addEventListener('load', function() {
             refreshing = true;
         });
     }
-
 
 
 });

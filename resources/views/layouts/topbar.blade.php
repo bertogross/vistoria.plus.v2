@@ -7,8 +7,9 @@
     $getUsersDataFromMyConnections = getUsersDataFromMyConnections();
 
     $currentConnectionId = getCurrentConnectionByUserId($user->id);
-    $currentConnectionId = intval($currentConnectionId) ?? null;
     $currentConnectionName = getConnectionNameById($currentConnectionId);
+
+    $currentConnectionRoleName = getCurrentConnectionUserRoleName();
 
     $countSurveyAssignmentSurveyorTasks = SurveyAssignments::countSurveyAssignmentSurveyorTasks($user->id, ['new', 'pending', 'in_progress']);
     $countSurveyAssignmentAuditorTasks = SurveyAssignments::countSurveyAssignmentAuditorTasks($user->id, ['new', 'pending', 'in_progress']);
@@ -108,17 +109,14 @@
                         <div class="p-2">
                             <div class="row g-0">
                                 <div class="col">
-                                    <a class="dropdown-icon-item" href="{{ route('surveysIndexURL') }}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="bottom"  title="Acessar a sessão Checklists">
+                                    <a class="dropdown-icon-item" href="{{ route('surveysIndexURL') }}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="bottom"  title="Acessar a sessão Checklists da conta <strong>{{$currentConnectionName}}</strong>">
                                         <i class="ri-checkbox-line text-theme fs-1"></i>
-                                        {{--
-                                        <img src="{{ URL::asset('build/images/verification-img.png') }}" alt="Checklists" loading="lazy">
-                                        --}}
                                         <span>Checklists</span>
                                     </a>
                                 </div>
 
                                 <div class="col">
-                                    <a class="dropdown-icon-item" href="{{ route('teamIndexURL') }}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="bottom" title="Listar membros da Equipe">
+                                    <a class="dropdown-icon-item" href="{{ route('teamIndexURL') }}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="bottom" title="Listar membros da Equipe <strong>{{$currentConnectionName}}</strong>">
                                         <i class="ri-team-line text-theme fs-1"></i>
                                         <span>Equipe</span>
                                     </a>
@@ -159,17 +157,19 @@
 
                 @if ($getUsersDataFromMyConnections->isNotEmpty())
                     <div class="dropdown ms-1 topbar-head-dropdown header-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" title="Atualmente conectado a conta <u>{{$currentConnectionName}}</u>">
-                        <button type="button" class="btn btn-sm btn-outline-light btn-label waves-effect waves-light text-body-secondary bg-light-subtle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button type="button" class="btn btn-sm btn-outline-{{$currentConnectionId != $user->id ? 'theme' : 'light' }} btn-label waves-effect waves-light text-body-secondary bg-light-subtle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="ri-share-line label-icon align-middle fs-16 me-2"></i> {{$currentConnectionName}}
                         </button>
                         <div class="dropdown-menu dropdown-menu-end">
                             <ul class="list-unstyled ps-3 pe-3 mb-0" style="min-width: 270px;">
                                 <h6 class="dropdown-header mb-2 ps-0">Alternar Conexões</h6>
 
-                                <li class="form-check form-switch form-switch-theme mb-0" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="Alternar para a conta Principal, <u>{{$user->name}}</u>">
-                                    <input id="toggle-connection-{{$user->id}}" class="form-check-input toggle-connection" type="radio" role="switch" name="connection" value="{{$user->id}}" {{ !$getUsersDataFromMyConnections || $currentConnectionId == $user->id ? 'checked' : '' }}>
+                                <li class="form-check form-switch form-switch-theme mb-0" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="Alternar para a conta Principal, <strong>{{$user->name}}</strong>">
+                                    <input id="toggle-connection-{{$user->id}}" class="form-check-input {{$currentConnectionId != $user->id ? 'toggle-connection' : ''}}" type="radio" role="switch" name="connection" value="{{$user->id}}" {{ !$getUsersDataFromMyConnections || $currentConnectionId == $user->id ? 'checked' : '' }}>
                                     <label class="form-check-label w-100 text-uppercase" for="toggle-connection-{{$user->id}}">
-                                        <small class="text-muted float-end ms-2 small fs-10">[Principal]</small>
+                                        <span class="badge border border-dark text-body float-end ms-2 me-4 float-end ms-2 fs-10">
+                                            Principal
+                                        </span>
                                         {{$user->name}}
                                     </label>
                                 </li>
@@ -178,19 +178,57 @@
                                     @php
                                         $connectionUserId = $connection->connected_to;
                                         $connectionName = getConnectionNameById($connectionUserId);
-                                        $connectiontatus = $connection->status;
+                                        $connectionStatus = $connection->status;
                                         $connectionRole = $connection->role;
                                         $connectionRoleName = User::getRoleName($connectionRole);
                                     @endphp
-                                    @if($connectiontatus == 'active')
-                                        <li class="form-check form-switch form-switch-theme mt-4" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" title="Alternar para <u>{{$connectionName}}</u>">
-                                            <input id="toggle-connection-{{$connectionUserId}}" class="form-check-input toggle-connection" type="radio" role="switch" name="connection" value="{{$connectionUserId}}" {{ $connectionUserId == $currentConnectionId ? 'checked' : '' }}>
-                                            <label class="form-check-label w-100 text-uppercase" for="toggle-connection-{{$connectionUserId}}">
-                                                <small class="text-muted float-end ms-2 small fs-10">[{{$connectionRoleName}}]</small>
-                                                {!! $connectionName !!}
-                                            </label>
-                                        </li>
-                                    @endif
+                                    <li class="form-check form-switch form-switch-theme mt-4" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" title="Alternar para <strong>{{$connectionName}}</strong>">
+
+                                        <input
+                                        id="toggle-connection-{{$connectionUserId}}"
+                                        class="form-check-input {{$connectionUserId != $currentConnectionId ? 'toggle-connection' : ''}}"
+                                        type="radio"
+                                        role="switch"
+                                        name="connection"
+                                        {{$connectionStatus != 'active' ? 'disabled' : ''}}
+                                        value="{{$connectionUserId}}" {{ $connectionUserId == $currentConnectionId ? 'checked' : '' }}>
+
+                                        <label class="form-check-label w-100 text-uppercase" for="toggle-connection-{{$connectionUserId}}">
+                                            @switch($connectionStatus)
+                                                @case('waiting')
+                                                    <span class="position-absolute text-warning float-end me-0 end-0 ri-question-line align-middle mt-n1 fs-16 btn-accept-invitation cursor-pointer"
+                                                    data-bs-html="true"
+                                                    data-bs-toggle="popover"
+                                                    data-bs-trigger="hover focus"
+                                                    data-bs-placement="bottom"
+                                                    data-bs-title="Status da Conexão"
+                                                    data-bs-content="Aguardando seu consentimento para acesso ao <strong>{{$connectionName}}</strong>.<br>Clique para aceitar."></span>
+                                                    @break
+                                                @case('inactive')
+                                                    <span class="position-absolute text-danger float-end me-0 end-0 ri-close-circle-line align-middle mt-n1 fs-16"
+                                                    data-bs-html="true"
+                                                    data-bs-toggle="popover"
+                                                    data-bs-trigger="hover focus"
+                                                    data-bs-placement="bottom"
+                                                    data-bs-title="Status da Conexão"
+                                                    data-bs-content="<strong class='text-danger'>Inoperante</strong><br><br><strong>{{$connectionName}}</strong> inativou seu acesso"></span>
+                                                    @break
+                                                @default
+                                                    <span class="position-absolute text-success float-end me-0 end-0 ri-checkbox-circle-line align-middle mt-n1 fs-16" data-bs-html="true"
+                                                    data-bs-toggle="popover"
+                                                    data-bs-trigger="hover focus"
+                                                    data-bs-placement="bottom"
+                                                    data-bs-title="Status da Conexão"
+                                                    data-bs-content="Seu acesso ao <strong>{{$connectionName}}</strong> está <span class='text-success'>Ativo</span>"></span>
+                                            @endswitch
+
+                                            <span class="badge border border-dark text-body float-end ms-2 me-4" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Relacionado a conta <strong>{!!$connectionName!!}</strong>, o seu Nível possui a permissão para realizar: <strong>{{$connectionRoleName}}</strong>">
+                                                {{$connectionRoleName}}
+                                            </span>
+
+                                            {!! $connectionName !!}
+                                        </label>
+                                    </li>
                                 @endforeach
                             </ul>
 
@@ -205,12 +243,11 @@
                             <img class="rounded-circle header-profile-user" src="{{checkUserAvatar($user->avatar)}}" alt="Avatar" loading="lazy">
                             <span class="text-start ms-xl-2">
                                 <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{$user->name}}</span>
-                                <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="Seu nível na conta conectada">{{getCurrentConnectionUserRoleName()}}</span>
+                                <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="Este é seu nível de autorização relacionado a conta <strong>{{$currentConnectionName}}<strong>">{{$currentConnectionRoleName}}</span>
                             </span>
                         </span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end">
-
                         <!--
                         <h6 class="dropdown-header">Welcome Anna!</h6>
 

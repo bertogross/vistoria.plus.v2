@@ -70,6 +70,8 @@
         @endslot
         @slot('title')
             Análise do Checklist
+            <i class="ri-arrow-right-s-fill text-theme ms-2 me-2 align-bottom"></i>
+            <span class="text-muted" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Dados originados desta conta">{!!getCurrentConnectionName()!!}</span>
             <small>
                 <i class="ri-arrow-drop-right-line text-theme ms-2 me-2 align-bottom"></i>
                 {{limitChars($title ?? '', 30) }} #<span class="text-theme me-2">{{$surveyId}}</span>
@@ -296,6 +298,10 @@
 @endsection
 
 @section('script')
+    <script>
+        var assignmentShowURL = "{{ route('assignmentShowURL') }}";
+        var surveysChangeStatusURL = "{{ route('surveysChangeStatusURL') }}";
+    </script>
     <script src="{{ URL::asset('build/js/surveys.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 
     <script src="{{ URL::asset('build/libs/apexcharts/apexcharts.min.js') }}"></script>

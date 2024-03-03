@@ -79,11 +79,13 @@
                                                     @endif
                                                 </td>
                                                 <td scope="row" class="text-end">
-                                                    <buttom type="button" class="btn btn-sm btn-outline-dark ri-eye-line {{ $surveyorStatus == 'new' ? 'cursor-not-allowed' : 'btn-view-assignment-data' }}"
+                                                    <a class="btn btn-sm btn-outline-dark ri-eye-line {{ $surveyorStatus == 'new' ? 'cursor-not-allowed' : 'btn-assignment-view-form' }}"
                                                     @if ($surveyorStatus == 'new')
                                                         onclick="alert('Tarefa ainda não foi inicializada e por isso não há dados disponíveis');"
+                                                    @else
+                                                        href="{{route('assignmentShowURL', $assignmentId)}}"
                                                     @endif
-                                                    data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="{{ $surveyorStatus == 'new' ? 'Tarefa ainda não foi inicializada e por isso não há dados disponíveis' : 'Visualizar' }}" data-id="{{ $assignmentId }}"></buttom>
+                                                    data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="{{ $surveyorStatus == 'new' ? 'Tarefa ainda não foi inicializada e por isso não há dados disponíveis' : 'Visualizar' }}" data-assignment-id="{{ $assignmentId }}" data-assignment-title="{{limitChars($title ?? '', 30) }}"></a>
                                                 </td>
                                             </tr>
                                         @endforeach

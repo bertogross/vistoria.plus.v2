@@ -86,7 +86,7 @@ class ProfileController extends Controller
             ]);
         } catch (\Exception $e) {
             // Log the exception details for debugging
-            Log::error('Error changing connection: ' . $e->getMessage());
+            \Log::error('Error changing connection: ' . $e->getMessage());
 
             // Return a response indicating failure
             return response()->json([
@@ -102,6 +102,26 @@ class ProfileController extends Controller
 
             $currentConnectionId = $request->json('id');
 
+            $connectionStatus = getUserConnectionStatusById($currentUserId, $currentConnectionId);
+
+            if($connectionStatus == 'inactive'){
+                UserMeta::updateUserMeta($currentUserId, 'current_database_connection',  $currentUserId);
+
+                return response()->json([
+                    'success' => false,
+                    'action' => 'infoAlert',
+                    'message' => 'Conexão impossibilitada'
+                ]);
+            }else if($connectionStatus == 'waiting'){
+                UserMeta::updateUserMeta($currentUserId, 'current_database_connection',  $currentUserId);
+
+                return response()->json([
+                    'success' => false,
+                    'action' => 'approvalAlert',
+                    'message' => 'Aguardando consentimento'
+                ]);
+            }
+
             UserMeta::updateUserMeta($currentUserId, 'current_database_connection',  $currentConnectionId);
 
             return response()->json([
@@ -110,7 +130,7 @@ class ProfileController extends Controller
             ]);
         } catch (\Exception $e) {
             // Log the exception details for debugging
-            Log::error('Error changing connection: ' . $e->getMessage());
+            \Log::error('Error changing connection: ' . $e->getMessage());
 
             // Return a response indicating failure
             return response()->json([

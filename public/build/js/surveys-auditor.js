@@ -1,5 +1,6 @@
 import {
     toastAlert,
+    sweetAlert,
     sweetWizardAlert,
     lightbox,
     showPreloader,
@@ -189,16 +190,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 });
                                             }else{
                                                 toastAlert('A Vistoria ainda não foi concluída e por isso não será possível acessar o formulário de Auditoria.<br>Tente novamente mais tarde!', 'danger', 60000);
-                                                Swal.fire({
-                                                    icon: "warning",
-                                                    title: "Atenção",
-                                                    html: 'A Vistoria ainda não foi concluída e por isso não será possível acessar o formulário de Auditoria.<br>Tente novamente mais tarde!',
-                                                    showConfirmButton: true,
-                                                        confirmButtonClass: 'btn btn-outline-secondary',
-                                                    showCloseButton: false,
-                                                    buttonsStyling: false,
-                                                    allowOutsideClick: false
-                                                });
+
+                                                sweetAlert('A Vistoria ainda não foi concluída e por isso não será possível acessar o formulário de Auditoria.<br>Tente novamente mais tarde!')
                                             }
                                         } else if (result.isDenied) {
                                             // do action to revogue
@@ -230,6 +223,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                             });
                                         }
                                     });
+                                }else{
+                                    //toastAlert(data.message, 'danger', 60000);
+                                    sweetAlert(data.message);
                                 }
                             }
                         })

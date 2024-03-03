@@ -187,7 +187,7 @@
                                     </a>
 
                                     @if($auditorId)
-                                        <a href="{{ route('profileShowURL', $auditorId) }}" class="d-inline-block ms-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" data-bs-placement="top" title="Tarefa de Auditoria delegada a <u>{{ $auditorName }}</u>">
+                                        <a href="{{ route('profileShowURL', $auditorId) }}" class="d-inline-block ms-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" data-bs-placement="top" title="Tarefa de Auditoria requisitada por <u>{{ $auditorName }}</u>">
                                             <img src="{{ checkUserAvatar($auditorAvatar) }}"
                                             alt="{{ $auditorName }}" class="rounded-circle avatar-xxs border border-1 border-secondary" loading="lazy">
                                         </a>

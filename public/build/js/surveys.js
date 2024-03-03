@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         btnCreate.addEventListener('click', async function(event) {
             event.preventDefault;
 
-            loadFormModal();
+            loadSurveyFormModal();
         });
     }
 
@@ -36,13 +36,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 var surveyId = this.getAttribute("data-survey-id");
 
-                loadFormModal(surveyId);
+                loadSurveyFormModal(surveyId);
             });
         });
     }
 
+
+    // Event listeners for each 'View' buttons
+    /*
+    const viewAssignmentButtons = document.querySelectorAll('.btn-assignment-view-form');
+    if(viewAssignmentButtons && assignmentShowURL){
+        viewAssignmentButtons.forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                var assignmentId = this.getAttribute('data-assignment-id');
+                var assignmentTitle = this.getAttribute('data-assignment-title');
+
+                document.getElementById('offcanvasRightLabel').innerHTML = assignmentTitle;
+
+                ajaxContentFromURL(assignmentId, assignmentShowURL, 'load-assignment-result', '', 'content');
+
+                var offcanvasElement = document.getElementById('assignmentResultOffcanvas');
+                var offcanvasInstance = new bootstrap.Offcanvas(offcanvasElement);
+                offcanvasInstance.show();
+
+
+            });
+        });
+    }
+    {{--
+    <div class="offcanvas offcanvas-end" id="assignmentResultOffcanvas" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="offcanvasRightLabel" tabindex="-1" data-bs-scroll="true">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasRightLabel">Offcanvas Right</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body" id="load-assignment-result">
+            ...
+        </div>
+    </div>
+    --}}
+    */
+
+
     const changeStatusButtons = document.querySelectorAll('.btn-surveys-change-status');
-    if(changeStatusButtons){
+    if(changeStatusButtons && surveysChangeStatusURL){
         changeStatusButtons.forEach(function(button) {
             button.addEventListener('click', async function(event) {
                 event.preventDefault;
@@ -132,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function loadFormModal(Id = null) {
+    function loadSurveyFormModal(Id = null) {
         var xhr = new XMLHttpRequest();
 
         var url = Id ? surveysEditURL + '/' + Id : surveysCreateURL;
@@ -146,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     var modalElement = document.getElementById('surveysModal');
                     var modal = new bootstrap.Modal(modalElement, {
-                        backdrop: 'static',
+                        backdrop: false,// 'static'
                         keyboard: false
                     });
                     modal.show();
@@ -178,47 +216,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function wizardFormSteps(){
         var formSteps = document.querySelectorAll(".form-steps");
+
         if (formSteps){
             Array.from(formSteps).forEach(function (form) {
-
-                function checkAllFormCheckInputs() {
-                    // Select all elements with the .form-check-input class
-                    var checkboxes = document.querySelectorAll('.form-check-input');
-
-                    // Iterate over them and add a change event listener to each one
-                    checkboxes.forEach(function(checkbox) {
-                        // Add a change listener to the current checkbox
-                        checkbox.addEventListener('change', function() {
-                            // This function is called whenever a checkbox is checked or unchecked
-                            // You can add your logic here for what happens when the state changes
-                            if (this.checked) {
-                                this.setAttribute('checked', '');
-                                //console.log(this.id + ' is checked');
-                            } else {
-                                this.removeAttribute('checked');
-                                //console.log(this.id + ' is unchecked');
-                            }
-
-                            if (this.classList.contains('form-check-input-companies')) {
-                                var checkbox = this;
-                                let companyId = checkbox.value;
-                                let column = document.getElementById(`distributed-tab-company-${companyId}`);
-
-                                column.style.display = 'none';
-                                column.querySelectorAll('input').forEach(input => input.required = false);
-
-                                if (checkbox.checked) {
-                                    column.style.display = '';
-                                    column.querySelectorAll('input').forEach(input => input.required = true);
-                                }
-
-                                // Remove all user checked to prevent to save hiden users id
-                                removeCheckedAttributeFromUsers();
-                            }
-                        });
-                    });
-                }
-                checkAllFormCheckInputs();
+                surveyCheckAllFormCheckInputs();
 
                 /*function checkRequiredFields(inputControlRequired) {
                     let filledRequiredFields = Array.from(inputControlRequired).reduce((count, elem) => {
@@ -292,6 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         return;
                                     }
                                 }
+
                                 navigateToTab(nextTab);
                             } else if (nextTab === 'steparrow-success-tab') {
                                 const checkedControlUsers = form.querySelectorAll(".tab-pane.show .form-check-input-users:checked");
@@ -368,7 +370,148 @@ document.addEventListener('DOMContentLoaded', function() {
         userCheckboxes.forEach(function(checkbox) {
             checkbox.checked = false; // This effectively removes the 'checked' state
         });
+
     }
+
+    /*
+    function surveyCheckAllFormCheckInputs() {
+        // Select all elements with the .form-check-input class
+        var checkboxes = document.querySelectorAll('.form-check-input');
+
+        // Iterate over them and add a change event listener to each one
+        checkboxes.forEach(function(inputCheckbox) {
+            // Add a change listener to the current checkbox
+            inputCheckbox.addEventListener('change', function() {
+                // This function is called whenever a checkbox is checked or unchecked
+                // You can add your logic here for what happens when the state changes
+                if (this.checked) {
+                    this.setAttribute('checked', '');
+                    //console.log(this.id + ' is checked');
+                } else {
+                    this.removeAttribute('checked');
+                    //console.log(this.id + ' is unchecked');
+                }
+
+                if (this.classList.contains('form-check-input-companies')) {
+                    var checkbox = this;
+                    let companyId = checkbox.value;
+                    let column = document.getElementById(`distributed-tab-company-${companyId}`);
+
+                    column.style.display = 'none';
+                    column.querySelectorAll('input').forEach(input => input.required = false);
+
+                    if (checkbox.checked) {
+                        column.style.display = '';
+                        column.querySelectorAll('input').forEach(input => input.required = true);
+                    }
+
+                    // Remove all user checked to prevent to save hiden users id
+                    removeCheckedAttributeFromUsers();
+                }
+            });
+        });
+    }
+    */
+
+    function surveyCheckAllFormCheckInputs(origin = null) {//
+        // Select all elements with the .form-check-input class
+        var checkboxes = document.querySelectorAll('.form-check-input');
+
+        // Define a reusable action as a function
+        function handleCheckboxChange(checkbox) {
+            if (checkbox.classList.contains('form-check-input-companies')) {
+                let companyId = checkbox.value;
+
+                let column = document.getElementById(`distributed-tab-company-${companyId}`);
+
+                // Simplify the display logic
+                column.style.display = checkbox.checked ? '' : 'none';
+
+                // Set the required attribute based on the checkbox's checked state
+                column.querySelectorAll('input').forEach(input => input.required = checkbox.checked);
+
+                // every time any 'form-check-input-companies' checkbox changes state
+                removeCheckedAttributeFromUsers();
+            }
+        }
+
+        checkboxes.forEach(function(inputCheckbox) {
+            if(origin == 'survey'){
+                // Immediately apply the logic to each checkbox
+                handleCheckboxChange(inputCheckbox);
+            }
+
+            // Add a change listener to apply the logic upon future changes
+            inputCheckbox.addEventListener('change', function() {
+                handleCheckboxChange(this);
+            });
+        });
+    }
+    // Attach it to the window object to get from another file (similar export)
+    //window.surveyCheckAllFormCheckInputs = surveyCheckAllFormCheckInputs;
+
+    /*function surveyReloadUsersTab() {
+        var loadUsersTabDiv = document.getElementById('load-users-tab');
+
+        if (loadUsersTabDiv && surveyReloadUsersTabURL) {
+            var surveyId = loadUsersTabDiv.getAttribute('data-survey-id') || ''; // Fallback to empty string if attribute not found
+
+            var xhr = new XMLHttpRequest();
+            var fullUrl = surveyId ? surveyReloadUsersTabURL + '/' + surveyId : surveyReloadUsersTabURL; // Append surveyId if present
+            xhr.open('GET', fullUrl, true);
+            xhr.setRequestHeader('Cache-Control', 'no-cache'); // Set the Cache-Control header to no-cache
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    loadUsersTabDiv.innerHTML = xhr.responseText;
+
+                    setTimeout(() => {
+                        surveyCheckAllFormCheckInputs();
+                        console.log('surveyCheckAllFormCheckInputs');
+                    }, 5000);
+
+                }
+            };
+            xhr.send();
+        }
+    }*/
+    async function surveyReloadUsersTab(origin = null) {
+        const loadUsersTabDiv = document.getElementById('load-users-tab');
+
+        if (loadUsersTabDiv && surveyReloadUsersTabURL) {
+            const surveyId = loadUsersTabDiv.getAttribute('data-survey-id') || ''; // Fallback to empty string if attribute not found
+
+            const fullUrl = surveyId ? `${surveyReloadUsersTabURL}/${surveyId}` : surveyReloadUsersTabURL;
+
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                });
+
+                if (response.ok) {
+                    const responseText = await response.text();
+
+                    if(responseText){
+                        loadUsersTabDiv.innerHTML = responseText;
+
+                        surveyCheckAllFormCheckInputs(origin);
+                    }
+                } else {
+                    // Handle HTTP error (response.ok is false)
+                    throw new Error('Network response was not ok.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    }
+    // Attach it to the window object to get from another file (similar export)
+    window.surveyReloadUsersTab = surveyReloadUsersTab;
+
 
     // Attach event listeners for the modal form
     function attachModalEventListeners() {

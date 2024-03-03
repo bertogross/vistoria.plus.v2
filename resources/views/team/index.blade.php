@@ -5,7 +5,11 @@
 @section('content')
 
     <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-        <h4 class="mb-sm-0 font-size-18">Equipe <i class="ri-arrow-right-s-fill me-2 ms-2"></i> {!!getCurrentConnectionName()!!}</h4>
+        <h4 class="mb-sm-0 font-size-18">
+            Equipe
+            <i class="ri-arrow-right-s-fill text-theme ms-2 me-2 align-bottom"></i>
+            <span class="text-muted" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Dados originados desta conta">{!!getCurrentConnectionName()!!}</span>
+        </h4>
     </div>
 
     <div class="row">

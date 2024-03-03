@@ -87,6 +87,20 @@ export function toastAlert(message, type = 'success', duration = 3000, backdrop 
     //}, 100);
 }
 
+export function sweetAlert(message = 'Um erro ocorreu', title = 'Atenção', icon = 'warning', buttonText = 'Ok'){
+    Swal.fire({
+        title: title,
+        html: message,
+        icon: icon,
+        showConfirmButton: true,
+            confirmButtonClass: 'btn btn-outline-secondary',
+            confirmButtonText: buttonText,
+        showCloseButton: false,
+        buttonsStyling: false,
+        allowOutsideClick: false
+    });
+}
+
 export function sweetWizardAlert(message, urlToRedirect = false, icon = 'success', cancelButtonText = 'Continuar Editando', confirmButtonText = 'Prosseguir', Trigger){
     Swal.fire({
         title: message,
@@ -230,12 +244,12 @@ export function multipleModal() {
         });
 
         // Multiple modals overlay
-        document.addEventListener('show.bs.modal', function (event) {
+        document.body.addEventListener('show.bs.modal', function (event) {
             var modal = event.target;
             var modals = Array.from(document.querySelectorAll('.modal')).filter(function (modal) {
                 return window.getComputedStyle(modal).display !== 'none';
             });
-            var zIndex = 1050 + 10 * modals.length;
+            var zIndex = 1060 + 10 * modals.length;
             modal.style.zIndex = zIndex;
 
             var backdrops = document.querySelectorAll('.modal-backdrop:not(.modal-stack)');
@@ -1009,6 +1023,14 @@ export function autoReloadPage(intervalInSeconds) {
             location.reload();
         }, intervalInSeconds * 1000);
     }
+}
+
+
+// Function to inject a script into the page
+export function injectScript(src) {
+    var script = document.createElement('script');
+    script.src = src;
+    document.body.appendChild(script);
 }
 
 // Used on survey-surveyor.js and survey-auditor.js compliance radio labels

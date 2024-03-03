@@ -220,6 +220,10 @@ class SurveysController extends Controller
 
         $data = null;
 
+        $selectedCompanies = [];
+
+        $distributedData = null;
+
         $users = getUsers();
 
         $getActiveCompanies = getActiveCompanies();
@@ -237,6 +241,8 @@ class SurveysController extends Controller
 
         return view('surveys.create', compact(
                 'data',
+                'distributedData',
+                'selectedCompanies',
                 'templates',
                 'users',
                 'getActiveCompanies',
@@ -265,6 +271,11 @@ class SurveysController extends Controller
         $data->where('id', $id);
         $data->where('user_id', $currentUserId);
         */
+        $distributedData = $data->distributed_data ?? null;
+            $distributedData = $distributedData ? json_decode($distributedData, true) : '';
+
+        $selectedCompanies = $data->companies ?? '';
+            $selectedCompanies = $selectedCompanies ? json_decode($selectedCompanies, true) : [];
 
         // Check if the current user is the creator
         if ($currentUserId != $data->user_id) {
@@ -286,6 +297,8 @@ class SurveysController extends Controller
 
         return view('surveys.edit', compact(
                 'data',
+                'distributedData',
+                'selectedCompanies',
                 'templates',
                 'users',
                 'getActiveCompanies',
@@ -572,6 +585,34 @@ class SurveysController extends Controller
 
         // Return a success response
         return response()->json(['success' => true, 'message' => $message]);
+    }
+
+
+    public function surveyReloadUsersTab(Request $request, $id = null)
+    {
+        if ($id) {
+            $data = Survey::findOrFail($id);
+        }else{
+            $data = null;
+        }
+
+        $distributedData = $data->distributed_data ?? null;
+            $distributedData = $distributedData ? json_decode($distributedData, true) : '';
+
+        $getActiveCompanies = getActiveCompanies();
+        $users = getUsers();
+
+        $selectedCompanies = $data->companies ?? '';
+            $selectedCompanies = $selectedCompanies ? json_decode($selectedCompanies, true) : [];
+
+        return view('surveys.layouts.create-users-tab', compact(
+                'data',
+                'distributedData',
+                'selectedCompanies',
+                'getActiveCompanies',
+                'users',
+            )
+        );
     }
 
 

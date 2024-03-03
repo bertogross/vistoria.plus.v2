@@ -193,12 +193,7 @@
                                                     <i class="ri-fingerprint-2-line label-icon align-middle fs-16"></i> Auditar
                                                 </a>
                                             @elseif (in_array($auditorStatus, ['completed', 'losted']))
-                                                <a href="{{ route('assignmentShowURL', $assignmentId) }}"
-                                                data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
-                                                title="Visualizar"
-                                                class="btn btn-sm btn-label right waves-effect btn-soft-dark">
-                                                    <i class="ri-eye-line label-icon align-middle"></i> Visualizar
-                                                </a>
+                                                <a href="{{ route('assignmentShowURL', $assignmentId) }}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Visualizar resultado" class="btn btn-sm waves-effect btn-soft-dark ri-eye-line"></a>
                                             @endif
                                         </td>
                                     </tr>
@@ -225,7 +220,7 @@
                     </div>
                 @else
                     <div class="alert alert-info alert-dismissible alert-label-icon label-arrow fade show mb-0" role="alert">
-                        <i class="ri-alert-line label-icon"></i> Não há tarefas disponíveis para uma Auditoria
+                        <i class="ri-alert-line label-icon"></i> Não há Vistorias disponíveis para que sejam Auditadas
                     </div>
                 @endif
             </div>

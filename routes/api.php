@@ -4,10 +4,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DropboxController;
 use App\Http\Controllers\SurveysController;
-use App\Http\Controllers\GoogleDriveController;
 use App\Http\Controllers\ClarifaiImageController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\SettingsStripeController;
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -19,14 +19,6 @@ Route::post('/stripe/subscription/details', [SettingsStripeController::class, 'u
 Route::post('/stripe/cart/addon', [SettingsStripeController::class, 'addonCart'])->name('stripeCartAddonURL');
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
 
-
-// Google Drive API
-Route::get('/google-drive/redirect', [GoogleDriveController::class, 'redirect'])->name('GoogleDriveRedirectURL');
-Route::get('/google-drive/callback', [GoogleDriveController::class, 'callback'])->name('GoogleDriveCallbackURL');
-Route::get('/google-drive/deauthorize', [GoogleDriveController::class, 'deauthorize'])->name('GoogleDriveDeauthorizeURL');
-
-Route::post('/google-drive/upload', [GoogleDriveController::class, 'upload'])->name('GoogleDriveUploadURL');
-Route::delete('/google-drive/delete/{fileId}', [GoogleDriveController::class, 'delete'])->name('GoogleDriveDeleteURL');
 
 // Dropbox API
 //Route::get('/dropbox/redirect', [DropboxController::class, 'authorizeDropbox'])->name('DropboxRedirectURL');
@@ -42,3 +34,6 @@ Route::get('/dropbox/delete-folder/{path?}', [DropboxController::class, 'deleteF
 
 // SceneX API
     // TODO
+
+
+Route::get('/invitation/{code?}', [InvitationController::class, 'invitationResponse'])->name('invitationResponseURL');

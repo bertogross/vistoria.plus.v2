@@ -12,6 +12,8 @@ use App\Models\SurveyTemplates;
 use App\Models\SurveyAssignments;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\SettingsStripeController;
+use App\Http\Controllers\PostmarkappController;
+
 
 // Set the locale to Brazilian Portuguese
 Carbon::setLocale('pt_BR');
@@ -26,6 +28,19 @@ if (!function_exists('appDescription')) {
     function appDescription(){
         return 'Garantindo Excelência Operacional';
     }
+}
+
+if (!function_exists('appSendEmail')) {
+    function appSendEmail($to, $name, $subject, $content, $template = 'default'){
+        try{
+            PostmarkappController::sendEmail($to, $name, $subject, $content, $template);
+
+        } catch (\Exception $e) {
+            \Log::error('Error changing connection: ' . $e->getMessage());
+        }
+    }
+    // example usage : appSendEmail('bertogross@gmail.com', 'customer name here', 'subject here', 'content here with <strong>strong</strong>');
+
 }
 
 if (!function_exists('setDatabaseConnection')) {
@@ -64,8 +79,11 @@ if( !function_exists('getUsers') ){
         $userIds = [];
 
         $currentAccountId = auth()->id();
-
         $userIds[] = $currentAccountId;
+
+        $currentConnectionId = getCurrentConnectionByUserId($currentAccountId);
+        $userIds[] = $currentConnectionId;
+
 
         // Fetch connected user data based on the current account ID
         $getUsersDataConnectedOnAccountId = UserConnections::getUserIdsConnectedOnMyAccount();
@@ -76,6 +94,8 @@ if( !function_exists('getUsers') ){
                 $userIds[] = $userId;
             }
         }
+
+        $userIds = array_filter($userIds);
 
         // Remove duplicates and convert to integers (if necessary)
         $userIds = array_map('intval', array_unique($userIds));
@@ -93,8 +113,8 @@ if (!function_exists('getUserRoleById')) {
         if($accountId == auth()->id()){
             $userRole = 1;
         }else{
-            $getUserDataFromConnectedOnAccountId = UserConnections::getUserDataFromConnectedAccountId($userId, $accountId);
-            $userRole = isset($getUserDataFromConnectedOnAccountId->role) ? $getUserDataFromConnectedOnAccountId->role : null;
+            $connection = UserConnections::getUserDataFromConnectedAccountId($userId, $accountId);
+            $userRole = isset($connection->role) ? $connection->role : null;
         }
 
         return $userRole;
@@ -116,6 +136,21 @@ if (!function_exists('getUsersByRole')) {
         }
 
         return null;
+    }
+}
+
+
+if (!function_exists('getUserConnectionStatusById')) {
+    function getUserConnectionStatusById($userId, $accountId){
+
+        if($accountId == auth()->id()){
+            $userStatus = 'active';
+        }else{
+            $connection = UserConnections::getUserDataFromConnectedAccountId($userId, $accountId);
+            $userStatus = isset($connection->status) ? $connection->status : null;
+        }
+
+        return $userStatus;
     }
 }
 
@@ -252,11 +287,19 @@ if (!function_exists('getUsersDataFromMyConnections')) {
 
 if (!function_exists('getCurrentConnectionUserRoleName')) {
     function getCurrentConnectionUserRoleName() {
-        $currentUserId = auth()->id();
+        $user = auth()->user();
 
-        $getUsersDataConnectedOnAccountId =  getUsersDataConnectedOnAccountId($currentUserId);
+        $currentConnectionId = getCurrentConnectionByUserId($user->id);
 
-        $userRole = isset($getUsersDataConnectedOnAccountId->role) ? intval($getUsersDataConnectedOnAccountId->role) : null;
+        $getUsersDataConnectedOnAccountId = getUsersDataConnectedOnAccountId($currentConnectionId);
+
+        $firstConnection = $getUsersDataConnectedOnAccountId->first();
+
+        if($currentConnectionId == $user->id){
+            $userRole = 1;
+        }else{
+            $userRole = isset($firstConnection->role) ? intval($firstConnection->role) : null;
+        }
 
         $roleName = $userRole ? User::getRoleName($userRole) : null;
 

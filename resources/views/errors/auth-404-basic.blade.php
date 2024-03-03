@@ -27,10 +27,10 @@
                         <div class="col-lg-12">
                             <div class="text-center pt-4">
                                 <div class="">
-                                    <img src="{{ URL::asset('build/images/error.svg') }}" alt="" class="error-basic-img move-animation">
+                                    <img src="{{ URL::asset('build/images/error400-cover.png') }}" alt="" class="error-basic-img move-animation">
                                 </div>
-                                <div class="mt-n4">
-                                    <h1 class="display-1 fw-medium">404</h1>
+                                <div class="mt-n2">
+                                    <!--<h1 class="display-1 fw-medium">404</h1>-->
                                     <h3 class="text-uppercase">Desculpe, 😭</h3>
                                     <p class="text-muted mb-4">A sessão que você está procurando não está disponível!</p>
                                     <a href="{{ url('/') }}" class="btn btn-success"><i class="mdi mdi-home me-1"></i>Voltar ao início</a>

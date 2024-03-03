@@ -7,6 +7,30 @@ https://devdojo.com/bobbyiliev/how-to-quickly-change-the-password-for-a-user-in-
 https://laravel-news.com/openai-for-laravel
 
 
+# TODO
+- btn-accept-invitation
+
+
+
+Version 1.0.41 - [2024/03/03]
+
+
+
+Version 1.0.40 - [2024/02/26 - 2024/03/02]
+- [Added] Companies Settings
+- [Updated] User Settings
+- [Removed] MailerSendController
+- [Added] PostmarkappController
+- [Added] CheckUserAuthorization Middleware
+- [Added] InvitationController
+- [Updated] ProfileController
+- [Updated] SettingsUserController
+- [Updated] settings-users.js
+- [Updated] settings-companies.js
+- [Updated] settings-users.js
+- [Updated] surveys.js
+- [Updated] web.php routes
+
 
 
 Version 1.0.39 - [2024/02/23]

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\File;
+use App\Models\UserConnections;
 use App\Http\Controllers\{
     Auth\LoginController,
     HomeController,
@@ -21,9 +22,11 @@ use App\Http\Controllers\{
     SettingsApiKeysController,
     AttachmentsController,
     DropboxController,
+    CompaniesController,
     StorageController,
     ClarifaiImageController,
-    ScenexImageController
+    ScenexImageController,
+    PostmarkappController
 };
 
 /*
@@ -52,7 +55,7 @@ Route::get('{any}', [App\Http\Controllers\HomeController::class, 'index'])->name
 */
 
 // Auth group
-Route::middleware(['auth', 'set-db-connection'])->group(function () {
+Route::middleware(['auth', 'set-db-connection', 'check.authorization'])->group(function () {
     //Route::get('/', [SurveysController::class, 'index'])->name('root');
     Route::get('/', [HomeController::class, 'root'])->name('root');
 
@@ -77,6 +80,8 @@ Route::middleware(['auth', 'set-db-connection'])->group(function () {
     Route::prefix('surveys')->group(function () {
         Route::get('/', [SurveysController::class, 'index'])->name('surveysIndexURL');
         Route::get('/create', [SurveysController::class, 'create'])->name('surveysCreateURL');
+            Route::get('/create/reload-users-tab/{id?}', [SurveysController::class, 'surveyReloadUsersTab'])->name('surveyReloadUsersTabURL');
+
         Route::get('/edit/{id?}', [SurveysController::class, 'edit'])->name('surveysEditURL')->where('id', '[0-9]+');
         Route::get('/show/{id?}', [SurveysController::class, 'show'])->name('surveysShowURL')->where('id', '[0-9]+');
         Route::post('/store/{id?}', [SurveysController::class, 'storeOrUpdate'])->name('surveysStoreOrUpdateURL');
@@ -109,6 +114,7 @@ Route::middleware(['auth', 'set-db-connection'])->group(function () {
             Route::post('/responses/surveyor/store/{id?}', [SurveysResponsesController::class, 'responsesSurveyorStoreOrUpdate'])->name('responsesSurveyorStoreOrUpdateURL');
             Route::post('/responses/auditor/store/{id?}', [SurveysResponsesController::class, 'responsesAuditorStoreOrUpdate'])->name('responsesAuditorStoreOrUpdateURL');
 
+
             // Terms Routes
             Route::get('/terms/listing', [SurveysTermsController::class, 'index'])->name('surveysTermsIndexURL');
             Route::get('/terms/create', [SurveysTermsController::class, 'create'])->name('surveysTermsCreateURL');
@@ -135,9 +141,13 @@ Route::middleware(['auth', 'set-db-connection'])->group(function () {
             Route::get('/users', [SettingsUserController::class, 'index'])->name('settingsUsersIndexURL');
             Route::post('/users/store', [SettingsUserController::class, 'store'])->name('settingsUsersStoreURL');
                 Route::post('/users/update/{id?}', [SettingsUserController::class, 'update'])->name('settingsUsersUpdateURL');
-                Route::get('/users/form/{id?}', [SettingsUserController::class, 'getUserFormContent'])->name('getUserFormContentURL');
+                //Route::get('/users/form/{id?}/{origin?}', [SettingsUserController::class, 'getUserFormContent'])->name('getUserFormContentURL');
+                Route::post('/users/form', [SettingsUserController::class, 'getUserFormContent'])->name('getUserFormContentURL');
 
-            Route::get('/storage', [StorageController::class, 'index'])->name('StorageIndexURL');
+            Route::get('/companies', [CompaniesController::class, 'index'])->name('settingsCompaniesIndexURL');
+            Route::post('/companies/update', [CompaniesController::class, 'storeOrUpdate'])->name('settingsCompaniesUpdateURL');
+
+            Route::get('/storage', [StorageController::class, 'index'])->name('settingsStorageIndexURL');
 
             Route::get('/dropbox', [DropboxController::class, 'index'])->name('DropboxIndexURL');
             Route::get('/dropbox/browse/{path}', [DropboxController::class, 'browseFolder'])->name('DropboxBrowseFolderURL');
@@ -166,12 +176,23 @@ Route::middleware(['auth', 'set-db-connection'])->group(function () {
 
 });
 
-Route::post('/login', [LoginController::class, 'login']);
+
+Route::get('/unauthorized', function () {
+    return view('errors.unauthorized');
+})->name('unauthorized');
+Route::get('/check-authorization', [UserConnections::class, 'preventUnauthorizedConnection'])->name('checkAuthorizationURL');
+
+
+Route::post('/login', [LoginController::class, 'login'])->name('loginURL');
+
+Route::post('/register', [LoginController::class, 'register'])->name('registerURL');
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+Route::get('/send-email', [PostmarkappController::class, 'sendEmail']);
+
 Route::fallback(function () {
-    return response()->view('error.auth-404-basic', [], 404);
+    return response()->view('errors.404', [], 404);
 });
 
 // Catch-All Route

@@ -55,7 +55,7 @@ class User extends Authenticatable
     // Capabilities for each role
     const USER_ROLES = [
         self::ROLE_ADMIN => ['manager', 'edit', 'view', 'audit'],
-        self::ROLE_EDITOR => ['edit', 'view', 'audit'],
+        self::ROLE_EDITOR => ['view', 'audit'],
         self::ROLE_PUBLISHER => ['edit', 'view'],
         self::ROLE_VISUALIZATION => ['view'],
         //self::ROLE_PARTNER => ['view'],
@@ -63,8 +63,8 @@ class User extends Authenticatable
 
     const CAPABILITY_TRANSLATIONS = [
         'manager' => 'Configurações Gerais',
-        'edit' => 'Editar Tarefas',
-        'audit' => 'Auditar Tarefas',
+        'edit' => 'Realizar Vistoria',
+        'audit' => 'Auditar Vistoria',
         'view' => 'Visualização Analítica',
         //'partial_view' => 'Limitado ao Nível',
     ];
@@ -91,7 +91,7 @@ class User extends Authenticatable
         $role = intval($role);
 
         $roles = [
-            self::ROLE_ADMIN => 'Administração',
+            self::ROLE_ADMIN => 'Administrativo',
             self::ROLE_EDITOR => 'Auditoria',
             self::ROLE_PUBLISHER => 'Vistoria',
             self::ROLE_VISUALIZATION => 'Visitante',

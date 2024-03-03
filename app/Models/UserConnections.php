@@ -6,10 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\DB;
+use App\Models\UserMeta;
 
 /**
- * UserMeta Model
- *
  * Represents the metadata associated with a user.
  */
 class UserConnections extends Model
@@ -25,8 +24,8 @@ class UserConnections extends Model
 
 
     // Store or update secondary users data
-    // $selectedUserId = the user selecyted to be a member from $connectedToUserId team
-    public static function setConnectionData($selectedUserId, $connectedToUserId, $connectionRole, $connectionStatus, $connectionCompanies)
+    // $selectedUserId is the user to be a member from $connectedToUserId team
+    public static function setConnectionData($selectedUserId, $connectedToUserId, $connectionRole, $connectionStatus, $connectionCompanies, $connectionCode)
     {
         $onboardConnection = DB::connection('vpOnboard');
 
@@ -43,6 +42,7 @@ class UserConnections extends Model
                     'connection_role' => $connectionRole,
                     'connection_status' => $connectionStatus,
                     'connection_companies' => $connectionCompanies,
+                    'connection_code' => $connectionCode
                 ]);
         } else {
             // Insert new record
@@ -52,11 +52,31 @@ class UserConnections extends Model
                     'connected_to' => $connectedToUserId,
                     'connection_role' => $connectionRole,
                     'connection_status' => $connectionStatus,
-                    'connection_companies' => $connectionCompanies
+                    'connection_companies' => $connectionCompanies,
+                    'connection_code' => $connectionCode
                 ]);
         }
 
         return false;
+    }
+
+    public static function preventUnauthorizedConnection()
+    {
+        $currentUserId = auth()->id();
+        $currentConnectionId = getCurrentConnectionByUserId($currentUserId);
+
+        $connectionStatus = getUserConnectionStatusById($currentUserId, $currentConnectionId);
+
+        if ($connectionStatus != 'active') {
+            // This line seems to reset the user's current connection to their own user ID when unauthorized.
+            UserMeta::updateUserMeta($currentUserId, 'current_database_connection', $currentUserId);
+
+            // Return an error response when the connection is not active
+            return response()->json(['error' => 'Você não possui autorização para acessar esta conexão'], 403);
+        }
+
+        // Return a success response when the connection is active
+        return response()->json(['authorization' => true], 200);
     }
 
     public static function getUsersDataConnectedOnAccountId($accountId)
@@ -157,18 +177,6 @@ class UserConnections extends Model
         if($query){
             $query->companies = json_decode($query->companies, true) ?? null;
         }
-
-        /*
-        if( is_null($query) ){
-            $getActiveCompanies = getActiveCompanies();
-            $getActiveCompanies = !$getActiveCompanies ? [1] : array_column($getActiveCompanies, 'id');
-
-            return (object) array(
-                'status' => 'active',
-                'role' => 1,
-                'companies' => $getActiveCompanies
-            );
-        }*/
 
         return $query ?? null;
     }

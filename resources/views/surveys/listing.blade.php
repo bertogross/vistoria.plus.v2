@@ -93,10 +93,10 @@
                             <th class="text-center d-none" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="A Data de Registro não é necessáriamente a data de início das tarefas">
                                 Registrado em
                             </th>
-                            <th class="text-left" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Usários que foram designados para tarefas de Vistoria e Auditoria">
+                            <th class="text-left" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Unidades relacionadas">
                                 Unidades
                             </th>
-                            <th class="text-left" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Unidades relacionadas">
+                            <th class="text-left" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Usários que foram designados para tarefas de Vistoria e Auditoria">
                                 Atribuições
                             </th>
                             <th class="text-center" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="A Data de início da rotina">
@@ -255,6 +255,7 @@
                                             </button>
                                     @endif
 
+                                    {{-- TODO --}}
                                     @if (env('APP_DEBUG'))
                                         <button type="button" onclick="alert('In development stage')"
                                         class="btn btn-sm btn-soft-dark waves-effect ri-survey-line btn-survey-form-preview"

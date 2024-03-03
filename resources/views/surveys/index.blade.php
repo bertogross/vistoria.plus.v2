@@ -25,7 +25,11 @@
                 <div class="col-12">
                     <div class="d-flex align-items-lg-center flex-lg-row flex-column">
                         <div class="flex-grow-1">
-                            <h4 class="fs-16 mb-1 text-uppercase">@lang('translation.surveys')</h4>
+                            <h4 class="fs-16 mb-1 text-uppercase">
+                                @lang('translation.surveys')
+                                <i class="ri-arrow-right-s-fill text-theme ms-2 me-2 align-bottom"></i>
+                                <span class="text-muted" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Dados originados desta conta">{!!getCurrentConnectionName()!!}</span>
+                            </h4>
                             <p class="text-muted mb-0">Aqui estão os componentes necessários para suas tarefas de vistoria</p>
                         </div>
                         <div class="mt-3 mt-lg-0">
@@ -128,7 +132,17 @@
         var surveysChangeStatusURL = "{{ route('surveysChangeStatusURL') }}";
         var surveysShowURL = "{{ route('surveysShowURL') }}";
         var surveysStoreOrUpdateURL = "{{ route('surveysStoreOrUpdateURL') }}";
+        var surveyReloadUsersTabURL = "{{ route('surveyReloadUsersTabURL') }}";
         var getRecentActivitiesURL = "{{ route('getRecentActivitiesURL') }}";
     </script>
     <script src="{{ URL::asset('build/js/surveys.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
+
+    <script>
+        var uploadAvatarURL = "{{ route('uploadAvatarURL') }}";
+        var uploadCoverURL = "{{ route('uploadCoverURL') }}";
+        var getUserFormContentURL = "{{ route('getUserFormContentURL') }}";
+        var settingsUsersStoreURL = "{{ route('settingsUsersStoreURL') }}";
+        var settingsUsersUpdateURL = "{{ route('settingsUsersUpdateURL') }}";
+    </script>
+    <script src="{{ URL::asset('build/js/settings-users.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 @endsection

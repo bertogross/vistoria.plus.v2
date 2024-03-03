@@ -179,14 +179,13 @@
                         <div class="col">
                             <div class="card">
                                 <div class="card-body" style="height: 145px;">
-                                    <img
-                                    src="{{ $surveyorAvatar }}"
-                                    alt="{{$surveyorName}}"
-                                    class="avatar-xs rounded-circle float-end" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Vistoria realizada por {{$surveyorName}}" />
+                                    <a href="{{route('profileShowURL', $surveyorId)}}">
+                                        <img src="{{ $surveyorAvatar }}" alt="{{$surveyorName}}" class="avatar-xs rounded-circle float-end" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Vistoria realizada por {{$surveyorName}}.<br>Clique para acessar o Perfil." />
+                                    </a>
                                     <h6 class="text-muted text-uppercase mb-4">Vistoria</h6>
-                                    <span class="text-success">Conforme</span>: {{$complianceSurveyorYesCount}}
+                                    <span class="text-success" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="Avaliações positivas efetuadas pelo(a) vistoriador(a)">Conforme</span>: {{$complianceSurveyorYesCount}}
                                     <br><br>
-                                    <span class="text-danger">Não Conforme</span>: {{$complianceSurveyorNoCount}}
+                                    <span class="text-danger" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="Avaliações negativas efetuadas pelo(a) vistoriador(a)">Não Conforme</span>: {{$complianceSurveyorNoCount}}
                                 </div>
                             </div>
                         </div>
@@ -198,16 +197,15 @@
                                     @elseif($timeLimit->gt($now) && $auditorStatus != 'completed')
                                         <span class="fs-5 float-end ri-time-line text-secondary" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="Dentro do prazo para realizar Auditoria"></span>
                                     @else
-                                        <img
-                                        src="{{$auditorAvatar}}"
-                                        alt="{{$auditorName}}"
-                                        class="avatar-xs rounded-circle float-end" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Auditoria realizada por {{$auditorName}}" />
+                                        <a href="{{route('profileShowURL', $auditorId)}}">
+                                            <img src="{{$auditorAvatar}}" alt="{{$auditorName}}" class="avatar-xs rounded-circle float-end" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Auditoria realizada por {{$auditorName}}.<br>Clique para acessar o Perfil." />
+                                        </a>
                                     @endif
 
                                     <h6 class="text-muted text-uppercase mb-4">Auditoria</h6>
 
                                     @if( !$complianceAuditorYesCount && !$complianceAuditorNoCount )
-                                        @if ( in_array(getUserRoleById($currentUserId, $currentConnectionId), [1,2]) && in_array($surveyorStatus, ['new','pending','in_progress','completed']) && $timeLimit->gt($now) )
+                                        @if ( in_array(getUserRoleById($currentUserId, $currentConnectionId), [1,2]) && in_array($surveyorStatus, ['new','pending','in_progress','completed']) && $timeLimit->gt($now) && $surveyorId != auth()->id() )
                                             <button type="button"
                                             data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
                                             title="Requisitar esta tarefa de Auditoria"
@@ -219,7 +217,7 @@
                                             <div class="form-text mt-2" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="A data limite para realizar esta tarefa">
                                                 Prazo: {{ $deadline }}
                                             </div>
-                                        @elseif ( in_array(getUserRoleById($currentUserId, $currentConnectionId), [1,2]) && $auditorId == auth()->id() && $timeLimit->gt($now) )
+                                        @elseif ( ( in_array(getUserRoleById($currentUserId, $currentConnectionId), [1,2]) && $auditorId == auth()->id() && $timeLimit->gt($now) ) )
                                             <div class="row mb-3">
                                                 <div class="col-6 pe-1">
                                                     <button type="button"
@@ -248,7 +246,7 @@
                                             </div>
                                         @else
                                             <button type="button" onclick="alert('Não é possível Auditar uma Vistoria por você realizada.')"
-                                            class="btn btn-sm btn-label right waves-effect btn-soft-secondary w-100 cursor-not-allowed" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Não é possível Auditar uma Vistoria por você realizada.">
+                                            class="btn btn-label right waves-effect btn-soft-secondary w-100 cursor-not-allowed" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Não é possível Auditar uma Vistoria por você realizada.">
                                                 <i class="ri-fingerprint-2-line label-icon align-middle fs-16"></i> Auditar
                                             </button>
 
@@ -264,14 +262,14 @@
                                             </a>
                                         @else
                                             <p class="blink mb-1">Em progresso...</p>
-                                            <span class="text-secondary">De Acordo</span>: {{$complianceAuditorYesCount}}
+                                            <span class="text-secondary" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Aprovei as avaliações outrora realizadas pelo(a) vistoriador(a)">Aprovada</span>: {{$complianceAuditorYesCount}}
                                             <br>
-                                            <span class="text-warning">Indeferida</span>: {{$complianceAuditorNoCount}}
+                                            <span class="text-warning" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Reprovei as avaliações outrora realizadas pelo(a) vistoriador(a)">Indeferida</span>: {{$complianceAuditorNoCount}}
                                         @endif
                                     @elseif($auditorStatus == 'completed')
-                                        <span class="text-secondary">De Acordo</span>: {{$complianceAuditorYesCount}}
+                                        <span class="text-secondary" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Aprovei as avaliações outrora realizadas pelo(a) vistoriador(a)">Aprovada</span>: {{$complianceAuditorYesCount}}
                                         <br><br>
-                                        <span class="text-warning">Indeferida</span>: {{$complianceAuditorNoCount}}
+                                        <span class="text-warning" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Reprovei as avaliações outrora realizadas pelo(a) vistoriador(a)">Indeferida</span>: {{$complianceAuditorNoCount}}
                                     @endif
                                 </div>
                             </div>
