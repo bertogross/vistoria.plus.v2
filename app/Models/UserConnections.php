@@ -59,14 +59,28 @@ class UserConnections extends Model
         return false;
     }
 
+    // Accpet connection to another account
+    public static function acceptConnection($request, $questUserId)
+    {
+        $hostUserId = $request->host_user_id ?? null;
+        $questUserParams = $request->quest_user_params ?? null;
+        if($hostUserId && $questUserParams){
+            $decodeQuestUserParams = $questUserParams ? json_decode($questUserParams, true) : null;
+                $guestUserRole = $decodeQuestUserParams->role ?? 4;
+                $questUserCompanies = $decodeQuestUserParams->companies ?? [];
+
+            self::setConnectionData($questUserId, $hostUserId, $guestUserRole, 'active', $questUserCompanies);
+        }
+    }
+
     // Unset all users connected in current account connections
     // Use status: inactive | revoked
-    public static function unsetUsersConnectedInMyAccount()
+    public static function unsetUsersConnectedOnHostAccount()
     {
-        $currentConnectionId = auth()->id();
+        $hostId = auth()->id();
 
         return DB::connection('vpOnboard')->table('user_connections')
-            ->where('connected_to', $currentConnectionId)
+            ->where('connected_to', $hostId)
             ->update([
                 'connection_status' => 'inactive'
             ]);

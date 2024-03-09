@@ -77,7 +77,7 @@ class StripeController extends Controller
 
         try {
             // Deactive all connected users
-            UserConnections::unsetUsersConnectedInMyAccount();
+            UserConnections::unsetUsersConnectedOnHostAccount();
 
             // Delete subscriptions
             Stripe::cancelStripeSubscriptionItems();

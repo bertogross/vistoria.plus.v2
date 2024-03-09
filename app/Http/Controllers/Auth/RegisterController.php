@@ -85,19 +85,8 @@ class RegisterController extends Controller
             // Create user database based on vpDefaultSchema
             UserConnections::duplicateAndRenameDefaultSchema($user->id);
 
-            // START Connect to another account
-            $hostUserId = $request->host_user_id ?? null;
-            $questUserParams = $request->quest_user_params ?? null;
-            if($hostUserId && $questUserParams){
-                $questUserId = $user->id;
-                $decodeQuestUserParams = $questUserParams ? json_decode($questUserParams, true) : null;
-                    $guestUserRole = $decodeQuestUserParams->role ?? 4;
-                    $questUserCompanies = $decodeQuestUserParams->companies ?? [];
-
-                UserConnections::setConnectionData($questUserId, $hostUserId, $guestUserRole, 'active', $questUserCompanies);
-            }
-            // END Connect to another account
-
+            // Connect to another account
+            UserConnections::acceptConnection($request, $user->id);
 
             $content = '<br><strong style="font-weight:600;">E-mail de Login: </strong>' . $data['email'];
             $content .= '<br><strong style="font-weight:600;">Senha: </strong>' . $password;

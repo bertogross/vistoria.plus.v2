@@ -17,12 +17,26 @@ https://laravel-news.com/openai-for-laravel
 
 
 
+Version 1.0.43 - [2024/03/10]
+- [Updated] addon subscription storage
+
+
+
+Version 1.0.42 - [2024/03/09]
+- [Updated] auth.invitation view
+- [Updated] register.js
+- [Updated] RegisterController
+- [Updated] LoginController
+- [Updated] UserConnections model
+
+
 
 Version 1.0.41 - [2024/03/03 - 2024/03/09]
 - [Updated] RegisterController = invitationResponse()
 - [Added] Companies Settings
 - [Added] Storage Settings
 - [Added] StorageController
+- [Updated] UserConnections model
 - [Updated] web routes
 - [Updated] Many views
 - [Updated] ResetPasswordController
@@ -33,6 +47,7 @@ Version 1.0.41 - [2024/03/03 - 2024/03/09]
 - [Updated] RegisterController
 - [Updated] LoginController
 - [Updated] AttachmentsController
+- [Updated] SettingsUserController
 
 
 

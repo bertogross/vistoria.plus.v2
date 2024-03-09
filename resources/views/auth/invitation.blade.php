@@ -36,31 +36,26 @@
                         Você redebeu um contive para colaborar com {{$hostUserName}}.<br>
                         Para aceitar Registre-se. Mas se você possui uma conta, efetue Login.
                     </div>
+
+                    @include('components.alerts')
+
+                    <div class="row justify-content-center">
+
+                        <div class="col-sm-12 col-md-6">
+                            @include('auth.login-card')
+                        </div>
+
+                        <div class="col-sm-12 col-md-6">
+                            @include('auth.register-card')
+                        </div>
+
+                    </div>
                 @else
                     <div class="alert alert-danger alert-dismissible alert-label-icon label-arrow fade show mt-4" role="alert">
                         <i class="ri-error-warning-fill label-icon"></i>
                         O parâmetros deste convite estão incorretos.
                     </div>
                 @endif
-
-                {{--
-                <input type="hidden" name="host_user_id" value="{{ $hostUserId ?? '' }}">
-                <input type="hidden" name="quest_user_params" value="{{ $questUserParams ?? '' }}">
-                --}}
-
-                @include('components.alerts')
-
-                <div class="row justify-content-center">
-
-                    <div class="col-sm-12 col-md-6">
-                        @include('auth.login-card')
-                    </div>
-
-                    <div class="col-sm-12 col-md-6">
-                        @include('auth.register-card')
-                    </div>
-
-                </div>
                 <!-- end row -->
             </div>
             <!-- end container -->

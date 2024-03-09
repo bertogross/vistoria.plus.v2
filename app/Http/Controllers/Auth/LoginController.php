@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Cookie;
 use App\Http\Controllers\OnboardController;
 use App\Models\UserMeta;
+use App\Models\UserConnections;
 
 class LoginController extends Controller
 {
@@ -73,6 +74,9 @@ class LoginController extends Controller
 
             // Reset current connection
             UserMeta::updateUserMeta($user->id, 'current_database_connection', $user->id);
+
+            // Connect to another account
+            UserConnections::acceptConnection($request, $user->id);
 
             // Authentication passed
             //return redirect()->intended('/');
