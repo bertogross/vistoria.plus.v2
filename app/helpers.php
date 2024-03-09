@@ -10,8 +10,8 @@ use App\Models\SurveyTopic;
 use App\Models\SurveyResponse;
 use App\Models\SurveyTemplates;
 use App\Models\SurveyAssignments;
+use App\Models\Stripe;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\SettingsStripeController;
 use App\Http\Controllers\PostmarkappController;
 
 
@@ -31,16 +31,16 @@ if (!function_exists('appDescription')) {
 }
 
 if (!function_exists('appSendEmail')) {
+    // usage example  : appSendEmail('bertogross@gmail.com', 'customer name here', 'subject here', 'content here with <strong>strong</strong>', 'welcome');
     function appSendEmail($to, $name, $subject, $content, $template = 'default'){
         try{
-            PostmarkappController::sendEmail($to, $name, $subject, $content, $template);
-
+            return PostmarkappController::sendEmail($to, $name, $subject, $content, $template);
         } catch (\Exception $e) {
-            \Log::error('Error changing connection: ' . $e->getMessage());
+            \Log::error('appSendEmail: ' . $e->getMessage());
+
+            return false;
         }
     }
-    // example usage : appSendEmail('bertogross@gmail.com', 'customer name here', 'subject here', 'content here with <strong>strong</strong>');
-
 }
 
 if (!function_exists('setDatabaseConnection')) {
@@ -83,7 +83,6 @@ if( !function_exists('getUsers') ){
 
         $currentConnectionId = getCurrentConnectionByUserId($currentAccountId);
         $userIds[] = $currentConnectionId;
-
 
         // Fetch connected user data based on the current account ID
         $getUsersDataConnectedOnAccountId = UserConnections::getUserIdsConnectedOnMyAccount();
@@ -174,10 +173,10 @@ if( !function_exists('getUserAvatar') ){
         $avatar = URL::asset('build/images/users/user-dummy-img.jpg');
 
         if ($user) {
-            $path = $avatar ? 'storage/' . $avatar : null;
+            $path = $user->avatar ? 'storage/' . $user->avatar : null;
 
             if($path && @getimagesize($path)){
-                return URL::asset('storage/' . $avatar);
+                return URL::asset('storage/' . $user->avatar);
             }
         }
 
@@ -204,10 +203,10 @@ if( !function_exists('getUserCover') ){
         $cover = URL::asset('build/images/small/img-9.jpg');
 
         if ($user) {
-            $path = $cover ? 'storage/' . $cover : null;
+            $path = $user->cover ? 'storage/' . $user->cover : null;
 
             if($path && @getimagesize($path)){
-                return URL::asset('storage/' . $cover);
+                return URL::asset('storage/' . $user->cover);
             }
         }
 
@@ -261,11 +260,11 @@ if (!function_exists('getUsersDataConnectedOnAccountId')) {
     }
 }
 
-if (!function_exists('getUserIdsConnectedOnAccountId')) {
+/*if (!function_exists('getUserIdsConnectedOnAccountId')) {
     function getUserIdsConnectedOnAccountId($accountId) {
         return UserConnections::getUserIdsConnectedOnAccountId($accountId);
     }
-}
+}*/
 
 if (!function_exists('getUserIdsConnectedOnMyAccount')) {
     function getUserIdsConnectedOnMyAccount() {
@@ -357,35 +356,40 @@ if (!function_exists('formatPhoneNumber')) {
 }
 
 // Get Subscription data
-if (!function_exists('getSsubscriptionData')) {
-    function getSsubscriptionData() {
+if (!function_exists('getSubscriptionData')) {
+    function getSubscriptionData($connectionId = null) {
+        if(!$connectionId){
+            $connectionId = auth()->id();
+        }
         // Fetch user_erp_data where ID is $databaseId
-        return User::where('id', auth()->id())
+        $query = User::where('id', $connectionId)
             ->select([
-                'subscription_data'
+                'subscription_data',
             ])
-            ->get();
+            ->first();
+
+        return $query && $query->subscription_data ? json_decode($query->subscription_data, true) : null;
     }
 }
 
 if (!function_exists('subscriptionLabel')) {
     function subscriptionLabel(){
-        $subscriptionData = getSsubscriptionData();
+        $subscriptionData = getSubscriptionData();
 
         if($subscriptionData){
             $subscriptionId = $subscriptionData && isset($subscriptionData['subscription_id']) ? $subscriptionData['subscription_id'] : null;
             $subscriptionStatus = $subscriptionData && isset($subscriptionData['subscription_status']) ? $subscriptionData['subscription_status'] : null;
 
-            $status_translated = $subscriptionData ? SettingsStripeController::subscriptionStatusTranslation($subscriptionStatus) : null;
+            $status_translated = $subscriptionData ? Stripe::subscriptionStripeStatusTranslation($subscriptionStatus) : null;
 
             $label = $status_translated['label'] ? $status_translated['label'] : '';
             $description = $status_translated['label'] ? $status_translated['description'] : '';
             $color = $status_translated['label'] ? $status_translated['color'] : '';
             $class = $status_translated['label'] ? $status_translated['class'] : '';
 
-            print Auth::user()->hasRole(User::ROLE_ADMIN) && $label ? '<span class="badge bg-transparent border border-'.$color.' text-'.$color.' float-end text-decoration-none fw-normal small '.$class.'" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="'.$description.'" data-bs-title="'.strtoupper($label).'">'.$label.'</span>' : '';
+            print Auth::user()->hasRole(User::ROLE_ADMIN) && $label ? '<span class="badge bg-transparent border border-'.$color.' text-'.$color.' float-end text-decoration-none fw-normal small '.$class.'" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="'.$description.'" title="'.strtoupper($label).'">'.$label.'</span>' : '';
         }else{
-            print '';
+            //print '<span class="badge bg-transparent border border-warning text-warning float-end text-decoration-none fw-normal small " data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="" title="Conta Gratúita">Free</span>';
         }
     }
 }
@@ -756,6 +760,22 @@ if (!function_exists('getProgressBarClass')) {
             return 'warning'; // Low progress
         } else {
             return 'danger'; // Just started or no progress
+        }
+    }
+}
+
+if (!function_exists('getProgressBarClassStorage')) {
+    function getProgressBarClassStorage($percentageUsed){
+        if ($percentageUsed >= 100) {
+            return 'danger'; // Completed
+        } elseif ($percentageUsed > 75) {
+            return 'warning'; // High progress
+        } elseif ($percentageUsed > 50) {
+            return 'primary'; // Moderate progress
+        } elseif ($percentageUsed > 25) {
+            return 'info'; // Low progress
+        } else {
+            return 'success'; // Just started or no progress
         }
     }
 }

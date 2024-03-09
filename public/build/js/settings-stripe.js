@@ -1,5 +1,6 @@
 import {
-    toastAlert
+    toastAlert,
+    showPreloader
 } from './helpers.js';
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -30,6 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     'quantity': quantity
                 };
 
+                showPreloader();
+
                 fetch(stripeSubscriptionURL, {
                     method: 'POST',
                     headers: {
@@ -56,11 +59,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     toastAlert('Redirecionado para a página de pagamento...', 'success', 10000);
 
-                    clickedElement.aetAttribute('disabled');
+                    clickedElement.setAttribute('disabled', true);
 
                     setTimeout(function() {
                         window.location.href = checkoutURL;
-                    }, 2000);
+                    }, 3000);
                 })
                 .catch(error => {
                     var message = error.message || 'Não foi possível proceder com a solicitação.<br>Tente novamente mais tarde.';
@@ -69,7 +72,74 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .finally(() => {
                     //APP_loading();
+                    showPreloader(false);
                 });
+            }
+
+            if (clickedElement.classList.contains('btn-subscription-cancel')) {
+                event.preventDefault();
+                clickedElement.blur();
+
+                var priceId = clickedElement.getAttribute('data-price_id');
+                var currentPriceId = clickedElement.getAttribute('data-current-price_id');
+
+                var params = {
+                    'current_price_id': currentPriceId,
+                    'price_id': priceId
+                };
+
+                Swal.fire({
+                    title: 'Cancelar assinatura?',
+                    html: 'Com o cancelamento, os usuários conectados serão desativados.<br><br><span class="text-warning small fs-12">Você poderá reativar sua assinatura a qualquer momento.</span>',
+                    icon: 'question',
+                    confirmButtonText: 'Sim, cancelar',
+                        confirmButtonClass: 'btn btn-outline-secondary w-xs me-2',
+                    cancelButtonText: 'Não',
+                        cancelButtonClass: 'btn btn-sm btn-outline-danger w-xs',
+                            showCancelButton: true,
+                    denyButtonText: 'Nunca',
+                        denyButtonClass: 'btn btn-outline-danger w-xs me-2',
+                            showDenyButton: false,
+                    buttonsStyling: false,
+                    showCloseButton: false,
+                    allowOutsideClick: false
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        showPreloader();
+
+                        fetch(stripeCancelSubscriptionURL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify(params)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!data.success) {
+                                toastAlert(data.message, 'danger', 10000);
+                                return;
+                            }
+
+                            toastAlert(data.message, 'success', 10000);
+
+                            setTimeout(function() {
+                                location.reload(true);
+                            }, 3000);
+                        })
+                        .catch(error => {
+                            var message = error.message || 'Não foi possível proceder com a solicitação.<br>Tente novamente mais tarde.';
+
+                            toastAlert(message, 'danger', 10000);
+                        })
+                        .finally(() => {
+                            //APP_loading();
+                            showPreloader(false);
+                        });
+
+                    }
+                })
             }
 
             // Update subscription (change subscription plan)
@@ -92,6 +162,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     'price_id': priceId,
                     'quantity': quantity
                 };
+
+                showPreloader();
 
                 fetch(stripeSubscriptionDetailsURL, {
                     method: 'POST',
@@ -118,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         html: '<img src="' + assetURL + 'build/images/stripe/white-small.png" title="Stripe" width="100" class="mb-3"><br>Redirecionado para a página de pagamento...'
                     });*/
 
-                    clickedElement.aetAttribute('disabled');
+                    clickedElement.setAttribute('disabled', true);
 
                     toastAlert('Redirecionado para a página de pagamento...', 'success', 10000);
 
@@ -132,17 +204,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .finally(() => {
                     //APP_loading();
+                    showPreloader(false);
                 });
             }
 
             // Remove from cart
+            /*
             if (clickedElement.classList.contains('btn-addon-cart-remove')) {
                 event.preventDefault();
                 var addon = clickedElement.getAttribute('data-addon');
                 document.querySelector('.btn-addon-cart[data-addon="' + addon + '"]').click();
             }
+            */
 
             // START Addons Cart
+            /*
             if (clickedElement.classList.contains('btn-addon-cart')) {
                 event.preventDefault();
                 var cart = [];
@@ -181,6 +257,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     'cart': cart
                 };
 
+                showPreloader();
+
                 fetch(stripeCartAddonURL, {
                     method: 'POST',
                     headers: {
@@ -195,6 +273,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .finally(() => {
                     //APP_loading();
+                    showPreloader(false);
                 });
 
                 var cartValue = sessionStorage.getItem('app_addon_cart_IDs');
@@ -209,6 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('load-cart').innerHTML = 'Novos recursos ainda não foram selecionados';
                 }
             }
+            */
             // END Addons Cart
         }
     });
@@ -238,7 +318,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 subscriptionButton.classList.add('btn-theme');
             }
 
-            var text = newQuantity > step ? newQuantity + ' unidades' : '1 unidade';
+            //var text = newQuantity > step ? newQuantity + ' unidades' : '1 unidade';
+            var text = newQuantity > 0 ? newQuantity : 'Quantidade';
             var quantityInput = document.querySelector('input.quantity-' + target);
             quantityInput.value = text;
             quantityInput.setAttribute('data-quantity', newQuantity);

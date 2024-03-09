@@ -1,6 +1,6 @@
 <h4 class="mb-0">Complementos</h4>
 
-<p>Adicione mais recursos ao seu {{ appName() }}</p>
+<p>Enriqueça seu {{ appName() }} incorporando recursos adicionais</p>
 
 <div class="row mt-4">
     @if ($subscriptionId)
@@ -11,8 +11,8 @@
                     []
                 );
 
-                $currentPriceId = !empty($retrieve_subscription->plan->id) ? $retrieve_subscription->plan->id : '';
-            } catch (Exception $e) {
+                $currentPriceId = !empty($retrieveSubscription->plan->id) ? $retrieveSubscription->plan->id : '';
+            } catch (\Exception $e) {
                 $error = $e->getMessage();
             }
 
@@ -21,7 +21,7 @@
                     'subscription' => $subscriptionId,
                 ]);
                 $subscriptionItemId = $subscriptionId && isset($subscriptionItems->data[0]->id) ? $subscriptionItems->data[0]->id : '';
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $error = $e->getMessage();
             }
         @endphp
@@ -59,7 +59,8 @@
 
                 asort($prices);
             @endphp
-            @if( !empty($prices) && is_array($prices) && count($prices) > 0 && $productMetadata->type == 'addon' )
+            @if( !empty($prices) && is_array($prices) && count($prices) > 0
+             && $productMetadata->type == 'addon' )
                 @foreach( $prices as $key => $price)
                     @php
                         $PriceId = isset($price['id']) ? $price['id'] : '';
@@ -75,6 +76,7 @@
                         $interval = isset($price['recurring']) ? $price['recurring']->interval : '';
 
                         $metadata = isset($price['product']) ? $price['product']->metadata : '';
+                        /*
                         $planType = isset($metadata->plan_type) ? trim($metadata->plan_type) : '';
                         switch ($planType) {
                             case 'annual':
@@ -86,9 +88,11 @@
                             default:
                                 $planTypeText = '';
                         }
+                        */
                     @endphp
 
-                     @include('settings.stripe.product-card-wide')
+                    @include('settings.stripe.product-card-wide', ['type' => 'addon'])
+
                 @endforeach
             @endif
         @endforeach

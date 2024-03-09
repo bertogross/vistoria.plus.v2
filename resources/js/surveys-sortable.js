@@ -24,21 +24,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const targetId = clickedElement.getAttribute("data-target");
                 const isConfirmed = confirm('Certeza que deseja deletar este bloco de Termo?');
-                if (isConfirmed) {
-                    const blockElement = document.querySelector('.block-item[id="' + targetId + '"]');
-                    if (blockElement) {
-                        blockElement.remove();
+                if (!isConfirmed) {
+                    event.stopPropagation();
 
-                        attachNestedListeners()
+                    return;
+                }
 
-                        reloadTermsForm();
+                const blockElement = document.querySelector('.block-item[id="' + targetId + '"]');
+                if (blockElement) {
+                    blockElement.remove();
 
-                        attachTemplateAutosave();
+                    attachNestedListeners()
 
-                        event.stopPropagation();
+                    reloadTermsForm();
 
-                        return;
-                    }
+                    attachTemplateAutosave();
+
+                    event.stopPropagation();
+
+                    return;
                 }
             }
 
@@ -48,19 +52,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const targetId = clickedElement.getAttribute("data-target");
                 const isConfirmed = confirm('Certeza que deseja deletar este Tópico?');
-                if (isConfirmed) {
-                    const topicElement = document.querySelector('.step-topic[id="' + targetId + '"]');
-                    if (topicElement) {
-                        topicElement.remove();
+                if (!isConfirmed) {
+                    event.stopPropagation();
 
-                        attachNestedListeners();
+                    return;
+                }
 
-                        attachTemplateAutosave();
+                const topicElement = document.querySelector('.step-topic[id="' + targetId + '"]');
+                if (topicElement) {
+                    topicElement.remove();
 
-                        event.stopPropagation();
+                    attachNestedListeners();
 
-                        return;
-                    }
+                    attachTemplateAutosave();
+
+                    event.stopPropagation();
+
+                    return;
                 }
             }
 

@@ -11,8 +11,15 @@ class PostmarkappController extends Controller
 {
     public static function sendEmail($to, $name, $subject, $content, $template)
     {
-        Mail::to($to)->send(new SendingEmail($name, $subject, $content, $template));
+        try{
+            return Mail::to($to)->send(new SendingEmail($name, $subject, $content, $template));
+        } catch (\Exception $e) {
+            \Log::error('sendEmail: ' . $e->getMessage());
 
-        return 'Email sent successfully!';
+            return false;
+        }
     }
+
+
+
 }

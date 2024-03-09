@@ -40,7 +40,7 @@
             <div class="row g-4">
                 <div class="col-auto">
                     <div class="avatar-lg profile-user position-relative d-inline-block">
-                        <img id="avatar-img" src="{{checkUserAvatar($user->avatar)}}" alt="avatar" class="img-thumbnail rounded-circle" loading="lazy" />
+                        <img src="{{checkUserAvatar($user->avatar)}}" alt="avatar" class="img-thumbnail rounded-circle avatar-img" loading="lazy" />
                         @if($profileUserId == auth()->id())
                             <div class="avatar-xs p-0 rounded-circle profile-photo-edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="right" title="Alterar Avatar">
                                 <input class="d-none" name="avatar" id="member-image-input" type="file" accept="image/jpeg">
@@ -341,9 +341,7 @@
     var changeAssignmentAuditorStatusURL = "{{ route('changeAssignmentAuditorStatusURL') }}";
     var responsesAuditorStoreOrUpdateURL = "{{ route('responsesAuditorStoreOrUpdateURL') }}";
     var enterAssignmentAuditorURL = "{{ route('enterAssignmentAuditorURL') }}";
-    {{--
-    var requestAssignmentAuditorURL = "{{ route('requestAssignmentAuditorURL') }}";
-    --}}
+    //var requestAssignmentAuditorURL = "{{-- route('requestAssignmentAuditorURL') --}}";
     var revokeAssignmentAuditorURL = "{{ route('revokeAssignmentAuditorURL') }}";
 </script>
 <script src="{{ URL::asset('build/js/surveys-auditor.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
@@ -353,7 +351,7 @@
 
     var uploadAvatarURL = "{{ route('uploadAvatarURL') }}";
 
-    attachImage("#member-image-input", "#avatar-img", uploadAvatarURL, false);
+    attachImage("#member-image-input", ".avatar-img", uploadAvatarURL, false);
 </script>
 
 <script>

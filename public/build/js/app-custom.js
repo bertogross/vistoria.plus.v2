@@ -71,24 +71,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-
+    // Toogle account connections
     const toggleConnections = document.querySelectorAll('.toggle-connection');
-    toggleConnections.forEach(function(toggle) {
-        ['click', 'change'].forEach(eventType => {
-            toggle.addEventListener(eventType, async function() {
-                if (this.checked) {
+    if(toggleConnections){
+        toggleConnections.forEach(function(toggle) {
+            ['click'].forEach(eventType => { // ['click', 'change']
+                toggle.addEventListener(eventType, async function(event) {
+                    event.preventDefault();
+
+                    if (this.checked) {
+                    }
+                    const connectionId = this.value;
+                    if(!connectionId){
+                        toastAlert('Não foi possível executar esta solicitação', 'danger');
+                        return;
+                    }
 
                     showPreloader();
-
-                    //console.log('Selected Connection ID:', this.value);
-                    const connectionId = this.value;
 
                     try {
                         // Sleep for X miliseconds
                         let ms = 10;
                         await new Promise(resolve => setTimeout(resolve, ms));
 
-                        const url = profileChangeConnectionURL;
+                        const url = changeConnectionURL;
                         const response = await fetch(url, {
                             method: 'POST',
                             body: JSON.stringify({ id: connectionId }),
@@ -109,12 +115,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         if(data.success){
                             toastAlert(data.message, 'info');
 
-                            location.reload(true);
+                            setTimeout(() => {
+                                //window.location.reload();
+                                //location.reload(true);
+                                window.location.href = '/';
+                            }, 500);
                         }else{
                             toastAlert(data.message, 'danger');
 
                             showPreloader(false);
                         }
+
+                        return;
                     } catch (error) {
                         toastAlert('Error: ' + error, 'danger');
 
@@ -122,11 +134,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         console.error('Error:', error);
                     }
+                });
+            });
+        });
+    }
+
+    // Prevent users from submitting a form by hitting Enter
+    const noEnterSubmit = document.querySelectorAll('.no-enter-submit');
+    if(noEnterSubmit){
+        noEnterSubmit.forEach(function(form) {
+            form.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
                 }
             });
         });
-    });
-
+    }
 
 
     //Check every X seconds if user is authorized to access account

@@ -1,5 +1,6 @@
 import {
     toastAlert,
+    sweetWizardAlert,
     lightbox,
     showPreloader
 } from './helpers.js';
@@ -128,7 +129,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
                                     removeUploadProgress();
                                 } else {
-                                    toastAlert(data.message, 'danger', 15000);
+
+                                    if( data.action == 'subscriptionAlert'){
+                                        sweetWizardAlert(data.message, settingsAccountShowURL + '?tab=subscription', 'warning', 'Voltar', 'Ativar Assinatura')
+                                    }else{
+                                        toastAlert(data.message, 'danger', 15000);
+                                    }
 
                                     removeUploadProgress();
                                 }
@@ -212,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 toastAlert(data.message, 'warning', 5000);
             } else {
-                console.error('Failed to delete file:', data.message);
+                console.error('Erro ao remover arquivo:', data.message);
 
                 toastAlert(data.message, 'danger', 5000);
             }
@@ -222,6 +228,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
             toastAlert(error, 'danger', 5000);
         });
+    }
+
+
+    function deleteAttachment(attachmentPath) {
+        var url = deleteAttachmentByPathURL;
+
+        if(deleteAttachmentByPathURL){
+            fetch(url, {
+                method: 'DELETE',
+                body: JSON.stringify({ path: attachmentPath }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('File deleted successfully');
+
+                    toastAlert(data.message, 'warning', 5000);
+                    setTimeout(() => {
+                        window.location.reload();
+                        //location.reload(true);
+                    }, 500);
+                } else {
+                    console.error('Erro ao remover arquivo:', data.message);
+
+                    toastAlert(data.message, 'danger', 5000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+
+                toastAlert(error, 'danger', 5000);
+            });
+        }
     }
 
     // Attach event listeners to all delete buttons
@@ -238,24 +281,32 @@ document.addEventListener('DOMContentLoaded', function() {
     function onDeleteClick(event) {
         event.preventDefault();
         const fileId = this.getAttribute('data-attachment-id');
+        const attachmentPath = this.getAttribute('data-attachment-path');
+
         if (confirm('Tem certeza de que deseja excluir este arquivo?')) {
-            deletePhoto(fileId);
+            if( !fileId && attachmentPath){
+                deleteAttachment(attachmentPath);
+            }
 
-            const responsesData = this.closest('.responses-data-container');
+            if(fileId){
+                deletePhoto(fileId);
 
-            const attachmentInputs = responsesData.querySelectorAll('input[name="attachment_id[]"]');
-            const attachmentIds = Array.from(attachmentInputs).map(input => input.value);
-            if (attachmentIds.length === 0) {
+                const responsesData = this.closest('.responses-data-container');
 
-                var pendingIcon = responsesData.querySelector('.ri-time-line');
-                var completedIcon = responsesData.querySelector('.ri-check-double-fill');
+                const attachmentInputs = responsesData.querySelectorAll('input[name="attachment_id[]"]');
+                const attachmentIds = Array.from(attachmentInputs).map(input => input.value);
+                if (attachmentIds.length === 0) {
 
-                // If responseId is not set, show the pending icon and hide the completed icon
-                if (pendingIcon) pendingIcon.classList.remove('d-none');
-                if (completedIcon) completedIcon.classList.add('d-none');
+                    var pendingIcon = responsesData.querySelector('.ri-time-line');
+                    var completedIcon = responsesData.querySelector('.ri-check-double-fill');
 
-                document.querySelector('#btn-response-finalize').classList.add('d-none');
+                    // If responseId is not set, show the pending icon and hide the completed icon
+                    if (pendingIcon) pendingIcon.classList.remove('d-none');
+                    if (completedIcon) completedIcon.classList.add('d-none');
 
+                    document.querySelector('#btn-response-finalize').classList.add('d-none');
+
+                }
             }
         }
     }
@@ -305,6 +356,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+    }
+
+    const fileMagerContent = document.querySelectorAll('.file-manager-content');
+    if(fileMagerContent){
+        lightbox();
     }
 
 

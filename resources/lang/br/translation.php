@@ -52,7 +52,7 @@ return [
     "signin"=>"Entrar",
     "basic"=>"Básico",
     "cover"=>"Capa",
-    "signup"=>"Cadastrar",
+    "signup"=>"Registre-se",
     "password-reset"=>"Redefinir Senha",
     "password-create"=>"Criar Senha",
     "lock-screen"=>"Tela de Bloqueio",

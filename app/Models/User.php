@@ -12,6 +12,8 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public $timestamps = true;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -197,5 +199,28 @@ class User extends Authenticatable
         return $html;
     }
 
+
+    public static function findUserByEmail($email)
+    {
+        $user = User::where('email', $email)->first();
+
+        if ($user) {
+            // User was found
+            return $user;
+        } else {
+            // User was not found
+            return null;
+        }
+    }
+
+    /**
+     * Send the password reset notification.
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $url = 'your-password-reset-link-url-here/'.$token;
+
+        $this->notify(new ResetPasswordNotification($url));
+    }
 
 }

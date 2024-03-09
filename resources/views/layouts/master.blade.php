@@ -24,7 +24,7 @@
 <link rel="manifest" href="{{ URL::asset('build/json/manifest.json') }}">
 @include('layouts.head-css')
 </head>
-<body class="{{ str_contains($_SERVER['SERVER_NAME'], 'app.') ? 'production' : 'development' }}">
+<body class="{{ str_contains($_SERVER['SERVER_NAME'], 'development.') ? 'development' : 'production' }}">
     <script>0</script>
     <div id="preloader">
         <div id="status">

@@ -77,7 +77,7 @@
                     @endcomponent
                 @else
                     <div class="table-responsive">
-                        <table class="table table-sm align-middle table-nowrap mb-0 table-striped" id="tasksTable">
+                        <table class="table table-sm align-middle table-nowrap table-striped mb-0" id="tasksTable">
                             <thead class="table-light text-muted text-uppercase">
                                 <tr>
                                     <th data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Título do modelo que serviu de base para gerar os tópicos desta vistoria">

@@ -15,6 +15,8 @@
         @endslot
     @endcomponent
 
+    <p>Otimize a distribuição de tarefas incorporando filiais ao seu {{ appName() }}</p>
+
     @include('components.alerts')
 
     @php
@@ -61,12 +63,12 @@
                     <tfoot>
                         <tr>
                             <td colspan="2" class="align-top">
-                                <button type="button" class="btn btn-sm btn-label left btn-outline-theme waves-effect float-start" id="btn-add-company-row" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" data-bs-original-title="Adicionar Unidade">
+                                <button type="button" class="btn btn-sm btn-label left btn-outline-theme waves-effect float-start" id="btn-add-company-row" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Adicionar Unidade">
                                     <i class="ri-add-line label-icon align-middle fs-16 me-2"></i>Unidade
                                 </button>
                             </td>
                             <td>
-                                <button type="submit" class="btn btn-label right btn-outline-theme float-end waves-effect" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" data-bs-original-title="Atualizar Listagem de Unidades">
+                                <button type="submit" class="btn btn-label right btn-outline-theme float-end waves-effect" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Atualizar Listagem de Unidades">
                                     <i class="ri-save-line label-icon align-middle fs-16 ms-2"></i>Atualizar
                                 </button>
                             </td>

@@ -530,9 +530,8 @@ class SurveysController extends Controller
         $countResponses = Survey::countSurveyAllResponsesFromToday($surveyId);
 
         if($countResponses > 0){
-            // TODO
             // TODO URGENT
-            // TODO chek if it is necessary because when task is in progress I can stop
+            // chek if it is necessary because when task is in progress I can stop
             //return response()->json(['success' => false, 'message' => 'Não será possível interromper esta tarefa pois dados já estão sendo coletados.']);
         }
 
@@ -586,7 +585,6 @@ class SurveysController extends Controller
         // Return a success response
         return response()->json(['success' => true, 'message' => $message]);
     }
-
 
     public function surveyReloadUsersTab(Request $request, $id = null)
     {

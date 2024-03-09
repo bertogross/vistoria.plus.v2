@@ -1,10 +1,10 @@
 <div class="col">
     <div class="card pricing-box ribbon-box right text-center">
-        @if(isset($currentPriceId) && $currentPriceId == $PriceId)
+        @if($subscriptionType == 'pro' && $productMetadata->type  == 'primary')
             <div class="ribbon-two ribbon-two-theme"><span class="small">Vigente</span></div>
         @endif
 
-        <div class="row g-0">
+        <div class="row g-0" data-price-id="{{$PriceId}}">
             <div class="{{ $productFeatures ? 'col-lg-6' : '' }}">
                 <div class="card-body h-100 bg-body">
                     <div>
@@ -21,8 +21,8 @@
                                 {{ isset($currentPriceId) && $currentPriceId == $PriceId ? number_format((($unitAmount/$intervalCount) * $currentQuantity), 0, ',', '.') : number_format(($unitAmount/$intervalCount), 0, ',', '.') }}
                             </span>
                         </h2>
-                        <div class="form-text text-center text-white">
-                            <span class="small">
+                        <div class="form-text text-center text-body">
+                            <span>
                                 @if ($productMetadata->type == 'primary')
                                     recorrência mensal
                                 @else
@@ -30,7 +30,7 @@
                                     {{ brazilianRealFormat(($unitAmount/$intervalCount), 0) }}/mês
                                 @endif
                             </span>
-                            {{ !empty($planTypeText) ? '<span class="text-danger fs-13">*</span>' : '' }}
+                            {{-- !empty($planTypeText) ? '<span class="text-danger fs-13">*</span>' : '' --}}
                         </div>
                     </div>
 
@@ -40,12 +40,20 @@
                         @else
                             <div class="input-step full-width light mb-3 {{ isset($currentPriceId) && $currentPriceId == $PriceId ? 'bg-soft-primary' : '' }}">
                                 <button type="button" class="minus btn-minus-plus" data-action="minus" data-target="{{ $PriceId }}">-</button>
-                                <input class="quantity-{{ $PriceId }}" type="text" placeholder="{{ isset($currentPriceId) && $currentPriceId == $PriceId && isset($currentQuantity) ? $currentQuantity.' Unidades' : 'Quantidade' }}" readonly autocomplete="off">
+
+                                <input class="quantity-{{ $PriceId }}" type="text" placeholder="{{ isset($currentPriceId) && $currentPriceId == $PriceId && isset($currentQuantity) ? $currentQuantity : 'Quantidade' }}" readonly autocomplete="off">
+
                                 <button type="button" class="plus btn-minus-plus" data-action="plus" data-target="{{ $PriceId }}">+</button>
                             </div>
                         @endif
                         <button
-                            class="btn btn-outline-theme w-100 waves-effect waves-light text-uppercase {{ isset($currentPriceId) && $currentPriceId == $PriceId ? 'btn-subscription-update' : 'btn-subscription' }}"
+                            class="btn w-100
+                            @if($productMetadata->type  == 'primary')
+                                {{ $subscriptionType == 'pro' ? ' btn-subscription-cancel btn-outline-light ' : ' btn-subscription btn-theme ' }}
+                            @elseif($productMetadata->type  == 'addon')
+                                {{ isset($currentPriceId) && $currentPriceId == $PriceId ? ' btn-subscription-update btn-outline-light ' : ' btn-subscription btn-theme' }}
+                            @endif
+                            waves-effect waves-light text-uppercase"
                             data-product_id="{{ $productId }}"
                             data-price_id="{{ $PriceId }}"
                             data-type="{{ $productMetadata->type ?? '' }}"
@@ -64,7 +72,13 @@
                                 disabled
                             @endif
                             >
-                                {{ isset($currentPriceId) && $currentPriceId == $PriceId ? 'Atualizar' : 'Contratar' }}
+                                @if($productMetadata->type  == 'primary')
+                                    {{ $subscriptionType == 'pro' ? 'Cancelar' : 'Atualizar para Versão PRO' }}
+                                @elseif($productMetadata->type  == 'addon')
+                                    {{ isset($currentPriceId) && $currentPriceId == $PriceId ? 'Atualizar' : 'Contratar' }}
+                                @else
+                                    <div class="alert alert-danger">Necessário via Stripe declarar o Metadado type</div>
+                                @endif
                         </button>
                     </div>
                 </div>

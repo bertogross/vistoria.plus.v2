@@ -26,11 +26,13 @@
                             if($userId == auth()->id()){
                                 $userCompanies = getActiveCompanieIds();
                                 $userRole = 1;
+                                $userStatus = 'active';
                             }else{
                                 $connection = UserConnections::getUserDataFromConnectedAccountId($userId, auth()->id());
 
                                 $userCompanies = $connection->companies;
                                 $userRole = $connection->role;
+                                $userStatus = $connection->status;
                             }
 
                             // Loop through the distributed data to find if this user has been delegated to this company
@@ -43,7 +45,7 @@
                                 }
                             }
                         @endphp
-                        @if ( is_array($userCompanies) && in_array($company->id, $userCompanies) && in_array($userRole, [1, 3]) )
+                        @if ( is_array($userCompanies) && in_array($company->id, $userCompanies) && in_array($userRole, [1, 3]) && $userStatus == 'active' )
                             <li>
                                 <div class="form-check form-switch form-switch-success form-switch-md d-flex align-items-center">
                                     <input

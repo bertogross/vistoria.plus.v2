@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 if(data.action == 'request'){
                                     toastAlert(data.message, 'danger', 60000);
 
-                                    // TODO
+                                    // TODO ?
                                     //sweetWizardAlert(sweetMessage, requestAssignmentAuditorURL + '/' + assignmentId, 'info', 'Deixar como está', 'Solicitar esta Tarefa');
                                 }else if(data.action == 'choice'){
                                     Swal.fire({

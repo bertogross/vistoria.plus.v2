@@ -11,12 +11,8 @@ class SendingEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user;
-
     /**
      * Create a new message instance.
-     *
-     * @return void
      */
     public function __construct($name, $subject, $content, $template)
     {
@@ -28,13 +24,11 @@ class SendingEmail extends Mailable
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
     public function build()
     {
         return $this->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
-                    ->subject($this->subject)
-                    ->view('emails.template-' . $this->template, ['name' => $this->name, 'content' => $this->content]);
+            ->subject($this->subject)
+            ->view('emails.template-' . $this->template, ['name' => $this->name, 'content' => $this->content]);
     }
 }

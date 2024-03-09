@@ -27,7 +27,7 @@ export function toastAlert(message, type = 'success', duration = 3000, backdrop 
                     <div class="toast-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0 me-2">
-                                <i class="${icon} align-middle"></i>
+                                <i class="${icon} align-top"></i>
                             </div>
                             <div class="flex-grow-1">
                                 <button type="button" class="btn-close btn-close-white me-2 m-auto float-end fs-10" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -101,7 +101,7 @@ export function sweetAlert(message = 'Um erro ocorreu', title = 'Atenção', ico
     });
 }
 
-export function sweetWizardAlert(message, urlToRedirect = false, icon = 'success', cancelButtonText = 'Continuar Editando', confirmButtonText = 'Prosseguir', Trigger){
+export function sweetWizardAlert(message, urlToRedirect = false, icon = 'success', cancelButtonText = 'Continuar Editando', confirmButtonText = 'Prosseguir', Trigger = null){
     Swal.fire({
         title: message,
         icon: icon,
@@ -118,8 +118,6 @@ export function sweetWizardAlert(message, urlToRedirect = false, icon = 'success
         allowOutsideClick: false
     }).then(function (result) {
         /* Read more about isConfirmed, isDenied below */
-
-        var btnTrigger = document.querySelector(''+Trigger+'');
 
         if (result.isConfirmed) {
             var timerInterval;
@@ -148,6 +146,8 @@ export function sweetWizardAlert(message, urlToRedirect = false, icon = 'success
                 /* Read more about handling dismissals below */
                 if (result.dismiss === Swal.DismissReason.timer) {
                     //console.log('I was closed by the timer')
+                    var btnTrigger = document.querySelector(''+Trigger+'');
+
                     if(Trigger && btnTrigger){
                         btnTrigger.click();
                     }

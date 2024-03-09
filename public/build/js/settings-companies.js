@@ -60,12 +60,15 @@ document.addEventListener('DOMContentLoaded', function() {
         function removeRow(event) {
             // Confirm before deleting the row
             const isConfirmed = confirm('Remover unidade?');
-            if (isConfirmed) {
-                const row = event.target.closest('tr');
-                if (row) {
-                    row.remove();
-                    toastAlert('Unidade removida', 'success');
-                }
+            if (!isConfirmed) {
+                event.stopPropagation();
+
+                return;
+            }
+            const row = event.target.closest('tr');
+            if (row) {
+                row.remove();
+                toastAlert('Unidade removida', 'success');
             }
         }
 
@@ -75,12 +78,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (event.target && event.target.classList.contains('btn-delete-row')) {
                 // Confirm before deleting the row
                 const isConfirmed = confirm('Remover unidade?');
-                if (isConfirmed) {
-                    const row = event.target.closest('tr');
-                    if (row) {
-                        row.remove();
-                        toastAlert('Unidade removida', 'success');
-                    }
+                if (!isConfirmed) {
+                    event.stopPropagation();
+
+                    return;
+                }
+                
+                const row = event.target.closest('tr');
+                if (row) {
+                    row.remove();
+                    toastAlert('Unidade removida', 'success');
                 }
             }
         });*/

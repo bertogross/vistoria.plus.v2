@@ -4,7 +4,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{{env('APP_NAME')}}</title>
+        <title>{{ appName() }}</title>
         <!--[if !mso]><!-->
         <style type="text/css">
         </style>
@@ -72,13 +72,13 @@
                                         <td class="ms-content-body" style="word-break:break-word;font-family:Helvetica, Arial, sans-serif;font-size:16px;line-height:24px;padding-top:40px;padding-bottom:40px;padding-right:50px;padding-left:50px;">
 
                                             <p class="logo" style="margin-right:0;margin-left:0;line-height:28px;font-weight:600;font-size:21px;color:#111111;text-align:center;margin-top:0;margin-bottom:40px;">
-                                                <img src="{{URL::asset('build/images/logo-dark.png')}}" alt="{{env('APP_NAME')}}" height="31" loading="lazy">
+                                                <img src="{{URL::asset('build/images/logo-dark.png')}}" alt="{{ appName() }}" height="31" loading="lazy">
                                             </p>
 
                                             <h1 style="margin-top:0;color:#111111;font-size:24px;line-height:36px;font-weight:600;margin-bottom:24px;">Olá, {{$name}}!</h1>
 
                                             <p style="color:#4a5566;margin-top:20px;margin-bottom:20px;margin-right:0;margin-left:0;font-size:16px;line-height:28px;">
-                                                Obrigado por se cadastrar. Para aproveitar ao máximo seu {{env('APP_NAME')}}, siga esta etapa:
+                                                Obrigado por se cadastrar. Para aproveitar ao máximo seu {{ appName() }}, siga esta etapa:
                                             </p>
 
                                             <table width="100%" align="center" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
@@ -88,7 +88,7 @@
                                                         <table class="mobile-wide" border="0" cellspacing="0" cellpadding="0" role="presentation" style="border-collapse:collapse;">
                                                             <tr>
                                                                 <td align="center" class="btn" style="word-break:break-word;font-family:Helvetica, Arial, sans-serif;font-size:16px;line-height:24px;background-color:#070FF6;box-shadow:0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);border-radius:3px;">
-                                                                    <a href="{{env('APP_URL')}}/login" target="_blank" style="background-color:#070FF6;padding-top:14px;padding-bottom:14px;padding-right:30px;padding-left:30px;display:inline-block;color:#FFF;text-decoration:none;border-radius:3px;-webkit-text-size-adjust:none;box-sizing:border-box;border-width:0px;border-style:solid;border-color:#070FF6;font-weight:600;font-size:15px;line-height:21px;letter-spacing:0.25px;">Acessar</a>
+                                                                    <a href="{{route('loginURL')}}" target="_blank" style="background-color:#070FF6;padding-top:14px;padding-bottom:14px;padding-right:30px;padding-left:30px;display:inline-block;color:#FFF;text-decoration:none;border-radius:3px;-webkit-text-size-adjust:none;box-sizing:border-box;border-width:0px;border-style:solid;border-color:#070FF6;font-weight:600;font-size:15px;line-height:21px;letter-spacing:0.25px;">Acessar</a>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -108,37 +108,12 @@
                                                         <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
                                                             <tr>
                                                                 <td style="word-break:break-word;font-family:Helvetica, Arial, sans-serif;font-size:16px;line-height:24px;">
-                                                                    <strong style="font-weight:600;">Página de Login:</strong> {{env('APP_URL')}}/login
+                                                                    <strong style="font-weight:600;">Página de Login:</strong> {{route('loginURL')}}
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td style="word-break:break-word;font-family:Helvetica, Arial, sans-serif;font-size:16px;line-height:24px;">
-                                                                    <strong style="font-weight:600;">E-mail de Login:</strong> {$username}
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-
-                                                    </td>
-                                                </tr>
-                                            </table>
-
-                                            <p style="color:#4a5566;margin-top:20px;margin-bottom:20px;margin-right:0;margin-left:0;font-size:16px;line-height:28px;">
-                                                Você iniciou uma avaliação de {$trial_length} dias. Você pode atualizar para uma conta paga ou cancelar a qualquer momento.
-                                            </p>
-
-                                            <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
-                                                <tr>
-                                                    <td class="info" style="word-break:break-word;font-family:Helvetica, Arial, sans-serif;font-size:16px;line-height:24px;padding-top:20px;padding-bottom:20px;padding-right:20px;padding-left:20px;border-radius:4px;background-color:#f4f7fa;">
-
-                                                        <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
-                                                            <tr>
-                                                                <td style="word-break:break-word;font-family:Helvetica, Arial, sans-serif;font-size:16px;line-height:24px;">
-                                                                    <strong style="font-weight:600;">Data de início da avaliação:</strong> {$trial_start_date}
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td style="word-break:break-word;font-family:Helvetica, Arial, sans-serif;font-size:16px;line-height:24px;">
-                                                                    <strong style="font-weight:600;">Data de término da avaliação:</strong> {$trial_end_date}
+                                                                    {!!$content!!}
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -148,16 +123,16 @@
                                             </table>
 
                                             <p style="color:#070FF6;margin-top:20px;margin-bottom:20px;margin-right:0;margin-left:0;font-size:16px;line-height:28px;">
-                                                Se você tiver alguma dúvida, basta entrar em contato com nossa <a href="{{env('APP_URL')}}/faq" style="color:#070FF6;">equipe de suporte</a> para obter ajuda.
+                                                Se você tiver alguma dúvida, basta entrar em contato com nossa <a href="{{env('WEBSITE_URL')}}/faq" style="color:#070FF6;">equipe de suporte</a> para obter ajuda.
                                             </p>
 
                                             <p style="color:#4a5566;margin-top:20px;margin-bottom:20px;margin-right:0;margin-left:0;font-size:16px;line-height:28px;">
                                                 Atensiosamente,
-                                                <br>{{env('APP_NAME')}}
+                                                <br>{{ appName() }}
                                             </p>
 
                                             <p style="color:#4a5566;margin-top:20px;margin-bottom:20px;margin-right:0;margin-left:0;font-size:16px;line-height:28px;">
-                                                <strong style="font-weight:600;">P.S.</strong> Precisa de ajuda para começar? Confira nossa  <a href="{{env('APP_URL')}}/faq" style="color:#070FF6;">documentação de ajuda</a>.
+                                                <strong style="font-weight:600;">P.S.</strong> Precisa de ajuda para começar? Confira nossa  <a href="{{env('WEBSITE_URL')}}/faq" style="color:#070FF6;">documentação de ajuda</a>.
                                             </p>
 
                                             <table width="100%" style="border-collapse:collapse;">
@@ -177,7 +152,7 @@
                                                 Se você estiver tendo problemas com o botão acima, copie e cole o URL abaixo em seu navegador.
                                             </p>
                                             <p class="small" style="color:#4a5566;margin-top:20px;margin-bottom:20px;margin-right:0;margin-left:0;font-size:14px;line-height:21px;">
-                                                {{env('APP_URL')}}/login
+                                                {{route('loginURL')}}
                                             </p>
                                         </td>
                                     </tr>
@@ -190,7 +165,7 @@
                                     <tr>
                                         <td class="ms-content-body" align="center" style="word-break:break-word;font-family:Helvetica, Arial, sans-serif;font-size:16px;line-height:24px;padding-top:40px;padding-bottom:40px;padding-right:50px;padding-left:50px;">
                                             <p class="small" style="margin-top:20px;margin-bottom:20px;margin-right:0;margin-left:0;color:#96a2b3;font-size:14px;line-height:21px;">
-                                                &copy; 2024 {{env('APP_NAME')}}. Todos os direitos reservados.
+                                                &copy; 2024 {{ appName() }}. Todos os direitos reservados.
                                             </p>
                                         </td>
                                     </tr>

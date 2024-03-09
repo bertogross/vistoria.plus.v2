@@ -473,7 +473,7 @@ class SurveyAssignments extends Model
             ],*/
             'pending' => [
                 'label' => 'Pendente',
-                'reverse' => 'Abrir Formulário',
+                'reverse' => 'Formulário',
                 'description' => 'Tarefas inicializadas',
                 'singular_description' => 'Tarefa inicializada',
                 'icon' => 'ri-survey-line',
@@ -489,7 +489,7 @@ class SurveyAssignments extends Model
             ],
             'auditing' => [
                 'label' => 'Em Auditoria',
-                'reverse' => 'Abrir Formulário',
+                'reverse' => 'Formulário',
                 'description' => 'Tarefas sendo auditadas',
                 'singular_description' => 'Tarefa sendo auditada',
                 'icon' => 'ri-todo-line',

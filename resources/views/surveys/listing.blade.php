@@ -8,7 +8,7 @@
                 <div class="d-flex flex-wrap gap-2">
 
                     @if (!$templates->isEmpty())
-                        <button class="btn btn-sm btn-label right btn-outline-theme float-end waves-effect"
+                        <button class="btn btn-sm btn-label right btn-outline-theme float-end"
                             @if (is_object($templates) && count($templates) > 0)
                                 id="btn-surveys-create"
                             @else

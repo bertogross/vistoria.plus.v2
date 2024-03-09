@@ -33,7 +33,7 @@
 
                     <div class="row">
                         <div class="col-lg-12">
-                            <input type="hidden" name="user_id" value="{{ $user ? $user->id : '' }}" class="form-control">
+                            <input type="hidden" name="user_id" value="{{ $user ? $user->id : '' }}">
 
                             @if (!$user)
                                 <p>
@@ -48,7 +48,7 @@
                                 @if ($user)
                                     E-mail: <span class="text-theme">{{$user->email}}</span>
                                 @else
-                                    <i class="ri-question-line text-info non-printable align-top float-end" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="E-mail" data-bs-content="O endereço de e-mail que receberá o convite para acesso ao seu {{env('APP_NAME')}}"></i>
+                                    <i class="ri-question-line text-info non-printable align-top float-end" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="E-mail" data-bs-content="O endereço de e-mail que receberá o convite para acesso ao seu {{ appName() }}"></i>
                                     <label for="teamMemberEmail" class="form-label">
                                         Endereço de E-mail
                                     </label>
@@ -59,15 +59,10 @@
                             <div class="form-group mb-4 {{ $origin && $origin == 'survey' ? 'd-none' : '' }}">
                                 <label for="select-role" class="form-label">
                                     Nível
-                                    <i class="ri-question-line text-primary non-printable align-top" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Níveis e Permissões" data-bs-content="<ul class='list-unstyled mb-0'><li>Saiba mais visualizando ao final desta página a tabela contendo o grid de Níveis e Permissões</li></ul>"></i>
+                                    <i class="ri-question-line text-info non-printable align-top float-end" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Níveis e Permissões" data-bs-content="<ul class='list-unstyled mb-0'><li>Saiba mais visualizando ao final desta página a tabela contendo o grid de Níveis e Permissões</li></ul>"></i>
                                 </label>
                                 <select class="form-control form-select" name="role" id="select-role" required>
-                                    <option
-                                    disabled
-                                    @if ( !$origin && !$getUserRole)
-                                        selected
-                                    @endif
-                                    class="text-body">- Selecione -</option>
+                                    <option disabled {{ !$origin && !$getUserRole ? 'selected' : ''}} class="text-body" value="">- Selecione -</option>
                                     @foreach(\App\Models\User::USER_ROLES as $key => $role)
                                         @if ($key != 1)
                                             <option class="text-muted"
@@ -87,14 +82,14 @@
                                     <div class="form-check form-switch form-switch-success form-switch-lg">
                                         <input type="checkbox" class="form-check-input" name="status" id="user_status_1" value="active" {{ $getUserStatus == 'active' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="user_status_1">Status
-                                            <i class="ri-question-line text-primary non-printable align-top" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Se Desativado este usuário não terá acesso ao seu {{appName()}}"></i>
+                                            <i class="ri-question-line text-info non-printable align-top" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Se Desativado este usuário perderá o acesso ao seu {{appName()}}"></i>
                                         </label>
                                     </div>
                                 </div>
                             @endif
 
                             <div class="mb-4 {{ $origin && $origin == 'survey' ? 'd-none' : '' }}">
-                                <label class="form-label">Unidades Relacionadas <i class="ri-question-line text-primary non-printable align-top" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Selecione a{{ count($getActiveCompanies) > 1 ? 's' : ''}} Unidade{{ count($getActiveCompanies) > 1 ? 's' : ''}} Corporativa{{ count($getActiveCompanies) > 1 ? 's' : ''}} em que este usuário contribuíra"></i></label>
+                                <label class="form-label">Unidades Relacionadas <i class="ri-question-line text-info non-printable align-top" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Selecione a{{ count($getActiveCompanies) > 1 ? 's' : ''}} Unidade{{ count($getActiveCompanies) > 1 ? 's' : ''}} Corporativa{{ count($getActiveCompanies) > 1 ? 's' : ''}} em que este usuário contribuíra"></i></label>
                                 @if(isset($getActiveCompanies) && count($getActiveCompanies) > 0)
                                     <div class="row">
                                         @foreach($getActiveCompanies as $company)
@@ -112,7 +107,7 @@
                                                     id="company-{{ $company->id }}"
                                                     name="companies[]"
                                                     value="{{ $company->id }}">
-                                                    <label class="form-check-label" for="company-{{ $company->id }}">{{ $company->name ?? 'Empresa '.$company->id }}</label>
+                                                    <label class="form-check-label text-body" for="company-{{ $company->id }}">{{ $company->name ?? 'Empresa '.$company->id }}</label>
                                                 </div>
                                             </div>
                                         @endforeach

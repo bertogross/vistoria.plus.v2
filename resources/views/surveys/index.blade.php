@@ -138,6 +138,7 @@
     <script src="{{ URL::asset('build/js/surveys.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 
     <script>
+        var settingsIndexURL = "{{ route('settingsIndexURL') }}";
         var uploadAvatarURL = "{{ route('uploadAvatarURL') }}";
         var uploadCoverURL = "{{ route('uploadCoverURL') }}";
         var getUserFormContentURL = "{{ route('getUserFormContentURL') }}";

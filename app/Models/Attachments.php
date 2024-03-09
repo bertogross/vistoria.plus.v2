@@ -3,8 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class Attachments extends Model
 {
@@ -22,45 +25,18 @@ class Attachments extends Model
             $attachment = self::find($attachmentId);
             return $attachment ? URL::asset('storage/'.$attachment->path) : '';
             //URL::asset('storage/' .. )
-
         }
     }
 
-
-    public function deletePhoto(Request $request = null, $attachmentId)
+    //Get attachment ID by path
+    public static function getAttachmentIdByPath($path)
     {
-        if($attachmentId){
-            try {
-                // Retrieve the attachment from the database
-                 $attachment = Attachments::find($attachmentId);
-
-                if (!$attachment) {
-                    return response()->json(['success' => false, 'message' => 'Anexo não encontrado'], 404);
-                }
-
-                // Delete the file from storage
-                if (Storage::disk('public')->exists($attachment->path)) {
-                    Storage::disk('public')->delete($attachment->path);
-                }
-
-                // Delete the attachment record from the database
-                $attachment->delete();
-
-                // Delete the attachment id from the survey_responses table collum attachments_survey/attachments_audit
-                Attachments::deleteAttachmentIdFromJsonColumn('attachments_survey', $attachmentId);
-                Attachments::deleteAttachmentIdFromJsonColumn('attachments_audit', $attachmentId);
-
-                return response()->json(['success' => true, 'message' => 'Anexo excluído com êxito'], 200);
-
-            } catch (\Exception $e) {
-                return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
-            }
-        }
+        return DB::connection('vpAppTemplate')->table('attachments')->where('path', $path)->value('id');
     }
-
 
     // Delete an attachment ID from a JSON column in the survey_responses table.
-    public static function deleteAttachmentIdFromJsonColumn($columnName, $attachmentId) {
+    public static function deleteAttachmentIdFromJsonColumn($columnName, $attachmentId)
+    {
         DB::connection('vpAppTemplate')->table('survey_responses')
             ->whereNotNull($columnName) // Check if the column is not null
             ->whereJsonContains($columnName, $attachmentId)
@@ -71,7 +47,6 @@ class Attachments extends Model
                 )")
             ]);
     }
-
 
     public static function getAttachmentDateById($attachmentId)
     {

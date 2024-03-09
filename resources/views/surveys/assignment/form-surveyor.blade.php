@@ -197,8 +197,10 @@
     <script src="{{ URL::asset('build/js/surveys-surveyor.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 
     <script>
+        var settingsAccountShowURL = "{{ route('settingsAccountShowURL') }}";
         var uploadPhotoURL = "{{ route('uploadPhotoURL') }}";
         var deletePhotoURL = "{{ route('deletePhotoURL') }}";
+        var deleteAttachmentByPathURL = "{{ route('deleteAttachmentByPathURL') }}";
         var assetURL = "{{ URL::asset('/') }}";
     </script>
     <script src="{{ URL::asset('build/js/surveys-attachments.js') }}?v={{env('APP_VERSION')}}" type="module"></script>

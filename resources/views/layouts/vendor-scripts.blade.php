@@ -12,10 +12,12 @@
     var assetURL = "{{ URL::asset('/') }}";
     var appVersion = "{{ env('APP_VERSION') }}";
     var profileChangeLayoutModeURL = "{{ route('profileChangeLayoutModeURL') }}";
-    var profileChangeConnectionURL = "{{ route('profileChangeConnectionURL') }}";
 </script>
-
 <script src="{{ URL::asset('build/js/app.js') }}?v={{env('APP_VERSION')}}"></script>
+
+<script>
+    var changeConnectionURL = "{{ route('changeConnectionURL') }}";
+</script>
 <script src="{{ URL::asset('build/js/app-custom.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 
 @php

@@ -6,7 +6,7 @@
     if ($check_customer_ID) {
         try {
             // ... (Your existing PHP code for Stripe API calls)
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (env('APP_DEBUG')) {
                 echo $e->getError()->message;
             }

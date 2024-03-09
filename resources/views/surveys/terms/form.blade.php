@@ -5,7 +5,7 @@
 <div class="form-group mt-4">
     <label for="termiInput" class="form-label">
         Registrar Termo:
-        <i class="ri-question-line text-primary non-printable align-top" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Explicação" data-bs-content="Considere <u>Termo</u> o mesmo que Setor/Departamento/Ambiente/Local/Categoria.<br>Ao construir seu modelo, o Termo será o nome do bloco que conterá os Tópicos (questões)."></i>
+        <i class="ri-question-line text-info non-printable align-top" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Explicação" data-bs-content="Considere <u>Termo</u> o mesmo que Setor/Departamento/Ambiente/Local/Categoria.<br>Ao construir seu modelo, o Termo será o nome do bloco que conterá os Tópicos (questões)."></i>
     </label>
     <div class="input-group">
         <input type="text" name="term" class="form-control" id="termiInput" maxlength="90" autocomplete="off">
@@ -19,7 +19,7 @@
     <form id="surveysPopulateTermForm" method="POST" class="needs-validation" novalidate autocomplete="off">
         <label class="form-label">
             Selecione:
-            <i class="ri-question-line text-primary non-printable align-top" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Termos Disponíveis" data-bs-content="Os Termos aqui listados não foram ainda inseridos na listagem"></i>
+            <i class="ri-question-line text-info non-printable align-top" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Termos Disponíveis" data-bs-content="Os Termos aqui listados não foram ainda inseridos na listagem"></i>
         </label>
         <div class="row">
             @foreach ($terms as $term)

@@ -157,7 +157,7 @@
                                                                             </div>
                                                                             <div class="card-body bg-body">
                                                                                 <p style="min-height: 67px;">
-                                                                                    {{ limitChars($template->description ?? '', 190) }}
+                                                                                    {!! limitChars($template->description ?? '<span class="text-warning text-opacity-50">Não foi inserida a descrição</span>', 190) !!}
                                                                                 </p>
                                                                             </div>
                                                                             <div class="card-footer bg-body">

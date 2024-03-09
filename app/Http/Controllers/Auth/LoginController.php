@@ -64,6 +64,13 @@ class LoginController extends Controller
             $user->last_login = now();
             $user->save();
 
+            // Check if database exists
+            $databaseName = 'vpApp' . $user->id;
+            if (!DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?", [$databaseName])) {
+                // Create user database based on vpDefaultSchema
+                UserConnections::duplicateAndRenameDefaultSchema($user->id);
+            }
+
             // Reset current connection
             UserMeta::updateUserMeta($user->id, 'current_database_connection', $user->id);
 

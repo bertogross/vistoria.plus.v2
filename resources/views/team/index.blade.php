@@ -42,7 +42,7 @@
                 <div class="team-list grid-view-filter row" id="team-member-list">
                     @if ($users->isNotEmpty())
                         @foreach ($users as $key => $user)
-                            @include('settings.components.users-card', [ 'user' => getUserData($user->id)])
+                            @include('team.users-card', [ 'user' => getUserData($user->id)])
                         @endforeach
                     @else
                         @component('components.nothing')
@@ -69,6 +69,7 @@
 @endsection
 @section('script')
     <script>
+        var settingsIndexURL = "{{ route('settingsIndexURL') }}";
         var uploadAvatarURL = "{{ route('uploadAvatarURL') }}";
         var uploadCoverURL = "{{ route('uploadCoverURL') }}";
         var getUserFormContentURL = "{{ route('getUserFormContentURL') }}";

@@ -157,8 +157,8 @@ class SurveysTemplatesController extends Controller
         $default = $default ?? [];
 
         /*
-        // DEPRECATED ?
-        // TODO think about if is realy necessary add new original data to registered template. Are a conflict here related with the stepData new_position field.
+        // TODO DEPRECATED ?
+        // think about if is realy necessary add new original data to registered template. Are a conflict here related with the stepData new_position field.
         $defaultOriginal = getWarehouseTerms('supermarket');
         $default = SurveyTemplates::mergeTemplateDataArrays($defaultOriginal, $default);
         */
@@ -224,7 +224,6 @@ class SurveysTemplatesController extends Controller
             'description.required' => 'Descreva',
             'description.max' => 'A descrição deve conter do máximo 500 caracteres.',
         ];
-
         $validatedData = $request->validate([
             'title' => 'required|string|max:191',
             'description' => 'nullable|string|max:500',

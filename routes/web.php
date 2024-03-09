@@ -5,11 +5,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\File;
 use App\Models\UserConnections;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\{
     Auth\LoginController,
+    Auth\RegisterController,
     HomeController,
     ProfileController,
     UserUploadController,
+    SettingsConnectionsController,
     SettingsUserController,
     SettingsAccountController,
     TeamController,
@@ -26,7 +29,8 @@ use App\Http\Controllers\{
     StorageController,
     ClarifaiImageController,
     ScenexImageController,
-    PostmarkappController
+    //PostmarkappController,
+    StripeController
 };
 
 /*
@@ -44,20 +48,10 @@ Auth::routes();
 //Language Translation
 Route::get('index/{locale}', [App\Http\Controllers\HomeController::class, 'lang']);
 
-/*
-Route::get('/', [App\Http\Controllers\HomeController::class, 'root'])->name('root');
-
-//Update User Details
-Route::post('/update-profile/{id}', [App\Http\Controllers\HomeController::class, 'updateProfile'])->name('updateProfile');
-Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('updatePassword');
-
-Route::get('{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
-*/
-
 // Auth group
 Route::middleware(['auth', 'set-db-connection', 'check.authorization'])->group(function () {
-    //Route::get('/', [SurveysController::class, 'index'])->name('root');
-    Route::get('/', [HomeController::class, 'root'])->name('root');
+    Route::get('/', [SurveysController::class, 'index'])->name('root');
+    //Route::get('/', [HomeController::class, 'root'])->name('root');
 
     /*
     Route::get('/', function () {
@@ -65,16 +59,20 @@ Route::middleware(['auth', 'set-db-connection', 'check.authorization'])->group(f
     })->middleware('role.redirect');
     */
 
+    Route::post('/connections/change', [UserConnections::class, 'changeConnection'])->name('changeConnectionURL');
+
     // User Profile & Password Update
     Route::prefix('user')->group(function () {
         Route::post('/update-profile/{id}', [ProfileController::class, 'updateProfile'])->name('updateProfileURL');
         Route::post('/update-password/{id}', [ProfileController::class, 'updatePassword'])->name('updatePasswordURL');
     });
-    Route::get('/profile/{id?}', [ProfileController::class, 'index'])->name('profileShowURL');
 
-    Route::post('/profile/layout-mode', [ProfileController::class, 'changeLayoutMode'])->name('profileChangeLayoutModeURL');
+    Route::prefix('profile')->group(function () {
+        Route::get('/{id?}', [ProfileController::class, 'index'])->name('profileShowURL');
 
-    Route::post('/profile/connection', [ProfileController::class, 'changeConnection'])->name('profileChangeConnectionURL');
+        Route::post('/layout-mode', [ProfileController::class, 'changeLayoutMode'])->name('profileChangeLayoutModeURL');
+
+    });
 
     // Surveys Routes
     Route::prefix('surveys')->group(function () {
@@ -106,7 +104,6 @@ Route::middleware(['auth', 'set-db-connection', 'check.authorization'])->group(f
             Route::get('/assignment/auditor-form/{id?}', [SurveysAssignmentsController::class, 'formAuditorAssignment'])->name('formAuditorAssignmentURL')->where('id', '[0-9]+');
             Route::post('/assignment/auditor-status', [SurveysAssignmentsController::class, 'changeAssignmentAuditorStatus'])->name('changeAssignmentAuditorStatusURL');
             Route::post('/assignment/auditor-enter', [SurveysAssignmentsController::class, 'enterAssignmentAuditor'])->name('enterAssignmentAuditorURL');
-                // Route::post('/assignment/auditor-request/{id?}', [SurveysAssignmentsController::class, 'requestAssignmentAuditor'])->name('requestAssignmentAuditorURL')->where('id', '[0-9]+'); //TODO
                 Route::post('/assignment/auditor-revoke/{id?}', [SurveysAssignmentsController::class, 'revokeAssignmentAuditor'])->name('revokeAssignmentAuditorURL')->where('id', '[0-9]+');
 
                 Route::get('/assignment/activities/{subDays?}', [SurveysAssignmentsController::class, 'getRecentActivities'])->name('getRecentActivitiesURL')->where('subDays', '[0-9]+');
@@ -133,12 +130,13 @@ Route::middleware(['auth', 'set-db-connection', 'check.authorization'])->group(f
     Route::middleware(['admin'])->group(function () {
         Route::prefix('settings')->group(function () {
             Route::get('/', [SettingsAccountController::class, 'index'])->name('settingsIndexURL');
-            Route::get('/account/show/{tab?}', [SettingsAccountController::class, 'show'])->name('settingsAccountShowURL');
-                Route::post('/account/store', [SettingsAccountController::class, 'storeOrUpdate'])->name('settingsAccountStoreOrUpdateURL');
+            Route::get('/account/{tab?}', [SettingsAccountController::class, 'show'])->name('settingsAccountShowURL');
+                Route::post('/account/update', [SettingsAccountController::class, 'updateAccount'])->name('settingsAccountUpdateURL');
+                Route::post('/account/user/update', [SettingsAccountController::class, 'updateUser'])->name('settingsAccountUserUpdateURL');
 
             Route::get('/api-keys', [SettingsApiKeysController::class, 'index'])->name('settingsApiKeysURL');
 
-            Route::get('/users', [SettingsUserController::class, 'index'])->name('settingsUsersIndexURL');
+            //Route::get('/users', [SettingsUserController::class, 'index'])->name('settingsUsersIndexURL');
             Route::post('/users/store', [SettingsUserController::class, 'store'])->name('settingsUsersStoreURL');
                 Route::post('/users/update/{id?}', [SettingsUserController::class, 'update'])->name('settingsUsersUpdateURL');
                 //Route::get('/users/form/{id?}/{origin?}', [SettingsUserController::class, 'getUserFormContent'])->name('getUserFormContentURL');
@@ -147,6 +145,9 @@ Route::middleware(['auth', 'set-db-connection', 'check.authorization'])->group(f
             Route::get('/companies', [CompaniesController::class, 'index'])->name('settingsCompaniesIndexURL');
             Route::post('/companies/update', [CompaniesController::class, 'storeOrUpdate'])->name('settingsCompaniesUpdateURL');
 
+            Route::get('/connections', [SettingsConnectionsController::class, 'index'])->name('settingsConnectionsIndexURL');
+            Route::post('/connections/revoke', [UserConnections::class, 'revokeConnection'])->name('revokeConnectionURL');
+
             Route::get('/storage', [StorageController::class, 'index'])->name('settingsStorageIndexURL');
 
             Route::get('/dropbox', [DropboxController::class, 'index'])->name('DropboxIndexURL');
@@ -154,6 +155,11 @@ Route::middleware(['auth', 'set-db-connection', 'check.authorization'])->group(f
 
             Route::post('/clarifai', [ClarifaiImageController::class, 'submit'])->name('ClarifaiSubmitURL');
             Route::post('/scenex', [ScenexImageController::class, 'submit'])->name('ScenexSubmitURL');
+
+            Route::post('/stripe/subscription', [StripeController::class, 'createStripeSession'])->name('stripeSubscriptionURL');
+            Route::post('/stripe/cancel-subscription', [StripeController::class, 'cancelStripeSubscriptions'])->name('stripeCancelSubscriptionURL');
+            //Route::post('/stripe/subscription/details', [StripeController::class, 'updateStripeSubscriptionItem'])->name('stripeSubscriptionDetailsURL');
+            // Route::post('/stripe/cart/addon', [StripeController::class, 'addonCart'])->name('stripeCartAddonURL');
 
         });
     });
@@ -171,6 +177,7 @@ Route::middleware(['auth', 'set-db-connection', 'check.authorization'])->group(f
 
         Route::post('/photo', [AttachmentsController::class, 'uploadPhoto'])->name('uploadPhotoURL');
         Route::delete('/delete/photo/{id?}', [AttachmentsController::class, 'deletePhoto'])->name('deletePhotoURL');
+        Route::delete('/delete/attachment', [AttachmentsController::class, 'deleteAttachmentByPath'])->name('deleteAttachmentByPathURL');
     });
 
 
@@ -185,11 +192,27 @@ Route::get('/check-authorization', [UserConnections::class, 'preventUnauthorized
 
 Route::post('/login', [LoginController::class, 'login'])->name('loginURL');
 
-Route::post('/register', [LoginController::class, 'register'])->name('registerURL');
+
+Route::post('/register', [RegisterController::class, 'register'])->name('registerURL');
+    Route::get('/register-success', [RegisterController::class, 'welcome'])->name('registerSuccessURL');
+    Route::get('/invitation/{code?}', [RegisterController::class, 'invitationResponse'])->name('invitationResponseURL');
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/send-email', [PostmarkappController::class, 'sendEmail']);
+// Reset password routes
+Route::prefix('forgot-password')->group(function () {
+    Route::get('/email', function () {
+        return view('auth.passwords.email');
+    })->middleware('guest')->name('passwordRequestFormURL');
+
+    Route::post('/send', [ResetPasswordController::class, 'sendResetLink'])->name('passwordSendResetLinkURL');
+
+    Route::get('/token/{token}/{email}', [ResetPasswordController::class, 'showResetForm'])->name('passwordResetFormURL');
+
+    Route::post('/reset', [ResetPasswordController::class, 'resetPassword'])->name('passwordResetURL');
+});
+
+//Route::get('/send-email', [PostmarkappController::class, 'sendEmail']);
 
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);

@@ -195,20 +195,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if ( clickedElementId === 'btn-select-another-template' ) {
                 const isConfirmed = confirm('Certeza que deseja escolher outro Modelo?');
-                if (isConfirmed) {
-                    document.getElementById('load-template-preview').innerHTML = '';
-
-                    document.getElementById('accordion-templates-label').style.display = 'block';
-                    document.getElementById('accordion-templates').style.display = 'block';
-
-                    document.getElementById('nested-compose-area').style.display = 'none';
-
-                    goTo('accordion-templates-label');
-                }else{
+                if (!isConfirmed) {
                     event.stopPropagation();
 
                     return;
                 }
+                document.getElementById('load-template-preview').innerHTML = '';
+
+                document.getElementById('accordion-templates-label').style.display = 'block';
+                document.getElementById('accordion-templates').style.display = 'block';
+
+                document.getElementById('nested-compose-area').style.display = 'none';
+
+                goTo('accordion-templates-label');
             }
 
             if ( clickedElementId === 'btn-start-empty-template' ) {
@@ -284,6 +283,13 @@ document.addEventListener('DOMContentLoaded', function() {
         statusTemplateButtons.forEach(function(button) {
             button.addEventListener('click', function(event) {
                 event.preventDefault();
+
+                const isConfirmed = confirm('Certeza que deseja alterar o status?');
+                if (!isConfirmed) {
+                    event.stopPropagation();
+
+                    return;
+                }
 
                 var templateId = this.getAttribute("data-id");
 

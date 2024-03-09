@@ -10,9 +10,11 @@
         @if (isset($text))
             <p class="text-muted mb-4">{!! $text !!}</p>
         @endif
+
         @if (isset($url))
             <a class="btn btn-outline-theme" href="{{ $url }}"><i class="ri-add-line"></i></a>
         @endif
+
         @if (isset($warning))
             <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show" role="alert">
                 <i class="ri-alert-line label-icon"></i> {!! $warning !!}

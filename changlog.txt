@@ -9,10 +9,30 @@ https://laravel-news.com/openai-for-laravel
 
 # TODO
 - btn-accept-invitation
+- test subscription and webhook
+    - if subscription ok, write store data via webhook
+- add users and update subscription
+    - add/remove users and check/count users and update addons subscriptions
+    - update addon subscription storage
 
 
 
-Version 1.0.41 - [2024/03/03]
+
+Version 1.0.41 - [2024/03/03 - 2024/03/09]
+- [Updated] RegisterController = invitationResponse()
+- [Added] Companies Settings
+- [Added] Storage Settings
+- [Added] StorageController
+- [Updated] web routes
+- [Updated] Many views
+- [Updated] ResetPasswordController
+- [Updated] StripeWebhookController
+- [Updated] SettingsAccountController
+- [Updated] StripeController
+- [Updated] ProfileController
+- [Updated] RegisterController
+- [Updated] LoginController
+- [Updated] AttachmentsController
 
 
 
@@ -22,7 +42,6 @@ Version 1.0.40 - [2024/02/26 - 2024/03/02]
 - [Removed] MailerSendController
 - [Added] PostmarkappController
 - [Added] CheckUserAuthorization Middleware
-- [Added] InvitationController
 - [Updated] ProfileController
 - [Updated] SettingsUserController
 - [Updated] settings-users.js

@@ -7,16 +7,18 @@
             <li class="menu-title"><i class="ri-more-fill"></i> <span>@lang('translation.components')</span></li>
 
             <li class="nav-item">
-                <a class="nav-link menu-link {{ request()->is('settings/account/*') ? 'active' : '' }}" href="{{ route('settingsAccountShowURL') }}">
+                <a class="nav-link menu-link {{ request()->is('settings/account*') ? 'active' : '' }}" href="{{ route('settingsAccountShowURL') }}">
                     <i class="ri-add-fill"></i> <span>Meu {{ appName() }}</span>
                 </a>
             </li>
 
+            {{--
             <li class="nav-item">
                 <a class="nav-link menu-link {{ request()->is('settings/users') ? 'active' : '' }}" href="{{ route('settingsUsersIndexURL') }}">
                     <i class="ri-team-fill"></i> <span>@lang('translation.users')</span>
                 </a>
             </li>
+            --}}
 
             {{--
             <li class="nav-item">
@@ -34,6 +36,11 @@
             @endif
             --}}
 
+            <li class="nav-item">
+                <a class="nav-link menu-link {{ request()->is('settings/connections') ? 'active' : '' }}" href="{{ route('settingsConnectionsIndexURL') }}">
+                    <i class="ri-share-line"></i> <span>Minhas Conexões</span>
+                </a>
+            </li>
 
             <li class="nav-item">
                 <a class="nav-link menu-link {{ request()->is('settings/companies') ? 'active' : '' }}" href="{{ route('settingsCompaniesIndexURL') }}">

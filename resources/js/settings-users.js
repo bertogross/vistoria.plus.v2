@@ -1,6 +1,7 @@
 import {
     toastAlert,
     sweetAlert,
+    sweetWizardAlert,
     bsPopoverTooltip,
     showPreloader,
     injectScript,
@@ -67,7 +68,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     attachModalEventListeners();
 
-                    attachImage("#member-image-input", "#avatar-img", uploadAvatarURL);
+                    attachImage("#member-image-input", ".avatar-img", uploadAvatarURL);
+
                     attachImage("#cover-image-input", "#cover-img", uploadCoverURL);
                 }else{
                     toastAlert('Não foi possível carregar o conteúdo', 'danger', 10000);
@@ -144,11 +146,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('userForm');
         const btnSaveUser = document.getElementById('btn-save-user');
 
-        if (btnSaveUser) {
+        if (btnSaveUser && form) {
+
             btnSaveUser.addEventListener('click', function(event) {
                 event.preventDefault();
 
-                var origin = btnSaveUser.getAttribute('data-origin');
+                const origin = btnSaveUser.getAttribute('data-origin');
+
+                const userId = form.querySelector('input[name="user_id"]').value;
+
 
                 if (!form.checkValidity()) {
                     event.stopPropagation();
@@ -161,7 +167,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 let formData = new FormData(form);
 
-                let url = form.dataset.id ? settingsUsersUpdateURL + `/${form.dataset.id}` : settingsUsersStoreURL;
+
+                //let url = form.dataset.user_id ? settingsUsersUpdateURL + `/${form.dataset.user_id}` : settingsUsersStoreURL;
+                let url = userId ? settingsUsersUpdateURL + '/' + userId : settingsUsersStoreURL;
 
                 fetch(url, {
                     method: 'POST',
@@ -186,18 +194,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         }else{
                             toastAlert(data.message, 'success', 20000);
 
-                            // reload page
                             if(form.dataset.id){
                                 showPreloader();
                             }
 
+                            // reload page
                             setTimeout(() => {
-                                location.reload();
+                                //location.reload();
+                                window.location.href = settingsAccountShowURL + '?tab=users';
                             }, 5000);
 
                             btnSaveUser.remove();
                         }
 
+                    } else if( data.action == 'subscriptionAlert'){
+                        sweetWizardAlert(data.message, settingsAccountShowURL + '?tab=subscription', 'warning', 'Voltar', 'Ativar Assinatura')
                     } else {
                         sweetAlert(data.message);
                     }

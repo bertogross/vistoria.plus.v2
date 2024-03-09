@@ -13,6 +13,17 @@ class AttachmentsController extends Controller
 
     public function uploadPhoto(Request $request)
     {
+        $currentUserId = auth()->id();
+
+        $connectionId = getCurrentConnectionByUserId($currentUserId);
+
+        $subscriptionData = getSubscriptionData($connectionId);
+        $subscriptionStatus = $subscriptionData['subscription_status'] ?? null;
+        if($subscriptionStatus != 'active'){
+            return response()->json(['success' => false, 'action' => 'subscriptionAlert', 'message' => "Para prosseguir você deverá primeiramente ativar sua assinatura"], 200);
+        }
+
+
         $folder = 'attachments';
 
         try {
@@ -75,6 +86,63 @@ class AttachmentsController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function deletePhoto(Request $request = null, $attachmentId)
+    {
+        if($attachmentId){
+            try {
+                // Retrieve the attachment from the database
+                 $attachment = Attachments::find($attachmentId);
+
+                if (!$attachment) {
+                    return response()->json(['success' => false, 'message' => 'Arquivo não encontrado'], 404);
+                }
+
+                // Delete the file from storage
+                if (Storage::disk('public')->exists($attachment->path)) {
+                    Storage::disk('public')->delete($attachment->path);
+                }
+
+                // Delete the attachment record from the database
+                $attachment->delete();
+
+                // Delete the attachment id from the survey_responses table collum attachments_survey/attachments_audit
+                Attachments::deleteAttachmentIdFromJsonColumn('attachments_survey', $attachmentId);
+                Attachments::deleteAttachmentIdFromJsonColumn('attachments_audit', $attachmentId);
+
+                return response()->json(['success' => true, 'message' => 'Arquivo excluído com êxito'], 200);
+
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            }
+        }
+    }
+
+
+    public function deleteAttachmentByPath(Request $request)
+    {
+        $path = $request->input('path');
+
+        if ($path) {
+            try {
+                // Check if the file exists before attempting to delete it
+                if (Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->delete($path);
+                    return response()->json(['success' => true, 'message' => 'Arquivo excluído com êxito'], 200);
+                } else {
+                    // File does not exist
+                    return response()->json(['success' => false, 'message' => 'Arquivo não encontrado'], 404);
+                }
+            } catch (\Exception $e) {
+                // Handle any exceptions during the delete operation
+                return response()->json(['success' => false, 'message' => 'Erro ao tentar remover arquivo: ' . $e->getMessage()], 500);
+            }
+        } else {
+            // Path parameter is missing
+            return response()->json(['success' => false, 'message' => 'Caminho do arquivo é necessário'], 400);
+        }
+    }
+
 
 
 }

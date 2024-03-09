@@ -3,7 +3,7 @@
     <div class="card pricing-box bg-black bg-opacity-10 ribbon-box right">
         <div class="card-body p-4 m-2 {{ isset($currentPriceId) && $currentPriceId == $PriceId ? 'bg-light' : '' }}">
 
-            @if(isset($currentPriceId) && $currentPriceId == $PriceId)
+            @if($subscriptionType == 'pro' && $productMetadata->type  == 'primary')
                 <div class="ribbon-two ribbon-two-theme"><span class="small">Vigente</span></div>
             @endif
 
@@ -22,8 +22,8 @@
                         {{ isset($currentPriceId) && $currentPriceId == $PriceId ? number_format((($unitAmount/$intervalCount) * $currentQuantity), 0, ',', '.') : number_format(($unitAmount/$intervalCount), 0, ',', '.') }}
                     </span>
                 </h1>
-                <div class="form-text text-center text-white">
-                    <span class="small">
+                <div class="form-text text-center text-body">
+                    <span>
                         {{$productDescription ? 'Cada '.$productDescription.': ' : ''}}
                         {{ brazilianRealFormat(($unitAmount/$intervalCount), 0) }}/mês
                     </span>

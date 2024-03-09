@@ -1,6 +1,47 @@
-<h4 class="mb-0">Plano de Assinatura</h4>
+@php
+    $currentQuantity = 0;
+    $subscriptionData = getSubscriptionData();
+    //appPrintR($subscriptionData);
+    $subscriptionId = $subscriptionData['subscription_id'] ?? null;
+    $subscriptionStatus = $subscriptionData['subscription_status'] ?? null;
 
-@if (isset($subscriptionData['subscription_status']) && $subscriptionData['subscription_status'] != 'active')
+    $dataBs = 'data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top"';
+
+    $contentBs = "
+        <h5>Assinatura PRO</h5>
+        <ul class='list-unstyled'>
+            <li><i class='ri-check-fill text-success me-2'></i>Anexar arquivos</li>
+            <li><i class='ri-check-fill text-success me-2'></i>Registrar tarefas</li>
+            <li><i class='ri-check-fill text-success me-2'></i>Adicionar usuários</li>
+        </ul>
+        <hr>
+        <h5>Assinatura FREE</h5>
+        <ul class='list-unstyled'>
+            <li><i class='ri-close-line text-danger me-2'></i>Anexar arquivos</li>
+            <li><i class='ri-close-line text-danger me-2'></i>Registrar tarefas</li>
+            <li><i class='ri-close-line text-danger me-2'></i>Adicionar usuários</li>
+        </ul>
+    ";
+@endphp
+
+@switch($subscriptionStatus)
+    @case('active')
+        <span class="badge bg-success-subtle text-success badge-border float-end" {!! $dataBs !!} data-bs-title="Sua Assinatura: Pro" data-bs-content="{!! $contentBs !!}">
+            Pro
+        </span>
+        @break
+    @default
+        @php
+        @endphp
+        <span class="badge bg-info-subtle text-info badge-border float-end" {!! $dataBs !!} data-bs-title="Sua Assinatura: Free" data-bs-content="{!! $contentBs !!}">
+            Free
+        </span>
+@endswitch
+
+<h4 class="mb-0">Plano de Assinatura</h4>
+<p>Maximize seu {{ appName() }} com nosso plano de assinatura! Acesso a recursos exclusivos e atualizações constantes</p>
+
+@if ($subscriptionStatus != 'active')
     <p>Ative seu {{ appName() }}</p>
 @endif
 
@@ -12,9 +53,12 @@
                     $subscriptionId,
                     []
                 );
+                //appPrintR($retrieveSubscription);
 
-                $currentPriceId = !empty($retrieve_subscription->plan->id) ? $retrieve_subscription->plan->id : '';
-            } catch (Exception $e) {
+                $currentPriceId = $retrieveSubscription->plan->id ?? '';
+                $currentQuantity = $retrieveSubscription->quantity ?? 0;
+
+            } catch (\Exception $e) {
                 $error = $e->getMessage();
             }
 
@@ -22,8 +66,10 @@
                 $subscriptionItems = $stripe->subscriptionItems->all([
                     'subscription' => $subscriptionId,
                 ]);
+                //appPrintR($subscriptionItems);
+
                 $subscriptionItemId = $subscriptionId && isset($subscriptionItems->data[0]->id) ? $subscriptionItems->data[0]->id : '';
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $error = $e->getMessage();
             }
         @endphp
@@ -38,6 +84,8 @@
             'active' => true,
             'limit' => 100
         ]);
+        //appPrintR($products);
+
         $products = $products->data ?? [];
     @endphp
     @if (!empty($products))
@@ -90,7 +138,9 @@
                         }
                     @endphp
 
-                     @include('settings.stripe.product-card-wide')
+                    @include('settings.stripe.product-card-wide', ['type' => 'primary'])
+
+                    @break
                 @endforeach
             @endif
         @endforeach

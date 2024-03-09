@@ -1,11 +1,12 @@
-<h4 class="mb-4">Faturamento</h4>
+<h4 class="mb-0">Faturamento</h4>
+<p>Acesse faturas, atualize pagamentos e monitore seu faturamento facilmente</p>
 
 @if($customerId)
     @php
         try {
             //https://stripe.com/docs/api/invoices/list#list_invoices
             $invoices = $stripe->invoices->all(['customer' => $customerId]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             //echo $e->getError()->message;
         }
 
@@ -15,7 +16,7 @@
                 'customer' => $customerId,
                 //'subscription' => $subscriptionId
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $upcoming = '';
             //echo $e->getError()->message;
         }
@@ -108,7 +109,7 @@
                                 );
                                 $refunded = isset($paymentIntents->charges->data[0]->refunded) ? $paymentIntents->charges->data[0]->refunded : false;
                                 $status = $refunded == true ? 'refunded' : $status;
-                            }catch (Exception $e){
+                            }catch (\Exception $e){
                                 //echo $e->getError()->message;
                             }
                         }
@@ -192,5 +193,5 @@
 
     <br><br>
 
-    <a href="{{route('settingsAccountShowURL')}}/?tab=subscription" class="btn btn-outline-theme" title="Clique para visualizar o plano de assinatura do {{appName()}}">Assinar</a>
+    <a href="{{route('settingsAccountShowURL')}}/?tab=subscription" class="btn btn-theme" title="Clique para visualizar o plano de assinatura do {{appName()}}">Assinar o {{appName()}}</a>
 @endif

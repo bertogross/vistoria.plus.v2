@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserMeta;
 use App\Models\UserConnections;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -60,140 +59,177 @@ class SettingsUserController extends Controller
      */
     public function store(Request $request)
     {
-        $userExistsAndIsConnected = null;
+        $subscriptionData = getSubscriptionData();
+        $subscriptionStatus = $subscriptionData['subscription_status'] ?? null;
+        if($subscriptionStatus != 'active'){
+            return response()->json(['success' => false, 'action' => 'subscriptionAlert', 'message' => "Para prosseguir você deverá primeiramente ativar sua assinatura"], 200);
+        }
 
-        $validatedData = $request->validate([
-            'email' => 'required|email|max:100',
-        ], [
+        $messages = [
+            'role.required' => 'Selecione o nível.',
             'email.required' => 'Informe o e-mail.',
             'email.email' => 'Informe um e-mail válido.',
             'email.max' => 'O e-mail não pode ter mais de 100 caracteres.',
-        ]);
+        ];
+        $validatedData = $request->validate([
+            'email' => 'required|email|max:100',
+            'role' => 'required|role',
+        ], $messages);
 
-        $currentUser = auth()->user();
-        $currentUserName= $currentUser->name;
-        $currentUserId = $currentUser->id;
-        $currentUserEmail = $currentUser->email;
+        $hostUser = auth()->user();
+        $hostUserName= $currentUser->name;
+        $hostUserId = $currentUser->id;
+        $hostUserEmail = $currentUser->email;
 
-        if($currentUserEmail === $validatedData['email']){
+        $questUserEmail = $validatedData['email'];
+
+        if($hostUserEmail === $questUserEmail){
             return response()->json(['success' => false, 'message' => "O e-mail informado é o principal desta conta e não poderá ser adicionado como colaborador"], 200);
         }
 
-        $userExists = DB::connection('vpOnboard')
+        $guestExists = DB::connection('vpOnboard')
             ->table('users')
-            ->where('email', $validatedData['email'])
+            ->where('email', $questUserEmail)
             ->first();
 
-        if($userExists){
-            $userExistsAndIsConnected = DB::connection('vpOnboard')
+        if ($guestExists){
+            $questUserId = $guestExists->id;
+            $questUserName = $guestExists->name;
+            $questUserEmail = $guestExists->email;
+
+            /*$guestExistsAndIsConnected = DB::connection('vpOnboard')
                 ->table('user_connections')
-                ->where('user_id', $userExists->id)
-                ->where('connected_to', $currentUserId)
-                ->first();
+                ->where('user_id', $questUserId)
+                ->where('connected_to', $hostUserId)
+                ->first();*/
         }
 
-        $userRole = $request->input('role', 4);
-        if (!in_array($userRole, [2, 3, 4, 5])) {
+        $getUserDataFromConnectedAccountId = UserConnections::getUserDataFromConnectedAccountId($questUserId, $hostUserId);
+        $getQuestUserStatus = isset($getUserDataFromConnectedAccountId->status) ? $getUserDataFromConnectedAccountId->status : null;
+
+
+        $questUserRole = $request->input('role', 4);
+        if (!in_array($questUserRole, [2, 3, 4, 5])) {
             return response()->json(['success' => false, 'message' => "Selecione o Nível"], 200);
         }
 
-        $companies = $request->has('companies') && is_array($request->companies) ? json_encode(array_map('intval', $request->companies)) : null;
+        $questUserCompanies = $request->has('companies') && is_array($request->companies) ? json_encode(array_map('intval', $request->companies)) : null;
 
         $params = array(
-            'role' => $userRole,
-            'companies' => $companies
+            'role' => $questUserRole,
+            'companies' => $questUserCompanies
         );
         $paramsEncoded = json_encode($params);
 
+        if ($getQuestUserStatus) {// check if user have a connection with hostUserId
+            if( $getQuestUserStatus != 'active'){
+                $message = 'O usuário de e-mail '.$questUserEmail.' já possui uma conexão com seu ' . env('APP_NAME') . ' mas seu status foi desativado.<br><br>';
 
-        if ($userExistsAndIsConnected) {// check if user have a connection with currentUserId
-            $connectionStatus = $userExistsAndIsConnected->connection_status;
-            if( $connectionStatus != 'active'){
-                $message = 'O usuário de e-mail '.$validatedData['email'].' já possui uma conexão com seu ' . env('APP_NAME') . ' mas seu status foi desativado.<br><br>';
-
-                switch ($connectionStatus) {
+                switch ($questUserConnectionStatus) {
                     case 'inactive':
                         $message .= '&#x2022; Você poderá ativar acessando seu painel em ' . route('settingsAccountShowURL') . '/tab=users';
                         break;
                     case 'waiting':
-                        $message .= '&#x2022; Este usuário ainda não aceitou seu convite';
+                        $message .= '&#x2022; Este usuário ainda não aceitou seu convite.';
                         break;
                     case 'revoked':
-                        $message .= '&#x2022; Este usuário revogou o acesso e somente esta pessoa poderá reativar.';
+                        $message .= '&#x2022; Este usuário revogou o acesso. Somente ' . $questUserName . ' poderá reativar.';
                         break;
                 }
 
             }else{
-                $message = 'O usuário de e-mail '.$validatedData['email'].' já possui uma conexão com seu ' . env('APP_NAME') . '.<br><br>';
+                $message = 'O usuário de e-mail '.$questUserEmail.' já possui uma conexão com seu ' . env('APP_NAME') . '.<br><br>';
                 $message .= '&#x2022; Verifique se o Nível está definido como Vistoria ou Auditoria e se tal possui acesso a determinadas Unidades Corporativas';
             }
 
             return response()->json(['success' => false, 'message' => $message], 200);
 
-        } elseif ($userExists) {// check if user exists in database
-            $connectionCode = Crypt::encryptString($currentUserId . '~~~' . $userExists->id . '~~~' . $paramsEncoded);
-
-            UserConnections::setConnectionData($userExists->id, $currentUserId, $userRole, 'waiting', $companies, $connectionCode);
+        } elseif ($guestExists) {// check if user exists in database
+            $connectionCode = Crypt::encryptString($hostUserId . '~~~' . $questUserEmail . '~~~' . $paramsEncoded);
 
             //Send mail invite notification message for this user
             $content = '
-                '.$currentUserName.' está lhe convidando para colaborar em suas tarefas. Para aceitar <a href="' . route('invitationResponseURL') . '/'. $connectionCode . '">clique aqui</a>.<br><br>Se isto foi um erro ou você desconhece <u>' . $currentUserName . '</u>, apenas ignore esta mensagem.
+                '.$hostUserName.' está lhe convidando para colaborar em suas tarefas. Para aceitar <a href="' . route('invitationResponseURL') . '/'. $connectionCode . '">clique aqui</a>.<br><br>Se isto foi um erro ou você desconhece <u>' . $hostUserName . '</u>, apenas ignore esta mensagem.
             ';
 
-            appSendEmail($userExists->email, $userExists->name, 'Convite de Colaboração', $content, $template = 'default');
+            appSendEmail($questUserEmail, $questUserName, 'Convite de Colaboração', $content, $template = 'default');
 
-            // TODO: Add topbar notification message for user $userExists->id
-
-            $message = 'Convite solicitando colaboração foi enviado para <span class="text-theme">' . $userExists->name . '</span> no endereço de e-mail <span class="text-theme">' . $userExists->email . '</span>';
+            $message = 'Convite solicitando colaboração foi enviado para <span class="text-theme">' . $questUserName . '</span> no endereço de e-mail <span class="text-theme">' . $questUserEmail . '</span>';
         } else {
-            //Send mail invite notification message for this user
+            $connectionCode = Crypt::encryptString($hostUserId . '~~~' . $questUserEmail . '~~~' . $paramsEncoded);
+
+            //If user dont exists, create a new one with status '3'. 3 == invited.
+            /*$data = [
+                'name' => '',
+                'email' => $questUserEmail,
+                'status' => 2,
+            ];
+            RegisterController::register($data);*/
+
+            //Send mail message for this user
             $content = '
-                '.$currentUserName.' está lhe convidando para colaborar em suas tarefas. Para registrar-se gratuitamente no ' . env('APP_NAME') . ' <a href="' . route('registerURL') . '">clique aqui</a>.<br><br>Se isto foi um erro ou você desconhece <u>' . $currentUserName . '</u>, apenas ignore esta mensagem.
+                '.$hostUserName.' está lhe convidando para colaborar em suas tarefas. Para registrar-se gratuitamente no ' . env('APP_NAME') . ' <a href="' . route('registerURL') . '/' . $connectionCode . '">clique aqui</a>.<br><br>Se isto foi um erro ou você desconhece <u>' . $hostUserName . '</u>, apenas ignore esta mensagem.
             ';
 
-            appSendEmail($validatedData['email'], '', 'Convite de Colaboração', $content, $template = 'default');
+            appSendEmail($questUserEmail, '', 'Convite de Colaboração', $content, $template = 'default');
 
-            $message = 'Convite solicitando colaboração foi enviado para o endereço de e-mail <span class="text-theme">' . $validatedData['email'] . '</span>';
+            $message = 'Convite solicitando colaboração foi enviado para o endereço de e-mail <span class="text-theme">' . $questUserEmail . '</span>';
         }
 
         return response()->json(['success' => true, 'message' => $message], 200);
     }
 
-
     /**
      * Update the specified user in the database.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $questUserId)
     {
-        $currentUser = auth()->user();
-        $currentUserId = $currentUser->id;
+        $subscriptionData = getSubscriptionData();
+        $subscriptionStatus = $subscriptionData['subscription_status'] ?? null;
+        if($subscriptionStatus != 'active'){
+            return response()->json(['success' => false, 'message' => "Para prosseguir você deverá primeiramente ativar sua assinatura"], 200);
+        }
 
-        $getUserIdsConnectedOnMyAccount = getUserIdsConnectedOnMyAccount();
+        /*$messages = [
+            'role.required' => 'Selecione o nível'
+        ];
+        $validatedData = $request->validate([
+            'role' => 'required|role'
+        ], $messages);*/
 
-        $user = User::find($id);
-        if (!$user) {
+        $hostUser = auth()->user();
+        $hostUserId = $hostUser->id;
+
+        $questUser = User::find($questUserId);
+        if (!$questUser) {
             return response()->json(['success' => false, 'message' => "Usuário não corresponde a nossa base de dados"], 200);
         }
 
-        // requests
-        $userRole = $request->input('role', 4);
-        $status = $request->input('status', 'inactive');
-        $companies = $request->has('companies') && is_array($request->companies) ? json_encode(array_map('intval', $request->companies)) : null;
-
-        if (!in_array($user->id, $getUserIdsConnectedOnMyAccount)) {
+        $getUserIdsConnectedOnMyAccount = getUserIdsConnectedOnMyAccount();
+        if (!in_array($questUser->id, $getUserIdsConnectedOnMyAccount)) {
             return response()->json(['success' => false, 'message' => "Usuário não conectado ao seu " . appName()], 200);
         }
 
-        if (!in_array($userRole, [2, 3, 4, 5])) {
+        $getUserDataFromConnectedAccountId = UserConnections::getUserDataFromConnectedAccountId($questUser->id, $hostUserId);
+        $getQuestUserStatus = isset($getUserDataFromConnectedAccountId->status) ? $getUserDataFromConnectedAccountId->status : null;
+
+        if($getQuestUserStatus == 'revoked'){
+            return response()->json(['success' => false, 'message' => 'Este usuário <span class="text-warning">revogou</span> o acesso. Somente <span class="text-info">' . $questUser->name . '</span> poderá reativar.'], 200);
+        }
+
+        // requests
+        $questUserRole = $request->input('role');
+        $questUserStatus = $request->input('status', 'inactive');
+        $questUserCompanies = $request->has('companies') && is_array($request->companies) ? json_encode(array_map('intval', $request->companies)) : null;
+
+        if (!in_array($questUserRole, [2, 3, 4, 5])) {
             return response()->json(['success' => false, 'message' => "Selecione o Nível"], 200);
         }
 
-        UserConnections::setConnectionData($user->id, $currentUserId, $userRole, $status, $companies);
+        UserConnections::setConnectionData($questUser->id, $hostUserId, $questUserRole, $questUserStatus, $questUserCompanies);
 
-        return response()->json(['success' => true, 'message' => "Permissões de usuário foram atualizadas"], 200);
+        return response()->json(['success' => true, 'message' => "Os dados de usuário foram atualizados"], 200);
     }
-
-
 
     /**
      * Update or create a user's meta data.
@@ -209,9 +245,6 @@ class SettingsUserController extends Controller
 
     /**
      * Get the content for the user modal.
-     *
-     * @param int|null $id The user's ID.
-     * @return \Illuminate\View\View
      */
     public function getUserFormContent(Request $request)
     {
@@ -225,6 +258,7 @@ class SettingsUserController extends Controller
         }
 
         return view('settings.components.users-form', compact('user', 'origin'));
-
     }
+
+
 }
