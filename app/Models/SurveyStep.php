@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use App\Models\SurveyStep;
 use App\Models\SurveyTopic;
 use App\Models\SurveyTemplates;
@@ -37,6 +38,21 @@ class SurveyStep extends Model
     public static function populateSurveySteps($templateId, $surveyId)
     {
         $currentUserId = auth()->id();
+
+        $today = Carbon::now()->startOfDay();
+
+        $survey = Survey::findOrFail($surveyId);
+
+        // Prevent assigment if today date is > than end_in and status is stopped
+        $currentStatus = $survey->status;
+        $endIn = $survey->end_in;
+        if($currentStatus == 'stopped' && $today > $endIn){
+            $columns['status'] = 'completed';
+
+            $survey->update($columns);
+
+            return;
+        }
 
         try {
             // Delete existing survey steps for the given surveyId

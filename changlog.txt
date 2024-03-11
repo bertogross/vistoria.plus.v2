@@ -35,7 +35,7 @@ Version 1.0.41 - [2024/03/03 - 2024/03/09]
 - [Updated] RegisterController = invitationResponse()
 - [Added] Companies Settings
 - [Added] Storage Settings
-- [Added] StorageController
+- [Added] SettingsStorageController
 - [Updated] UserConnections model
 - [Updated] web routes
 - [Updated] Many views

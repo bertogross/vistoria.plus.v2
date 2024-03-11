@@ -26,7 +26,7 @@ use App\Http\Controllers\{
     AttachmentsController,
     DropboxController,
     CompaniesController,
-    StorageController,
+    SettingsStorageController,
     ClarifaiImageController,
     ScenexImageController,
     //PostmarkappController,
@@ -148,7 +148,7 @@ Route::middleware(['auth', 'set-db-connection', 'check.authorization'])->group(f
             Route::get('/connections', [SettingsConnectionsController::class, 'index'])->name('settingsConnectionsIndexURL');
             Route::post('/connections/revoke', [UserConnections::class, 'revokeConnection'])->name('revokeConnectionURL');
 
-            Route::get('/storage', [StorageController::class, 'index'])->name('settingsStorageIndexURL');
+            Route::get('/storage', [SettingsStorageController::class, 'index'])->name('settingsStorageIndexURL');
 
             Route::get('/dropbox', [DropboxController::class, 'index'])->name('DropboxIndexURL');
             Route::get('/dropbox/browse/{path}', [DropboxController::class, 'browseFolder'])->name('DropboxBrowseFolderURL');

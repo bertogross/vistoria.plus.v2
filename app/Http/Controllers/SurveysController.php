@@ -516,6 +516,7 @@ class SurveysController extends Controller
         $currentStatus = $survey->status;
 
         $startAt = $survey->start_at;
+        $endIn = $survey->end_in;
 
         $templateId = $survey->template_id;
 
@@ -539,6 +540,14 @@ class SurveysController extends Controller
 
         //$message = 'Status da tarefa foi atualizado com sucesso';
         //$newStatus = $oldStatus;
+
+        if($currentStatus == 'stopped' && $now > $endIn){
+            $columns['status'] = 'completed';
+
+            $survey->update($columns);
+
+            return response()->json(['success' => false, 'message' => 'Não é possível reiniciar uma tarefa com data final anterior a hoje.']);
+        }
 
         switch ($currentStatus) {
             case 'new':

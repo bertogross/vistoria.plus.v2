@@ -17,6 +17,7 @@
             @lang('translation.storage')
         @endslot
     @endcomponent
+    <p>Aquivos anexados em vistorias</p>
     <div class="chat-wrapper d-lg-flex gap-1 mx-n4 p-1 mb-4">
         <div class="file-manager-content minimal-border w-100 p-3 py-0">
             <div class="mx-n3 pt-4 px-4 file-manager-content-scroll" data-simplebar>
@@ -34,7 +35,7 @@
                                     <div class="progress mb-2 progress-sm">
                                         <div class="progress-bar bg-{{getProgressBarClassStorage($percentageUsed)}}" role="progressbar" style="width: {{number_format($percentageUsed, 0)}}%" aria-valuenow="{{number_format($percentageUsed, 0)}}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    <span class="text-muted fs-12 d-block text-truncate"><b data-bs-toggle="tooltip" data-bs-placement="top" title="{{$totalUsage}} utilizados">{{$totalUsage}}</b>GB de <b data-bs-toggle="tooltip" data-bs-placement="top" title="{{$diskQuota}}GB contratado">{{$diskQuota}}</b>GB</span>
+                                    <span class="text-muted fs-12 d-block text-truncate"><b data-bs-toggle="tooltip" data-bs-placement="top" title="{{$totalUsage}} utilizados">{{$totalUsage}}</b>GB de <b data-bs-toggle="tooltip" data-bs-placement="top" title="{{$diskQuota}}GB contratados">{{$diskQuota}}</b>GB</span>
                                 </div>
                             </div>
                         </div>
@@ -66,7 +67,7 @@
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 fs-17 me-2">
                                                     <a href="{{ $file['url'] }}" class="image-single">
-                                                        <img class="rounded" src="{{ $file['url'] }}" height="90" alt="{{ $file['name'] }}">
+                                                        <img class="rounded" src="{{ $file['url'] }}" height="90" alt="{{ $file['name'] }}" loading="lazy">
                                                     </a>
                                                 </div>
                                             </div>

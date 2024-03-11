@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 
-class StorageController extends Controller
+class SettingsStorageController extends Controller
 {
     public function index()
     {
