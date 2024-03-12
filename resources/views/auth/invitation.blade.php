@@ -1,6 +1,10 @@
+@php
+    use App\Models\User;
+    use Illuminate\Support\Facades\DB;
+@endphp
 @extends('layouts.master-without-nav')
 @section('title')
-    @lang('translation.signup')
+    Convite
 @endsection
 @section('content')
     <div class="auth-page-wrapper pt-5">
@@ -21,23 +25,42 @@
                 </div>
 
                 @php
-                    appPrintR($connectionCode);
-                    $hostUserId = $connectionCode[0] ?? null;
-                    $questUserParams = $connectionCode[2] ?? null;
+                    //appPrintR($connectionCodeParts);
+                    //$hostUserId = $connectionCodeParts[0] ?? request()->cookie('vistoriaplus_hostUserId');
+
+                    $questUserEmailFromInvitation = $connectionCodeParts[1] ?? null;
+
+                    if($questUserEmailFromInvitation){
+                        $guestExists = DB::connection('vpOnboard')
+                            ->table('users')
+                            ->where('email', $questUserEmailFromInvitation)
+                            ->first();
+                        $questUserEmail = $guestExists->email ?? null;
+                    }
+
+                    //$questUserParams = $connectionCodeParts[2] ?? request()->cookie('vistoriaplus_questUserParams');
                 @endphp
 
-                @if ($hostUserId && $questUserParams)
+                @if ($hostUserId && $questUserParams && $questUserEmailFromInvitation)
                     @php
                         $hostUser = User::find($hostUserId);
                         $hostUserName = $hostUser->name ?? '';
                     @endphp
                     <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show mt-4" role="alert">
                         <i class="ri-check-double-line label-icon"></i>
-                        Você redebeu um contive para colaborar com {{$hostUserName}}.<br>
-                        Para aceitar Registre-se. Mas se você possui uma conta, efetue Login.
+                        Você redebeu um contive para colaborar com <strong class="text-theme">{{$hostUserName}}</strong>.<br>
+                        @if (isset($questUserEmailFromInvitation))
+                            O convite foi enviado para <u>{{$questUserEmailFromInvitation}}</u> . Utilize-o para registro ou informe outro.
+                        @elseif(isset($questUserEmail))
+                            O e-mail <u>{{$questUserEmail}}</u> já contacomo contaem nossa base de dados. Utileze-o para Login.
+                        @else
+                            Registre-se ou efetue Login.
+                        @endif
                     </div>
 
+                    {{--
                     @include('components.alerts')
+                    --}}
 
                     <div class="row justify-content-center">
 
@@ -53,7 +76,7 @@
                 @else
                     <div class="alert alert-danger alert-dismissible alert-label-icon label-arrow fade show mt-4" role="alert">
                         <i class="ri-error-warning-fill label-icon"></i>
-                        O parâmetros deste convite estão incorretos.
+                        O parâmetros deste convite estão incorretos.<br>Clique no link enviado ao seu e-mail ou solcitie seu convite novamente.
                     </div>
                 @endif
                 <!-- end row -->

@@ -219,7 +219,7 @@ class Stripe extends Model
         $subscriptionId = $checkout->subscription;
 
         // Cancel other subscriptions
-        // TODO
+        // TODO STRIPE ????
         // self::stripeSubscriptionCancelOthers($subscriptionId, $customerId);
 
         if (!empty($subscriptionId)) {
@@ -232,17 +232,18 @@ class Stripe extends Model
                 $subscriptionStatus = !empty($retrieveSubscription->status) ? $retrieveSubscription->status : 'trialing';
                 $quantity = isset($retrieveSubscription->quantity) ? intval($retrieveSubscription->quantity) : 0;
 
+                $data = [
+                    'customer_id' => $customerId,
+                    'subscription_id' => $subscriptionId,
+                    'subscription_status' => $subscriptionStatus,
+                    'subscription_quantity' => $quantity,
+                    'subscription_type' => 'pro'
+                ];
                 // Update the database
                 $result = DB::connection('vpOnboard')->table('users')
                     ->where('stripe_customer_id', $customerId)
                     ->update([
-                        'subscription_data' => [
-                            'customer_id' => $customerId,
-                            'subscription_id' => $subscriptionId,
-                            'subscription_status' => $subscriptionStatus,
-                            'subscription_quantity' => $quantity,
-                            'subscription_type' => 'pro'
-                        ]
+                        'subscription_data' => $data
                     ]);
 
                 if (!$result) {
@@ -320,25 +321,25 @@ class Stripe extends Model
         }
 
         $productIds = array_filter($productIds);
-
-        $productIds = is_array($productIds) && count($productIds) > 0 ? serialize($productIds) : '';
         /**************************
          * End Extract Product IDs
          *************************/
 
         if( !empty($customerId) && !empty($subscriptionId) ){
 
+            $data = [
+                'customer_id' => $customerId,
+                'subscription_id' => $subscriptionId,
+                'subscription_status' => $subscriptionStatus,
+                'subscription_quantity' => $quantity,
+                'subscription_type' => $subscriptionStatus == 'active' ? 'pro' : 'free',
+                'products' => $productIds
+            ];
             $result = DB::connection('vpOnboard')->table('users')
-            ->where('stripe_customer_id', $customerId)
-            ->update([
-                'subscription_data' => [
-                    'customer_id' => $customerId,
-                    'subscription_id' => $subscriptionId,
-                    'subscription_status' => $subscriptionStatus,
-                    'subscription_quantity' => $quantity,
-                    'products' => $productIds
-                ]
-            ]);
+                ->where('stripe_customer_id', $customerId)
+                ->update([
+                    'subscription_data' => $data
+                ]);
 
             if(!$result){
                 http_response_code(302);
@@ -356,18 +357,21 @@ class Stripe extends Model
 
         $subscriptionStatus = isset($subscription->status) ? $subscription->status : 'active';
 
+        // TODO STRIPE??? delete/pause all subscription (users and addons)
+
         if( !empty($customerId) && !empty($subscriptionId) ){
 
+            $data = [
+                'customer_id' => $customerId,
+                'subscription_id' => $subscriptionId,
+                'subscription_status' => $subscriptionStatus,
+                'subscription_quantity' => 0,
+                'subscription_type' => 'free'
+            ];
             $result = DB::connection('vpOnboard')->table('users')
                 ->where('stripe_customer_id', $customerId)
                 ->update([
-                    'subscription_data' => [
-                        'customer_id' => $customerId,
-                        'subscription_id' => $subscriptionId,
-                        'subscription_status' => $subscriptionStatus,
-                        'subscription_quantity' => 0,
-                        'subscription_type' => 'free'
-                    ],
+                    'subscription_data' => $data,
                 ]);
 
             if(!$result){

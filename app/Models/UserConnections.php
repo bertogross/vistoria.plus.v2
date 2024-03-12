@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\UserMeta;
 use App\Models\User;
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * Represents the metadata associated with a user.
@@ -30,29 +31,41 @@ class UserConnections extends Model
     {
         $onboardConnection = DB::connection('vpOnboard');
 
+        // prevent user to invite yourself
+        if($questUserId == $hostUserId){
+            return;
+        }
+
+        // Convert the companies array to a JSON string
+        $questUserCompaniesJson = json_encode($questUserCompanies ?? []);
+
         $existingData = $onboardConnection->table('user_connections')
             ->where('user_id', $questUserId)
             ->where('connected_to', $hostUserId)
             ->first();
 
         if ($existingData) {
+            // TODO STRIPE:
+                // if $questUserStatus == inactive implement Stripe routine to cancel that subscription addon
+                // if $questUserStatus == active implement Stripe routine to add subscription addon
+
             // Update existing record
             return $onboardConnection->table('user_connections')
                 ->where('id', $existingData->id)
                 ->update([
-                    'connection_role' => $questUserRole,
+                    'connection_role' => intval($questUserRole),
                     'connection_status' => $questUserStatus,
-                    'connection_companies' => $questUserCompanies,
+                    'connection_companies' => $questUserCompaniesJson,
                 ]);
         } else {
             // Insert new record
             return $onboardConnection->table('user_connections')
                 ->insert([
-                    'user_id' => $questUserId,
-                    'connected_to' => $hostUserId,
-                    'connection_role' => $questUserRole,
+                    'user_id' => intval($questUserId),
+                    'connected_to' => intval($hostUserId),
+                    'connection_role' => intval($questUserRole),
                     'connection_status' => $questUserStatus,
-                    'connection_companies' => $questUserCompanies,
+                    'connection_companies' => $questUserCompaniesJson,
                 ]);
         }
 
@@ -62,12 +75,28 @@ class UserConnections extends Model
     // Accpet connection to another account
     public static function acceptConnection($request, $questUserId)
     {
-        $hostUserId = $request->host_user_id ?? null;
-        $questUserParams = $request->quest_user_params ?? null;
+        try {
+            $decryptedValue = Crypt::decryptString($request->quest_user_params);
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            // Handle the error, e.g., log it or notify the user
+            \Log::error("Decryption acceptConnection error: " . $e->getMessage());
+            // Optionally, return or throw a custom error
+            return response()->json(['error' => 'Decryption failed.'], 500);
+        }
+
+        try {
+            $hostUserId = $request->host_user_id ? Crypt::decryptString($request->host_user_id) : null;
+            $questUserParams = $request->quest_user_params ? Crypt::decryptString($request->quest_user_params) : null;
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            // Handle the error, for example, log it or return a custom error response
+            \Log::error('acceptConnection error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Dados de convite corrompidos.'], 422);
+        }
+
         if($hostUserId && $questUserParams){
             $decodeQuestUserParams = $questUserParams ? json_decode($questUserParams, true) : null;
-                $guestUserRole = $decodeQuestUserParams->role ?? 4;
-                $questUserCompanies = $decodeQuestUserParams->companies ?? [];
+            $guestUserRole = $decodeQuestUserParams['role'] ?? 4;
+            $questUserCompanies = isset($decodeQuestUserParams['companies']) && is_array($decodeQuestUserParams['companies']) ? array_map('intval', $decodeQuestUserParams['companies']) : [];
 
             self::setConnectionData($questUserId, $hostUserId, $guestUserRole, 'active', $questUserCompanies);
         }
@@ -79,8 +108,12 @@ class UserConnections extends Model
     {
         $hostId = auth()->id();
 
+        // TODO STRIPE:
+            // implement Stripe routine to cancel that subscription addon
+
         return DB::connection('vpOnboard')->table('user_connections')
             ->where('connected_to', $hostId)
+            ->where('connection_status', 'active')
             ->update([
                 'connection_status' => 'inactive'
             ]);
@@ -334,10 +367,16 @@ class UserConnections extends Model
         if($currentStatus == 'active'){
             $questUserNewStatus = 'revoked';
             $message = 'A conexão foi revogada';
+
+            // TODO STRIPE:
+                // implement Stripe routine to cancel that subscription addon
         }
         if($currentStatus == 'revoked'){
             $questUserNewStatus = 'active';
             $message = 'A conexão foi restabelecida';
+            // TODO STRIPE:
+                // implement Stripe routine to active that subscription addon
+                // ATTENTION: When qUEST revoked, check if host have active subscription
         }
 
         // Update quest status record

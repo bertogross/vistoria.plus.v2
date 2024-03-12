@@ -92,7 +92,7 @@
                         <input type="text" name="user_name" id="user_name" class="form-control" value="{{$user->name}}" maxlength="100" @error('user_name') is-invalid @enderror required>
                         @error('user_name')
                             <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
+                                <strong>{!! $message !!}</strong>
                             </span>
                         @enderror
                     </div>
@@ -105,7 +105,7 @@
                         </div>
                         @error('password')
                             <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
+                                <strong>{!! $message !!}</strong>
                             </span>
                         @enderror
                         <div class="form-text">

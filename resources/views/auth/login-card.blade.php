@@ -9,18 +9,18 @@
         </div>
         <div class="p-2 mt-4">
 
-            <form id="loginForm" action="{{ route('login') }}" method="POST">
+            <form id="loginForm" class="no-enter-submit" action="{{ route('login') }}" method="POST">
                 @csrf
 
-                <input type="hidden" name="host_user_id" value="{{ $hostUserId ?? '' }}">
-                <input type="hidden" name="quest_user_params" value="{{ $questUserParams ?? '' }}">
+                <input type="hidden" name="host_user_id" value="{{ isset($hostUserId) ? $hostUserId : '' }}">
+                <input type="hidden" name="quest_user_params" value="{{ isset($questUserParams) ? $questUserParams : '' }}">
 
                 <div class="mb-3">
                     <label for="username" class="form-label">E-mail</label>
-                    <input type="text" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', '') }}" id="username" name="email" placeholder="Informe o e-mail" required>
+                    <input type="text" class="form-control @error('email') is-invalid @enderror" value="{{ isset($questUserEmail) ? $questUserEmail : old('email', '') }}" id="username" name="email" placeholder="Informe o e-mail" required>
                     @error('email')
                         <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
+                            <strong>{!! $message !!}</strong>
                         </span>
                     @enderror
                 </div>
@@ -35,7 +35,7 @@
                         <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button" id="password-addon"><i class="ri-eye-fill align-middle"></i></button>
                         @error('password')
                             <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
+                                <strong>{!! $message !!}</strong>
                             </span>
                         @enderror
                     </div>

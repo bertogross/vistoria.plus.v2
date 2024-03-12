@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\OnboardController;
 use Illuminate\Support\Facades\Crypt;
 
+
 /**
  * SettingsUserController
  *
@@ -65,21 +66,24 @@ class SettingsUserController extends Controller
             return response()->json(['success' => false, 'action' => 'subscriptionAlert', 'message' => "Para prosseguir você deverá primeiramente ativar sua assinatura"], 200);
         }
 
+        $getQuestUserStatus = null;
+
         $messages = [
             'role.required' => 'Selecione o nível.',
+            'role.in' => 'O nível selecionado é inválido',
             'email.required' => 'Informe o e-mail.',
             'email.email' => 'Informe um e-mail válido.',
             'email.max' => 'O e-mail não pode ter mais de 100 caracteres.',
         ];
         $validatedData = $request->validate([
             'email' => 'required|email|max:100',
-            'role' => 'required|role',
+            'role' => 'required|in:2,3,4'
         ], $messages);
 
         $hostUser = auth()->user();
-        $hostUserName= $currentUser->name;
-        $hostUserId = $currentUser->id;
-        $hostUserEmail = $currentUser->email;
+        $hostUserName= $hostUser->name;
+        $hostUserId = $hostUser->id;
+        $hostUserEmail = $hostUser->email;
 
         $questUserEmail = $validatedData['email'];
 
@@ -97,23 +101,16 @@ class SettingsUserController extends Controller
             $questUserName = $guestExists->name;
             $questUserEmail = $guestExists->email;
 
-            /*$guestExistsAndIsConnected = DB::connection('vpOnboard')
-                ->table('user_connections')
-                ->where('user_id', $questUserId)
-                ->where('connected_to', $hostUserId)
-                ->first();*/
+            $getUserDataFromConnectedAccountId = UserConnections::getUserDataFromConnectedAccountId($questUserId, $hostUserId);
+            $getQuestUserStatus = isset($getUserDataFromConnectedAccountId->status) ? $getUserDataFromConnectedAccountId->status : null;
         }
-
-        $getUserDataFromConnectedAccountId = UserConnections::getUserDataFromConnectedAccountId($questUserId, $hostUserId);
-        $getQuestUserStatus = isset($getUserDataFromConnectedAccountId->status) ? $getUserDataFromConnectedAccountId->status : null;
-
 
         $questUserRole = $request->input('role', 4);
         if (!in_array($questUserRole, [2, 3, 4, 5])) {
             return response()->json(['success' => false, 'message' => "Selecione o Nível"], 200);
         }
 
-        $questUserCompanies = $request->has('companies') && is_array($request->companies) ? json_encode(array_map('intval', $request->companies)) : null;
+        $questUserCompanies = $request->has('companies') && is_array($request->companies) ? $request->companies : null;
 
         $params = array(
             'role' => $questUserRole,
@@ -121,13 +118,13 @@ class SettingsUserController extends Controller
         );
         $paramsEncoded = json_encode($params);
 
-        if ($getQuestUserStatus) {// check if user have a connection with hostUserId
+        if ($guestExists && $getQuestUserStatus) {// check if user have a connection with hostUserId
             if( $getQuestUserStatus != 'active'){
                 $message = 'O usuário de e-mail '.$questUserEmail.' já possui uma conexão com seu ' . env('APP_NAME') . ' mas seu status foi desativado.<br><br>';
 
-                switch ($questUserConnectionStatus) {
+                switch ($getQuestUserStatus) {
                     case 'inactive':
-                        $message .= '&#x2022; Você poderá ativar acessando seu painel em ' . route('settingsAccountShowURL') . '/tab=users';
+                        $message .= '&#x2022; Você poderá ativar acessando seu painel em <a href="'.route('settingsAccountShowURL').'">' . route('settingsAccountShowURL') . '/tab=users</a>';
                         break;
                     case 'waiting':
                         $message .= '&#x2022; Este usuário ainda não aceitou seu convite.';
@@ -149,7 +146,7 @@ class SettingsUserController extends Controller
 
             //Send mail invite notification message for this user
             $content = '
-                '.$hostUserName.' está lhe convidando para colaborar em suas tarefas. Para aceitar <a href="' . route('invitationResponseURL') . '/'. $connectionCode . '">clique aqui</a>.<br><br>Se isto foi um erro ou você desconhece <u>' . $hostUserName . '</u>, apenas ignore esta mensagem.
+                <strong>'.$hostUserName.'</strong> está lhe convidando para colaborar em suas tarefas. Para aceitar <a href="' . route('invitationResponseURL') . '/'. $connectionCode . '">clique aqui</a>.<br><br><small>Se isto foi um erro e/ou você desconhece <u>' . $hostUserName . '</u>, apenas ignore esta mensagem</small>.
             ';
 
             appSendEmail($questUserEmail, $questUserName, 'Convite de Colaboração', $content, $template = 'default');
@@ -158,17 +155,9 @@ class SettingsUserController extends Controller
         } else {
             $connectionCode = Crypt::encryptString($hostUserId . '~~~' . $questUserEmail . '~~~' . $paramsEncoded);
 
-            //If user dont exists, create a new one with status '3'. 3 == invited.
-            /*$data = [
-                'name' => '',
-                'email' => $questUserEmail,
-                'status' => 2,
-            ];
-            RegisterController::register($data);*/
-
             //Send mail message for this user
             $content = '
-                '.$hostUserName.' está lhe convidando para colaborar em suas tarefas. Para registrar-se gratuitamente no ' . env('APP_NAME') . ' <a href="' . route('registerURL') . '/' . $connectionCode . '">clique aqui</a>.<br><br>Se isto foi um erro ou você desconhece <u>' . $hostUserName . '</u>, apenas ignore esta mensagem.
+                <strong>'.$hostUserName.'</strong> está lhe convidando para colaborar em suas tarefas. Para registrar-se gratuitamente no ' . env('APP_NAME') . ' <a href="' . route('invitationResponseURL') . '/' . $connectionCode . '">clique aqui</a>.<br><br><small>Se isto foi um erro e/ou você desconhece <u>' . $hostUserName . '</u>, apenas ignore esta mensagem</small>.
             ';
 
             appSendEmail($questUserEmail, '', 'Convite de Colaboração', $content, $template = 'default');
@@ -190,12 +179,14 @@ class SettingsUserController extends Controller
             return response()->json(['success' => false, 'message' => "Para prosseguir você deverá primeiramente ativar sua assinatura"], 200);
         }
 
-        /*$messages = [
-            'role.required' => 'Selecione o nível'
+        $messages = [
+            'role.required' => 'Selecione o nível',
+            'role.in' => 'O nível selecionado é inválido',
         ];
+
         $validatedData = $request->validate([
-            'role' => 'required|role'
-        ], $messages);*/
+            'role' => 'required|in:2,3,4'
+        ], $messages);
 
         $hostUser = auth()->user();
         $hostUserId = $hostUser->id;
@@ -234,14 +225,14 @@ class SettingsUserController extends Controller
     /**
      * Update or create a user's meta data.
      */
-    public function updateUserMeta($userId, $metaKey, $metaValue)
+    /*public function updateUserMeta($userId, $metaKey, $metaValue)
     {
         // Update or create user meta
         UserMeta::updateOrCreate(
             ['user_id' => $userId, 'meta_key' => $metaKey],
             ['meta_value' => $metaValue]
         );
-    }
+    }*/
 
     /**
      * Get the content for the user modal.

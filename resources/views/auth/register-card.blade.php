@@ -8,27 +8,27 @@
         </div>
         <div class="p-2 mt-4">
 
-            <form id="registerForm" action="{{ route('register') }}" method="POST">
+            <form id="registerForm" class="no-enter-submit" action="{{ route('register') }}" method="POST">
                 @csrf
 
-                <input type="hidden" name="host_user_id" value="{{ $hostUserId ?? '' }}">
-                <input type="hidden" name="quest_user_params" value="{{ $questUserParams ?? '' }}">
+                <input type="hidden" name="host_user_id" value="{{ isset($hostUserId) ? $hostUserId : '' }}">
+                <input type="hidden" name="quest_user_params" value="{{ isset($questUserParams) ? $questUserParams : '' }}">
 
                 <div class="mb-3">
-                    <label for="useremail" class="form-label">E-mail</label>
-                    <input type="email"  class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" id="useremail" placeholder="Informe seu e-mail" maxlength="150" required>
-                    @error('email')
+                    <label for="new_useremail" class="form-label">E-mail</label>
+                    <input type="email"  class="form-control @error('register_email') is-invalid @enderror" name="register_email" value="{{ isset($questUserEmailFromInvitation) && !$questUserEmail ? $questUserEmailFromInvitation : old('register_email') }}" id="new_useremail" placeholder="Informe seu e-mail" maxlength="150" required>
+                    @error('register_email')
                         <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
+                            <strong>{!! $message !!}</strong>
                         </span>
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="username" class="form-label">Nome</label>
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" id="username" placeholder="Informe seu nome" maxlength="100" required>
-                    @error('name')
+                    <label for="new_username" class="form-label">Nome</label>
+                    <input type="text" class="form-control @error('register_name') is-invalid @enderror" name="register_name" value="{{ old('register_name') }}" id="new_username" placeholder="Informe seu nome" maxlength="100" required>
+                    @error('register_name')
                         <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
+                            <strong>{!! $message !!}</strong>
                         </span>
                     @enderror
                 </div>

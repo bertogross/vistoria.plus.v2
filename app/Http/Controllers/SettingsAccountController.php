@@ -91,6 +91,8 @@ class SettingsAccountController extends Controller
         $this->updateOrInsertSetting('phone', $cleanedPhone);
 
         return redirect()->back()->with('success', 'Dados da Conta atualizados com êxito!');
+
+        return redirect(route('settingsAccountShowURL').'?tab=account')->with('success', 'Dados da Conta atualizados com êxito!');
     }
 
     public function updateUser(Request $request)
@@ -113,7 +115,8 @@ class SettingsAccountController extends Controller
         ], $messages);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->withInput();
+            //return redirect()->back()->withErrors($validator->errors())->withInput();
+            return redirect(route('settingsAccountShowURL').'?tab=account')->withErrors($validator->errors())->withInput();
         }
 
         $user = auth()->user();
@@ -132,7 +135,8 @@ class SettingsAccountController extends Controller
         // Save the changes
         $user->save();
 
-        return redirect()->back()->with('success', 'Dados de Usuário atualizados com êxito!');
+        //return redirect()->back()->with('success', 'Dados de Usuário atualizados com êxito!');
+        return redirect(route('settingsAccountShowURL').'?tab=account')->with('success', 'Dados de Usuário atualizados com êxito!');
     }
 
     /**

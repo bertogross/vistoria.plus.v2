@@ -28,6 +28,7 @@
         $subscriptionData = getSubscriptionData();
         //appPrintR($subscriptionData);
         $subscriptionType = $subscriptionData['subscription_type'] ?? 'free';
+        //appPrintR($subscriptionType);
 
         $tab = request('tab', null);
         $tab = $tab && in_array($tab, ['invoices', 'subscription', 'users', 'addons', 'account']) ? $tab : null;
@@ -44,7 +45,9 @@
 
                         <a class="nav-link text-uppercase {{ $tab == 'users' ? 'active show' : '' }}" id="v-pills-stripe-users-tab" data-bs-toggle="pill" href="#v-pills-stripe-users" role="tab" aria-controls="v-pills-stripe-users" aria-selected="false">Usuários Conectados</a>
 
-                        <a class="nav-link text-uppercase {{ $tab == 'addons' ? 'active show' : '' }}" id="v-pills-stripe-addons-tab" data-bs-toggle="pill" href="#v-pills-stripe-addons" role="tab" aria-controls="v-pills-stripe-addons" aria-selected="false">Complementos</a>
+                        @if (env('APP_DEBUG'))
+                            <a class="nav-link text-uppercase {{ $tab == 'addons' ? 'active show' : '' }}" id="v-pills-stripe-addons-tab" data-bs-toggle="pill" href="#v-pills-stripe-addons" role="tab" aria-controls="v-pills-stripe-addons" aria-selected="false">Complementos</a>
+                        @endif
 
                         <a class="nav-link text-uppercase {{ $tab == 'account' ? 'active show' : '' }}" href="#v-pills-account" id="v-pills-account-tab" data-bs-toggle="pill" role="tab" aria-controls="v-pills-account" aria-selected="true">Dados da Conta</a>
                     </div>

@@ -16,6 +16,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load the content for the user modal
     function loadUserSettingsModal(userId = null, userTitle = '', origin = null) {
+
+        if(origin == 'survey'){
+            sweetAlert('Para convidar um membro a fim de colaborar som suas tarefas, acesse <a href="'+settingsAccountShowURL+'/tab=users">Configurações >> Usuários</a>')
+
+            return;
+        }
+
         var xhr = new XMLHttpRequest();
 
         showPreloader();
@@ -154,7 +161,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const origin = btnSaveUser.getAttribute('data-origin');
 
                 const userId = form.querySelector('input[name="user_id"]').value;
-
 
                 if (!form.checkValidity()) {
                     event.stopPropagation();

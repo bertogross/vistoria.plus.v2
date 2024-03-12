@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\UserConnections;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Cookie;
 
 class RegisterController extends Controller
 {
@@ -46,24 +47,19 @@ class RegisterController extends Controller
 
         // Define custom messages
         $messages = [
-            'name.required' => 'Informe seu nome.',
-            'name.string' => 'O nome deve conter letras.',
-            'name.max' => 'O nome deve contar no máximo 100 caracteres.',
-            'email.required' => 'Informe um e-mail.',
-            'email.string' => 'Informe um e-mail válido.',
-            'email.email' => 'Informe um e-mail válido.',
-            'email.max' => 'O e-mail não deve conter mais de 150 caracteres.',
-            'email.unique' => 'O e-mail '.$data['email'].' já está sendo utilizado nesta plataforma.',
+            'register_name.required' => 'Informe seu nome.',
+            'register_name.string' => 'O nome deve conter letras.',
+            'register_name.max' => 'O nome deve contar no máximo 150 caracteres.',
+            'register_email.required' => 'Informe um e-mail.',
+            'register_email.string' => 'Informe um e-mail válido.',
+            'register_email.email' => 'Informe um e-mail válido.',
+            'register_email.max' => 'O e-mail não deve conter mais de 150 caracteres.',
+            'register_email.unique' => 'O e-mail <u>'.$data['register_email'].'</u> já está sendo utilizado nesta plataforma.<br><strong class="text-warning">Preencha o formulário de Login.</strong>',
         ];
         $validator = Validator::make($data, [
-            'name' => 'required|string|max:100',
-            'email' => 'required|string|email|max:150|unique:users',
+            'register_name' => 'required|string|max:150',
+            'register_email' => 'required|string|email|max:150|unique:users,email',
         ], $messages);
-
-        /*$userExists = User::findUserByEmail($data['email']);
-        if($userExists){
-            return redirect()->back()->withErrors(['email' => 'E-mail '.$data['email'].' já existe na base de dados']);
-        }*/
 
         if ($validator->fails()) {
             // Redirect back with input and errors
@@ -71,12 +67,17 @@ class RegisterController extends Controller
             return redirect()->back()->withErrors($validator->errors())->withInput();
         }
 
+        $userExists = User::findUserByEmail($data['register_email']);
+        if($userExists){
+            return redirect()->back()->withErrors(['register_email' => 'O e-mail <u>'.$data['register_email'].'</u> já está sendo utilizado nesta plataforma.<br><strong class="text-warning">Preencha o formulário de Login.</strong>']);
+        }
+
         // Generate a 16-character random string
         $password = Str::random(16);
 
         $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
+            'name' => $data['register_name'],
+            'email' => $data['register_email'],
             'password' => Hash::make($password),
             'status' => $data['status'] ?? 1, // status:  0 = inactive | 1 = active | 2 = invited
         ]);
@@ -88,12 +89,12 @@ class RegisterController extends Controller
             // Connect to another account
             UserConnections::acceptConnection($request, $user->id);
 
-            $content = '<br><strong style="font-weight:600;">E-mail de Login: </strong>' . $data['email'];
+            $content = '<br><strong style="font-weight:600;">E-mail de Login: </strong>' . $data['register_email'];
             $content .= '<br><strong style="font-weight:600;">Senha: </strong>' . $password;
 
             // Send e-mail with welcome tempalte message and login data
-            if(appSendEmail($data['email'], $data['name'], 'Seu Registro no ' . appName(), $content, $template = 'welcome')){
-                return redirect()->route('registerSuccessURL')->with('success', 'Registro realizado com sucesso!<br>Uma mensagem contendo os dados de acesso foram enviados ao e-mail ' . $data['email'] . '<br><br>Você também poderá copiar as seguintes informações:' . $content);
+            if(appSendEmail($data['register_email'], $data['register_name'], 'Seu Registro no ' . appName(), $content, $template = 'welcome')){
+                return redirect()->route('registerSuccessURL')->with('success', 'Registro realizado com sucesso!<br>Uma mensagem contendo os dados de acesso foram enviados ao e-mail ' . $data['register_email'] . '<br><br>Você também poderá copiar as seguintes informações:' . $content);
             }else{
                 return redirect()->route('registerSuccessURL')->with('success', 'Registro realizado com sucesso!<br><br>Copie seus dados de acesso:' . $content);
             }
@@ -103,18 +104,32 @@ class RegisterController extends Controller
     }
 
 
-    public function invitationResponse($connectionCode = null)
+    public function invitationResponse(Request $request, $connectionCode = null)
     {
-        if($connectionCode){
-            $decryptedValue = Crypt::decryptString($connectionCode);
-            $connectionCode = explode('~~~', $decryptedValue);
+        $hostUserId = $questUserParams = $hostUserIdCookie = $questUserParamsCookie = null;
 
-        }else{
-            $connectionCode = null;
+        if ($connectionCode) {
+            $decryptedValue = Crypt::decryptString($connectionCode);
+            $connectionCodeParts = $decryptedValue ? explode('~~~', $decryptedValue) : null;
+
+            $hostUserId = $connectionCodeParts[0] ? Crypt::encryptString($connectionCodeParts[0]) : null;
+            $questUserParams = $connectionCodeParts[2] ? Crypt::encryptString($connectionCodeParts[2]) : null;
+
+            // Create cookies
+            //$hostUserIdCookie = cookie('vistoriaplus_hostUserId', $hostUserId, 60*24*30); // Expires in 30 days
+            //$questUserParamsCookie = cookie('vistoriaplus_questUserParams', $questUserParams, 60*24*30); // Expires in 30 days
         }
 
-        return view('auth.invitation', compact('connectionCode'));
-
+        // Attach cookies to the response
+        return response()->view('auth.invitation', compact(
+                    'connectionCodeParts',
+                    'hostUserId',
+                    'questUserParams'
+                )
+            );
+            //->cookie($hostUserIdCookie)
+            //->cookie($questUserParamsCookie);
     }
+
 
 }

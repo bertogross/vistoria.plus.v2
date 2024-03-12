@@ -7,18 +7,37 @@ https://devdojo.com/bobbyiliev/how-to-quickly-change-the-password-for-a-user-in-
 https://laravel-news.com/openai-for-laravel
 
 
-# TODO
-- btn-accept-invitation
-- test subscription and webhook
-    - if subscription ok, write store data via webhook
+# TODO STRIPE
+- If user cancell subscription, cancel all and change active users to inactive
 - add users and update subscription
     - add/remove users and check/count users and update addons subscriptions
-    - update addon subscription storage
+    - update addon subscription storage and the used space and alert about lost data
+    -- Search for TODO STRIPE setConnectionData function
+
+- When user revoked, check when user try reconnect if host have active subscription
+
+- is user reactive account, show alert with info about inactive users and suggest to reconnect
+    - if reconected, restart subscription addon
+
+- Whein user accept invitation, start stripe addmon user subscription
+
+# TODO
+- test subscription and webhook
+    - if subscription ok, write store data via webhook
+
 
 
 
 Version 1.0.43 - [2024/03/10]
 - [Updated] addon subscription storage
+- [Updated] RegisterController
+- [Updated] LoginController
+- [Updated] UserConnections model
+- [Updated] SettingsUserController
+- [Updated] SettingsAccountController
+- [Updated] auth\login-card
+- [Updated] auth\register-card
+- [Updated] auth\invitation
 
 
 

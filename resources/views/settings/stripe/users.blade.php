@@ -2,6 +2,7 @@
 @php
     use App\Models\User;
     $countActive = 0;
+    //appPrintR($users);
 @endphp
 <button type="button" id="btn-add-user" class="btn btn-sm btn-label right btn-outline-theme float-end waves-effect" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Adicionar Usuário">
     <i class="ri-user-add-line label-icon align-middle fs-16 ms-2"></i>Adicionar
@@ -13,23 +14,23 @@
 
 <div class="row mt-4">
 
-    <div class="table-responsive">
-        <table class="table align-middle table-nowrap table-bordered table-striped">
-            <thead class="table-light text-uppercase">
-                <tr>
-                    <th scope="col">Usuário</th>
-                    <th scope="col" width="140">Desde</th>
-                    <th scope="col">Nível</th>
-                    <th scope="col">Unidades Autorizadas</th>
-                    <th scope="col">Status</th>
-                    {{--
-                    <th scope="col">Valor</th>
-                    --}}
-                    <th scope="col" width="82"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (!empty($users))
+    @if ($users->isNotEmpty())
+        <div class="table-responsive">
+            <table class="table align-middle table-nowrap table-bordered table-striped">
+                <thead class="table-light text-uppercase">
+                    <tr>
+                        <th scope="col">Usuário</th>
+                        <th scope="col" width="140">Desde</th>
+                        <th scope="col">Nível</th>
+                        <th scope="col">Unidades Autorizadas</th>
+                        <th scope="col">Status</th>
+                        {{--
+                        <th scope="col">Valor</th>
+                        --}}
+                        <th scope="col" width="82"></th>
+                    </tr>
+                </thead>
+                <tbody>
                     @foreach ($users as $key => $user)
                         @php
                             $userId = $user->user_id;
@@ -116,28 +117,24 @@
                             </td>
                         </tr>
                     @endforeach
-                @else
-                    <tr>
-                        <td>
-                            @component('components.nothing')
-                                @slot('text', 'Ainda não há membros na equipe de '.getCurrentConnectionName().'')
-                            @endcomponent
-                        </td>
-                    </tr>
+                </tbody>
+                {{--
+                @if (!empty($users))
+                    <tfoot class="table-light">
+                        <tr>
+                            <td colspan="5"></td>
+                            <td>{{($countActive > 0 ? brazilianRealFormat($countActive * 45, 2) : '-')}}</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
                 @endif
-            </tbody>
-            {{--
-            @if (!empty($users))
-                <tfoot class="table-light">
-                    <tr>
-                        <td colspan="5"></td>
-                        <td>{{($countActive > 0 ? brazilianRealFormat($countActive * 45, 2) : '-')}}</td>
-                        <td></td>
-                    </tr>
-                </tfoot>
-            @endif
-            --}}
-        </table>
-    </div>
+                --}}
+            </table>
+        </div>
+    @else
+        @component('components.nothing')
+            @slot('text', 'Ainda não há membros na equipe de '.getCurrentConnectionName().'')
+        @endcomponent
+    @endif
 
 </div>
