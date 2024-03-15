@@ -109,7 +109,13 @@
                         <div class="p-2">
                             <div class="row g-0">
                                 <div class="col">
-                                    <a class="dropdown-icon-item" href="{{ route('surveysIndexURL') }}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="bottom"  title="Acessar a sessão Checklists da conta <strong>{{$currentConnectionName}}</strong>">
+                                    <a class="dropdown-icon-item"
+                                    @if ($user->id != $currentConnectionId)
+                                        onclick="alert('Para acessar seus Checklists, alterne para conta Principal')"
+                                    @else
+                                        href="{{ route('surveysIndexURL') }}"
+                                    @endif
+                                    data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="bottom" title="Acessar a sessão Checklists da conta <strong>{{$currentConnectionName}}</strong>">
                                         <i class="ri-checkbox-line text-theme fs-1"></i>
                                         <span>Checklists</span>
                                     </a>
@@ -203,13 +209,13 @@
                                                     <span class="position-absolute text-warning float-end me-0 end-0 ri-question-line align-middle mt-n1 fs-16 btn-accept-invitation cursor-pointer"
                                                     {!! $dataBs !!}
                                                     data-bs-title="Status da Conexão"
-                                                    data-bs-content="Aguardando seu consentimento para acesso ao <strong>{{$hostUserName}}</strong>.<br>Clique para aceitar."></span>
+                                                    data-bs-content="Aguardando seu consentimento para acesso ao <strong>{{$hostUserName}}</strong>.<br>Clique para aceitar." data-host-id="{{$hostUserId}}" data-host-name="{{$hostUserName}}"></span>
                                                     @break
                                                 @case('inactive')
-                                                    <span class="position-absolute text-danger float-end me-0 end-0 ri-close-circle-line align-middle mt-n1 fs-16"
+                                                    <span class="position-absolute text-danger float-end me-0 end-0 ri-question-line align-middle mt-n1 fs-16"
                                                     {!! $dataBs !!}
                                                     data-bs-title="Status da Conexão"
-                                                    data-bs-content="<strong class='text-danger'>Inoperante</strong><br><br>Consulte <strong>{{$hostUserName}}</strong> quanto da sua necessidade de reativação"></span>
+                                                    data-bs-content="<strong class='text-danger'>Inoperante</strong><br><br>Consulte <u>{{$hostUserName}}</u> quanto da viabilidade de reativação"></span>
                                                     @break
                                                 @case('revoked')
                                                     <span class="position-absolute text-warning float-end me-0 end-0 ri-question-line align-middle mt-n1 fs-16"
@@ -222,7 +228,7 @@
                                                     <span class="position-absolute text-success float-end me-0 end-0 ri-checkbox-circle-line align-middle mt-n1 fs-16"
                                                     {!! $dataBs !!}
                                                     data-bs-title="Status da Conexão"
-                                                    data-bs-content="Seu acesso ao <strong>{{$hostUserName}}</strong> está <span class='text-success'>Ativo</span>"></span>
+                                                    data-bs-content="Seu conexão a conta de <u>{{$hostUserName}}</u> está <span class='text-success'>Ativa</span>"></span>
                                             @endswitch
 
                                             <span class="badge border border-dark text-body float-end ms-2 me-4"
@@ -297,7 +303,7 @@
 
                         <a class="dropdown-item"
                             @if ($user->id != $currentConnectionId)
-                                onclick="alert('Para acessar suas configurações alterne para conta Principal')"
+                                onclick="alert('Para acessar Configurações, alterne para conta Principal')"
                             @else
                                 href="{{ route('settingsAccountShowURL') }}"
                             @endif

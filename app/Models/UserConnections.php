@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\UserMeta;
 use App\Models\User;
 use App\Models\Stripe;
+use App\Models\SurveyResponse;
 use Illuminate\Support\Facades\Crypt;
 
 /**
@@ -72,7 +73,6 @@ class UserConnections extends Model
 
         // Stripe routine to cancel/active user subscription product_type == users
         return Stripe::subscriptionGuestUserAddonUpdate();
-
     }
 
     // Accpet connection to another account
@@ -209,7 +209,6 @@ class UserConnections extends Model
     // When the quest user decides to log out of another account
     public function revokeConnection(Request $request)
     {
-
         $hostUserId = $request->json('id');
 
         if(!$hostUserId){
@@ -293,11 +292,68 @@ class UserConnections extends Model
         }
 
         return response()->json([
-            'success' => true,
-            'status' => $guestUserNewStatus,
-            'message' => $message
+                'success' => true,
+                'status' => $guestUserNewStatus,
+                'message' => $message
             ], 200);
 
+    }
+
+    // Delete Guest
+    // Check if are posts. If not, delete. If has, mantain.
+    public function deleteGuestFromHostId($guestId, $hostId)
+    {
+        $onboardConnection = DB::connection('vpOnboard');
+
+        $error = response()->json([
+            'success' => false,
+            'message' => 'Não foi possível remover esta conexão.'
+        ], 400);
+
+        $guestUser = User::find($guestId);
+        if(!$guestUser){
+            return $error;
+        }
+
+        $hostUser = User::find($hostId);
+        if(!$hostUser){
+            return $error;
+        }
+
+        // check if $questId has the $hostId connection
+        $getHostConnection = self::getGuestDataFromConnectedHostId($guestId, $hostId);
+        if(!$getHostConnection){
+            return $error;
+        }
+
+        // Check if $guest have posts
+        $postsExixts = SurveyAssignments::where('surveyor_id', $guestId)
+            ->count();
+        if($postsExixts){
+            return response()->json([
+                'success' => false,
+                'message' => 'Não foi possível remover esta conexão pois este usuário possui registros.'
+            ], 400);
+        }else{
+            // Delete user
+            try {
+                $deleted = $query = $onboardConnection->table('user_connections')
+                    ->where('quest_id', $questId)
+                    ->where('host_id', $hostId)
+                    ->delete();
+
+                if ($deleted) {
+                    // return response()->json(['success' => true, 'message' => 'Conexão removida.'], 200);
+                    return true;
+                } else {
+                    return $error;
+                }
+            } catch (\Exception $e) {
+                \Log::error('Error to delete connection: ' . $e->getMessage());
+
+                return response()->json(['success' => false, 'message' => 'Um erro ocorreu ao tentar remover esta conexão: ' . $e->getMessage()]);
+            }
+        }
     }
 
     // Unset all users connected in current account connections
@@ -421,7 +477,6 @@ class UserConnections extends Model
         return $query ?? null;
     }
 
-
     // Check if quest revoke connection or host turn user connection off
     public static function connectedAccountStatus($guestId)
     {
@@ -432,5 +487,69 @@ class UserConnections extends Model
         return $connectedAccount->status ?? null;
     }
 
+    public function acceptOrDeclineConnection(Request $request)
+    {
+        $error = response()->json([
+            'success' => false,
+            'message' => 'Não foi possível estabelecer uma conexão.'
+        ], 400);
+
+        if(!auth()->check()){
+            return $error;
+        }
+
+        $guestId = auth()->id();
+
+        $hostId = $request->json('hostId');
+        $decision = $request->json('decision');
+
+        $hostUser = User::find($hostId);
+        if(!$hostUser){
+            return $error;
+        }
+
+        // check if $questId has the $hostId invitation
+        $getHostConnections = getHostConnections($guestId);
+        $firstConnection = $getHostConnections->first();
+        if(!$firstConnection){
+            return $error;
+        }
+
+        if($hostId && in_array($decision, ['accept', 'decline'])){
+
+            if($decision == 'decline'){
+                self::deleteGuestFromHostId($guestId, $hostId);
+
+                // Send message notification to host
+                $hostUserData = getUserData($hostId);
+                $hostEmail = $hostUserData->email;
+                $hostName = $hostUserData->name;
+
+                $guestUserData = getUserData($guestId);
+                $guestEmail = $guestUserData->email;
+                $guestName = $guestUserData->name;
+
+                $message = "O convite que você enviou a $guestEmail para colaborar em sua conexão não foi aceito. <br><br>Por favor, verifique se o endereço de e-mail está correto. Se você acredita que houve um equívoco, entre em contato diretamente com a pessoa. Se necessário, envie um novo convite.";
+
+                appSendEmail($hostEmail, $hostName, 'A Conexão foi Recusada :: [ ' . $guestName . ' ]', $message, 'default');
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'O convite para conexão foi recusado.'
+                ], 200);
+            }else{
+                self::setConnectionData($guestId, $hostId, 3, 'active');
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Conexão estabelecida.'
+                ], 200);
+            }
+
+        }else{
+            return $error;
+        }
+
+    }
 
 }

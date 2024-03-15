@@ -26,9 +26,16 @@ class SurveysController extends Controller
 {
     public function index(Request $request)
     {
+
         Cache::flush();
 
         $currentUserId = auth()->id();
+
+        $currentConnectionId = getCurrentConnectionByUserId($currentUserId);
+        if ( ( $request->is('surveys') || $request->is('/') ) && $currentUserId != intval($currentConnectionId)) {
+            return redirect(route('profileShowURL', $currentUserId));
+        }
+
 
         // Usefull if crontab or Kernel schedule is losted
         Survey::populateSurveys();

@@ -299,8 +299,18 @@ document.addEventListener('DOMContentLoaded', function() {
                                     }
                                 }
 
+
+                                const checkedControlUsers = form.querySelectorAll(".tab-pane.show .form-check-input-users:checked");
+
+                                const selectedCompanies = form.querySelectorAll(".tab-pane .form-check-input-companies:checked");
+
+                                if (checkedControlUsers.length < selectedCompanies.length) {
+                                    toastAlert('Necessário delegar para cada Unidade Ativa as respectivas Atribuições', 'danger', 10000);
+                                    return;
+                                }
+
                                 navigateToTab(nextTab);
-                            } else if (nextTab === 'steparrow-success-tab') {
+                            /*} else if (nextTab === 'steparrow-success-tab') {
                                 const checkedControlUsers = form.querySelectorAll(".tab-pane.show .form-check-input-users:checked");
 
                                 const selectedCompanies = form.querySelectorAll(".tab-pane .form-check-input-companies:checked");
@@ -310,7 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     return;
                                 }
 
-                                navigateToTab(nextTab);
+                                navigateToTab(nextTab);*/
                             } else {
                                 navigateToTab(nextTab);
                             }
@@ -468,6 +478,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }*/
+    /*
     function surveyCheckAllFormCheckInputs(origin = null) {
         // This function is designed to be called with an optional 'origin' parameter.
         // It sets up event listeners on checkboxes to manage related radio buttons within the same 'company' group.
@@ -507,6 +518,62 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    */
+    function surveyCheckAllFormCheckInputs(origin = null) {
+        // Attach change event listeners only to company checkboxes to avoid redundant event attachment.
+        const companyCheckboxes = document.querySelectorAll('.form-check-input-companies');
+
+        companyCheckboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                // Use the checkbox value to identify the corresponding column
+                let companyId = this.value;
+                let column = document.getElementById(`distributed-tab-company-${companyId}`);
+
+                // Proceed only if the column is found
+                if (column) {
+                    // Find all surveyor radio buttons within the identified column
+                    const surveyorRadios = column.querySelectorAll('.form-check-input-users');
+
+                    // Enable or disable all surveyor radios based on the company checkbox's state
+                    surveyorRadios.forEach(function(radio) {
+                        //radio.disabled = !checkbox.checked; // Disable if company is unchecked, enable if checked
+                        if (!checkbox.checked) {
+                            radio.checked = false; // Additionally uncheck if company is unchecked
+                        }
+                    });
+                }
+            });
+
+            // Apply the initial state logic immediately if called with 'origin' as 'survey'.
+            if (origin === 'survey') {
+                let companyId = checkbox.value;
+                let column = document.getElementById(`distributed-tab-company-${companyId}`);
+                if (column) {
+                    const surveyorRadios = column.querySelectorAll('.form-check-input-users');
+                    surveyorRadios.forEach(function(radio) {
+                        //radio.disabled = !checkbox.checked; // Disable if company is unchecked, enable if checked
+                        radio.checked = checkbox.checked; // Synchronize checked state immediately
+                    });
+                }
+            }
+
+            // Prevent checking surveyor radio buttons if the corresponding company checkbox is not checked.
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('form-check-input-users')) {
+                    const companyId = event.target.name.match(/\d+/)[0]; // Assuming the name attribute contains the company ID.
+                    const companyCheckbox = document.querySelector(`.form-check-input-companies[value="${companyId}"]`);
+
+                    if (companyCheckbox && !companyCheckbox.checked) {
+                        console.log('Company not checked - preventing check');
+                        event.preventDefault(); // Prevent the radio button from being checked.
+                        return false; // For older browsers.
+                    }
+                }
+            }, true);
+
+        });
+    }
+
     // Attach it to the window object to get from another file (similar export)
     //window.surveyCheckAllFormCheckInputs = surveyCheckAllFormCheckInputs;
 
@@ -559,6 +626,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         loadUsersTabDiv.innerHTML = responseText;
 
                         surveyCheckAllFormCheckInputs(origin);
+
+                        bsPopoverTooltip();
                     }
                 } else {
                     // Handle HTTP error (response.ok is false)

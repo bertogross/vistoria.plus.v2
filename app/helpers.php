@@ -84,8 +84,8 @@ if( !function_exists('getUsers') ){
         $currentConnectionId = getCurrentConnectionByUserId($currentAccountId);
         $userIds[] = $currentConnectionId;
 
-        // Fetch connected user data based on the current account ID
-        $getGuestIdsConnectedOnHostId = UserConnections::getGuestIdsConnectedOnHostId($currentAccountId);
+        // Fetch connected user data based on the host: currentConnectionId
+        $getGuestIdsConnectedOnHostId = UserConnections::getGuestIdsConnectedOnHostId($currentConnectionId);
 
         // If there are connected users, add their IDs to the array
         if ($getGuestIdsConnectedOnHostId) {

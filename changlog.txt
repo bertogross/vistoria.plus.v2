@@ -8,12 +8,20 @@ https://laravel-news.com/openai-for-laravel
 
 
 # TODO
-    If currentConnection != $currentUserId, redirect to /profile
+    # PWA
 
-    PWA
+    # Webview APK
 
-    Webview APK
+Version 1.0.46 - [2024/03/15]
+- [Added] PWA
 
+
+
+Version 1.0.45 - [2024/03/15]
+- [Updated] SurveyController
+    For / || /surveys :
+        If $currentConnectionId != $currentUserId, redirect to /profile/$currentUserId
+- [Updated] RegisterController acceptOrDeclineConnection to btn-accept-invitation
 
 
 

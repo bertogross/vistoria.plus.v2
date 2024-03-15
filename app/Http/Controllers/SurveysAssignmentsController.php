@@ -415,19 +415,17 @@ class SurveysAssignmentsController extends Controller
         return response()->json(['success' => true, 'message' => 'Auditoria Revogada']);
     }
 
-    public function getRecentActivities(Request $request)
+    public function getRecentActivities(Request $request, $subDays = null)
     {
+        $error = response()->json(['success' => false, 'message' => 'Ainda não há dados']);
+
         $countSurvey = Survey::count();
-        if(!$countSurvey){
-            return response()->json(['success' => false, 'message' => 'Ainda não há dados']);
-        }
-
         $countSurveyAssignments = SurveyAssignments::count();
-        if(!$countSurveyAssignments){
-            return response()->json(['success' => false, 'message' => 'Ainda não há dados']);
+        if(!$countSurvey || !$countSurveyAssignments){
+            return $error;
         }
 
-        $subDays = $request->subDays ? intval($request->subDays) : null;
+        //$subDays = $request->subDays ? intval($request->subDays) : null;
 
         if(!$subDays){
             $days = Carbon::now()->subDays(7);
@@ -456,7 +454,7 @@ class SurveysAssignmentsController extends Controller
             ->get();
 
         if ($assignments->isEmpty()) {
-            return response()->json(['success' => false, 'message' => 'Ainda não há dados']);
+            return $error;
         }
 
         $activities = [];
@@ -476,7 +474,7 @@ class SurveysAssignmentsController extends Controller
         if (!empty($activities)) {
             return response()->json(['success' => true, 'activities' => $activities]);
         } else {
-            return response()->json(['success' => false, 'message' => 'Ainda não há dados']);
+            return $error;
         }
     }
 
@@ -486,7 +484,10 @@ class SurveysAssignmentsController extends Controller
 
         $surveyId = $assignment->survey_id;
 
-        $survey = Survey::findOrFail($surveyId);
+        $survey = Survey::find($surveyId);
+        if(!$survey){
+            return false;
+        }
         $surveyTitle = $survey->title;
 
         $templateName = getSurveyTemplateNameById($survey->template_id);

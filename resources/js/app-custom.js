@@ -139,6 +139,100 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    const btnInvitationConnectionDecision = document.querySelectorAll('.btn-accept-invitation');
+    if(btnInvitationConnectionDecision.length && acceptOrDeclineConnectionURL){
+        btnInvitationConnectionDecision.forEach(function(button) {
+            button.addEventListener('click', async function(event) {
+                event.preventDefault();
+
+                const hostId = this.getAttribute('data-host-id');
+                const hostName = this.getAttribute('data-host-name');
+
+                Swal.fire({
+                    title: 'Convite para Conexão',
+                    html: 'Você aceita a conexão com <a href="'+profileShowURL+'/'+hostId+'"><u>'+ hostName +'</u></a>?',
+                    icon: 'question',
+                    buttonsStyling: false,
+                    confirmButtonText: 'Sim, conectar',
+                        confirmButtonClass: 'btn btn-success w-xs me-2',
+                    cancelButtonText: 'Aguardar',
+                        cancelButtonClass: 'btn btn-sm btn-outline-warning w-xs',
+                            showCancelButton: true,
+                    denyButtonText: 'Recusar',
+                        denyButtonClass: 'btn btn-sm btn-danger w-xs me-2',
+                            showDenyButton: true,
+                    showCloseButton: false,
+                    allowOutsideClick: false
+                }).then(async function (result) {
+                    let acceptOrDecline;
+
+                    if (result.isConfirmed) {
+                        acceptOrDecline = 'accept';
+                    } else if (result.isDenied) {
+                        acceptOrDecline = 'decline';
+                    } else {
+                        event.stopPropagation();
+
+                        toastAlert('Conexão não estabelecida', 'warning');
+
+                        return;
+                    }
+
+                    showPreloader();
+
+                    try {
+                        const url = acceptOrDeclineConnectionURL;
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            body: JSON.stringify({ hostId: parseInt(hostId), decision: acceptOrDecline }),
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            }
+                        });
+
+                        if (!response.ok) {
+                            showPreloader(false);
+
+                            throw new Error('Network response was not ok: ' + response.statusText);
+                        }
+
+                        const data = await response.json();
+
+                        Swal.close();
+
+                        if (data.success) {
+                            toastAlert(data.message, 'success');
+
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2000);
+                        }else{
+                            toastAlert(data.message, 'danger');
+
+                            if(acceptOrDecline == 'decline'){
+                                showPreloader();
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2000);
+                            }else{
+                                showPreloader(false);
+                            }
+                        }
+                    } catch (error) {
+                        Swal.close();
+
+                        toastAlert('Error: ' + error, 'danger');
+
+                        showPreloader(false);
+
+                        console.error('Error:', error);
+                    }
+                })
+            });
+        });
+    }
+
     // Prevent users from submitting a form by hitting Enter
     const noEnterSubmit = document.querySelectorAll('.no-enter-submit');
     if(noEnterSubmit){

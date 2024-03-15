@@ -3,6 +3,9 @@
         var assetURL = "{{ URL::asset('/') }}";
         var changeLayoutModeURL = "{{ route('changeLayoutModeURL') }}";
         var changeConnectionURL = "{{ route('changeConnectionURL') }}";
+        var acceptOrDeclineConnectionURL = "{{ route('acceptOrDeclineConnectionURL') }}";
+        var profileShowURL = "{{ route('profileShowURL') }}";
+
     </script>
 
     <script src="{{ URL::asset('build/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

@@ -56,7 +56,6 @@
                                 $questSince = $connection->since ?? null;
                                 $questRole = $connection->role ?? null;
                                 $questRoleName = User::getRoleName($questRole) ?? null;
-                                //$questCompanies = $connection->companies ?? null;
                             @endphp
                             <tr>
                                 <td class="align-middle">
@@ -87,12 +86,9 @@
                                 </td>
                                 --}}
                                 <td class="align-middle text-end" style="max-width: 100px;">
-                                    @if ($questStatus == 'wainting')
-                                        {{--
-                                        TODO or Deprecated
-                                        --}}
-                                        <button type="button" class="btn btn-sm btn-outline-theme btn-accept-invitation">
-                                            Aceitar Convite
+                                    @if ($questStatus == 'waiting')
+                                        <button type="button" class="btn btn-sm btn-outline-warning btn-accept-invitation" data-host-id="{{$hostId}}" data-host-name="{{$hostName}}">
+                                            Verificar Convite
                                         </button>
                                     @elseif ($questStatus == 'inactive')
                                         <span class="text-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" data-bs-original-title="Sua conexão foi desativada por <span class='text-info'>{{$hostName}}</span>">

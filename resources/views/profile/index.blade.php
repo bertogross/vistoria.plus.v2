@@ -20,8 +20,7 @@
         $getGuestIdsConnectedOnHost = getGuestIdsConnectedOnHostId();
         //appPrintR($getGuestIdsConnectedOnHost);
 
-        $titleLabel = $connectedToName ? '<span class="badge bg-light-subtle text-body badge-border float-end" title="Conta Conectada">'.$connectedToName.'</span>' : '';
-
+        $titleLabel = $connectedToName ? '<span class="badge bg-light-subtle text-body badge-border float-end" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Conta Conectada">'.$connectedToName.'</span>' : '';
 
         //appPrintR($assignmentData);
         //appPrintR($auditorData);
@@ -191,7 +190,7 @@
                             </div>
                         @else
                             <div class="alert alert-info alert-dismissible alert-label-icon label-arrow fade show" role="alert">
-                                <i class="ri-alert-line label-icon"></i> Tarefas ainda não foram delegadas
+                                <i class="ri-alert-line label-icon"></i> Você ainda não possui tarefas
                             </div>
                         @endif
                     </div>
