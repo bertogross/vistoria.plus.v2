@@ -95,10 +95,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
                                         toastAlert(data.message, 'warning');
                                     }
+
+                                    showPreloader();
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 2000);
                                 }else{
                                     toastAlert(data.message, 'danger');
+
+                                    showPreloader(false);
                                 }
-                                showPreloader(false);
                             } catch (error) {
                                 toastAlert('Error: ' + error, 'danger');
 
@@ -112,6 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
 
 
 

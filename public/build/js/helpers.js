@@ -117,8 +117,6 @@ export function sweetWizardAlert(message, urlToRedirect = false, icon = 'success
         showCloseButton: false,
         allowOutsideClick: false
     }).then(function (result) {
-        /* Read more about isConfirmed, isDenied below */
-
         if (result.isConfirmed) {
             var timerInterval;
             Swal.fire({

@@ -1,5 +1,8 @@
+@php
+    $userTheme = getUserMeta(auth()->id(), 'theme');
+@endphp
 <!doctype html>
-<html class="no-focus" moznomarginboxes mozdisallowselectionprint lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-layout="horizontal" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-layout-mode="dark" data-layout-style="default" data-layout-width="fluid" data-layout-position="fixed" data-preloader="enable" data-bs-theme="dark">
+<html class="no-focus" moznomarginboxes mozdisallowselectionprint lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-layout="horizontal" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="enable" data-bs-theme="{{ $userTheme ?? 'dark' }}" data-layout-width="fluid" data-layout-position="fixed" data-layout-style="default" data-sidebar-visibility="show">
     <head>
         <meta charset="utf-8" />
         <title>@yield('title') | {{appName()}}</title>
@@ -18,10 +21,11 @@
         <!-- App favicon -->
         <link rel="icon" type="image/png" href="{{ URL::asset('build/images/logo-sm.png') }}">
         <link rel="shortcut icon" href="{{ URL::asset('build/images/favicons/favicon.ico')}}">
-        <link rel="manifest" href="{{ URL::asset('build/json/manifest.json') }}">
+
+        @laravelPWA
+
         @include('layouts.head-css')
     </head>
-
     @yield('body')
 
         <div id="preloader">

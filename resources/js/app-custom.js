@@ -148,9 +148,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const hostId = this.getAttribute('data-host-id');
                 const hostName = this.getAttribute('data-host-name');
 
+                var profileLink = "<a href='"+profileShowURL+"/"+hostId+"'><u>"+hostName+"</u></a>";
                 Swal.fire({
-                    title: 'Convite para Conexão',
-                    html: 'Você aceita a conexão com <a href="'+profileShowURL+'/'+hostId+'"><u>'+ hostName +'</u></a>?',
+                    title: 'Conexão',
+                    html: 'Você recebeu um convite para colaborar com '+profileLink+'.<br>Você aceita a conexão?',
                     icon: 'question',
                     buttonsStyling: false,
                     confirmButtonText: 'Sim, conectar',
@@ -383,92 +384,3 @@ document.addEventListener('DOMContentLoaded', lightbox);
 document.addEventListener('DOMContentLoaded', checkInternetConnection);
 document.addEventListener('DOMContentLoaded', showButtonWhenInputChange);
 
-document.addEventListener('load', function() {
-
-    self.addEventListener('install', event => {
-        self.skipWaiting(); // Force the waiting service worker to become the active service worker.
-    });
-
-    self.addEventListener('activate', event => {
-        clients.claim(); // Take control of all clients as soon as the service worker is activated.
-        // Consider clearing old caches here
-    });
-
-    // In your app's JavaScript
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register(assetURL + 'build/js/service-worker.js?v='+appVersion).then(reg => {
-            reg.addEventListener('updatefound', () => {
-                // A wild service worker has appeared in reg.installing!
-                const newWorker = reg.installing;
-
-                newWorker.addEventListener('statechange', () => {
-                    // Has network.state changed?
-                    switch (newWorker.state) {
-                        case 'installed':
-                        if (navigator.serviceWorker.controller) {
-                            // New update available
-                            console.log("New update available!");
-                            // Show an update notification to the user
-                        }
-                        break;
-                    }
-                });
-            });
-        });
-
-        let refreshing;
-        // Detect controller change and refresh the page
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-            if (refreshing) return;
-            window.location.reload();
-            refreshing = true;
-        });
-    }
-
-
-});
-
-
-
-// Installing the PWA on the device
-//https://pwa-workshop.js.org/5-pwa-install/#add-an-installation-button
-let deferredPrompt; // Allows to show the install prompt
-const installButton = document.getElementById("pwa_install_button");
-
-if(installButton){
-    function installPWA() {
-        // Show the prompt
-        deferredPrompt.prompt();
-        installButton.disabled = true;
-
-        // Wait for the user to respond to the prompt
-        deferredPrompt.userChoice.then(choiceResult => {
-            if (choiceResult.outcome === "accepted") {
-                console.log("PWA setup accepted");
-                installButton.hidden = true;
-            } else {
-                console.log("PWA setup rejected");
-            }
-            installButton.disabled = false;
-            deferredPrompt = null;
-        });
-    }
-
-    window.addEventListener("beforeinstallprompt", e => {
-        e.preventDefault(); // Prevent Chrome 76 and earlier from automatically showing a prompt
-
-        console.log("beforeinstallprompt fired");
-
-        // Stash the event so it can be triggered later.
-        deferredPrompt = e;
-
-        // Show the install button
-        installButton.hidden = false;
-        installButton.addEventListener("click", installPWA);
-    });
-
-    window.addEventListener("appinstalled", evt => {
-        console.log("appinstalled fired", evt);
-
-    });
-}

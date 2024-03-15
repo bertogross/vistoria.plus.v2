@@ -89,6 +89,7 @@ class UserConnections extends Model
         }
         */
 
+
         try {
             $hostUserId = $request->host_user_id ? Crypt::decryptString($request->host_user_id) : null;
             //$guestUserParams = $request->quest_user_params ? Crypt::decryptString($request->quest_user_params) : null;
@@ -107,21 +108,30 @@ class UserConnections extends Model
             self::setConnectionData($guestUserId, $hostUserId, $guestUserRole, 'active', $guestUserCompanies);
         }
         */
-        $guestUserRole = 3;
-        $guestUserCompanies = null;
-        self::setConnectionData($guestUserId, $hostUserId, $guestUserRole, 'active', $guestUserCompanies);
 
-        $hostUserData = getUserData($hostUserId);
-        $hostEmail = $hostUserData->email;
-        $hostName = $hostUserData->name;
+        if(!$hostUserId){
+            return;
+        }
 
-        $guestUserData = getUserData($guestUserId);
-        $guestEmail = $guestUserData->email;
-        $guestName = $guestUserData->name;
+        if($hostUserId != $guestUserId){
+            $guestUserRole = 3;
+            $guestUserCompanies = null;
+            self::setConnectionData($guestUserId, $hostUserId, $guestUserRole, 'active', $guestUserCompanies);
 
-        $message = 'O convite para colaborar com sua conexão outrora enviado para ' . $guestEmail . ' foi aceito. ';
+            $hostUserData = getUserData($hostUserId);
+            $hostEmail = $hostUserData->email;
+            $hostName = $hostUserData->name;
 
-        appSendEmail($hostEmail, $hostName, 'A Conexão foi Aceita :: [ ' . $guestName . ' ]', $message, 'default');
+            $guestUserData = getUserData($guestUserId);
+            $guestEmail = $guestUserData->email;
+            $guestName = $guestUserData->name;
+
+            $message = 'O convite para colaborar com sua conexão outrora enviado para ' . $guestEmail . ' foi aceito. ';
+
+            //appSendEmail($hostEmail, $hostName, 'A Conexão foi Aceita :: [ ' . $guestName . ' ]', $message, 'default');
+            // TODO dont send email: add post  notification message ans show in the topbar
+        }
+
     }
 
 
@@ -258,6 +268,7 @@ class UserConnections extends Model
             $mailMessage = $guestName . ' Revogou a conexão com seu ' . appName();
 
             //appSendEmail($hostEmail, $hostName, 'A Conexão foi Revogada :: [ ' . $guestName . ' ]', $mailMessage, 'default');
+            // TODO dont send email: add post  notification message ans show in the topbar
         }
         if($currentStatus == 'revoked'){
             $guestUserNewStatus = 'active';
@@ -266,6 +277,7 @@ class UserConnections extends Model
             $mailMessage = $guestName . ' Restabeleceu a conexão com seu ' . appName();
 
             //appSendEmail($hostEmail, $hostName, 'A Conexão foi Restabelecida :: [ ' . $guestName . ' ]', $mailMessage, 'default');
+            // TODO dont send email: add post  notification message ans show in the topbar
         }
 
         // Update quest status record
@@ -532,6 +544,7 @@ class UserConnections extends Model
                 $message = "O convite que você enviou a $guestEmail para colaborar em sua conexão não foi aceito. <br><br>Por favor, verifique se o endereço de e-mail está correto. Se você acredita que houve um equívoco, entre em contato diretamente com a pessoa. Se necessário, envie um novo convite.";
 
                 appSendEmail($hostEmail, $hostName, 'A Conexão foi Recusada :: [ ' . $guestName . ' ]', $message, 'default');
+                // TODO dont send email: add post  notification message ans show in the topbar
 
                 return response()->json([
                     'success' => false,

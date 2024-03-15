@@ -742,9 +742,20 @@ document.addEventListener('DOMContentLoaded', function() {
     if( loadSurveyActivities && getRecentActivitiesURL ){
         function getRecentActivities() {
             var subDays = loadSurveyActivities.getAttribute("data-subDays") ?? 1;
-
-            fetch(getRecentActivitiesURL + '/' + subDays)
-                .then(response => response.json())
+            fetch(getRecentActivitiesURL + '/' + subDays, {
+                    method: 'GET',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     //console.log(JSON.stringify(activities, null, 2));
 

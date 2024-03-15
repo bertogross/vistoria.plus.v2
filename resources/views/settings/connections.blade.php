@@ -94,10 +94,15 @@
                                         <span class="text-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" data-bs-original-title="Sua conexão foi desativada por <span class='text-info'>{{$hostName}}</span>">
                                             <i class="ri-close-circle-line fs-17 align-middle"></i> Inativo
                                         </span>
-                                    @else
-                                        <div class="form-check form-switch form-switch-md form-switch-success ms-3 float-end" data-bs-toggle="tooltip" data-bs-placement="top" title="Ativar/Revogar">
-                                            <input type="checkbox" class="form-check-input toggle-status-connection" id="switch-{{$hostId}}" {{ $questStatus == 'inactive' ? 'disabled readonly' : $questInput }} name="host_id" value="{{$hostId}}" data-quest-status="{{$questStatus}}">
+                                    @elseif ($questStatus == 'revoked' || $questStatus == 'active')
+                                        <div class="form-check form-switch form-switch-md form-switch-success ms-3 float-end">
+                                            <input type="checkbox" class="form-check-input toggle-status-connection" id="switch-{{$hostId}}" {{ $questStatus == 'inactive' ? 'disabled readonly' : $questInput }} name="host_id" value="{{$hostId}}" data-quest-status="{{$questStatus}}" data-bs-toggle="tooltip" data-bs-placement="left" title="Ativar/Revogar">
+                                            <label class="form-check-label" for="switch-{{$hostId}}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $questStatus == 'revoked' ? 'Você revogou esta conexão' : 'Conexão Ativa' }}">
+                                                {{ $questStatus == 'revoked' ? 'Revogado' : 'Ativo' }}
+                                            </label>
                                         </div>
+                                    @else
+                                        -
                                     @endif
                                 </td>
                             </tr>

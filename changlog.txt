@@ -8,12 +8,15 @@ https://laravel-news.com/openai-for-laravel
 
 
 # TODO
-    # PWA
+    # Find for "TODO dont send email": add post  notification message ans show in the topbar
 
     # Webview APK
 
+
+
+
 Version 1.0.46 - [2024/03/15]
-- [Added] PWA
+- [Added] PWA with composer package silviolleite/laravel-pwa
 
 
 
