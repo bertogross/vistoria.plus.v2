@@ -10,8 +10,14 @@ https://laravel-news.com/openai-for-laravel
 # TODO
     # Find for "TODO dont send email": add post  notification message ans show in the topbar
 
-    # Webview APK
 
+Version 1.0.48 - [2024/03/17]
+- [Added] Webview APK
+
+
+
+Version 1.0.47 - [2024/03/16]
+- [Cloned] Linode Environment from development.vistoria.plus to vistoria.plus
 
 
 

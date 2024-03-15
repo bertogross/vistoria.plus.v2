@@ -28,14 +28,6 @@
     </head>
     @yield('body')
 
-        <div id="preloader">
-            <div id="status">
-                <div class="spinner-border text-theme avatar-sm" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-        </div>
-
         @yield('content')
 
         @include('layouts.vendor-scripts')

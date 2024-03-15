@@ -59,13 +59,15 @@
                     </a>
                 </div>
 
-                <button type="button" class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger material-shadow-none" id="topnav-hamburger-icon">
-                    <span class="hamburger-icon">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </span>
-                </button>
+                @if ( Request::is('settings*') )
+                    <button type="button" class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger material-shadow-none" id="topnav-hamburger-icon">
+                        <span class="hamburger-icon">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </button>
+                @endif
             </div>
 
             <div class="d-flex align-items-center">
@@ -312,9 +314,9 @@
                             <span class="align-middle">Configurações Gerais</span>
                         </a>
 
-                        <button class="dropdown-item" id="pwa_install_button" hidden>
+                        <button class="dropdown-item" id="pwa_install_button" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Instalar {{appName()}} em seu Dispositivo">
                             <i class="ri-smartphone-fill text-muted fs-16 align-middle me-1"></i>
-                            <span class="align-middle" title="Instalar PWA">Instalar App</span>
+                            <span class="align-middle">Instalar App</span>
                         </button>
 
                         <div class="dropdown-divider"></div>
