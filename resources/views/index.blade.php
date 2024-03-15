@@ -734,7 +734,7 @@
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="flex-shrink-0 me-2">
-                                                        <img src="{{ URL::asset('build/images/users/avatar-1.jpg') }}" alt="" class="avatar-xs rounded-circle material-shadow" />
+                                                        <img src="{{ URL::asset('build/images/users/avatar-1.jpg') }}" alt="" class="avatar-xs rounded-circle material-shadow" loading="lazy">
                                                     </div>
                                                     <div class="flex-grow-1">Alex Smith</div>
                                                 </div>
@@ -758,7 +758,7 @@
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="flex-shrink-0 me-2">
-                                                        <img src="{{ URL::asset('build/images/users/avatar-2.jpg') }}" alt="" class="avatar-xs rounded-circle material-shadow" />
+                                                        <img src="{{ URL::asset('build/images/users/avatar-2.jpg') }}" alt="" class="avatar-xs rounded-circle material-shadow" loading="lazy">
                                                     </div>
                                                     <div class="flex-grow-1">Jansh Brown</div>
                                                 </div>
@@ -782,7 +782,7 @@
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="flex-shrink-0 me-2">
-                                                        <img src="{{ URL::asset('build/images/users/avatar-3.jpg') }}" alt="" class="avatar-xs rounded-circle material-shadow" />
+                                                        <img src="{{ URL::asset('build/images/users/avatar-3.jpg') }}" alt="" class="avatar-xs rounded-circle material-shadow" loading="lazy">
                                                     </div>
                                                     <div class="flex-grow-1">Ayaan Bowen</div>
                                                 </div>
@@ -806,7 +806,7 @@
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="flex-shrink-0 me-2">
-                                                        <img src="{{ URL::asset('build/images/users/avatar-4.jpg') }}" alt="" class="avatar-xs rounded-circle material-shadow" />
+                                                        <img src="{{ URL::asset('build/images/users/avatar-4.jpg') }}" alt="" class="avatar-xs rounded-circle material-shadow" loading="lazy">
                                                     </div>
                                                     <div class="flex-grow-1">Prezy Mark</div>
                                                 </div>
@@ -830,7 +830,7 @@
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="flex-shrink-0 me-2">
-                                                        <img src="{{ URL::asset('build/images/users/avatar-6.jpg') }}" alt="" class="avatar-xs rounded-circle material-shadow" />
+                                                        <img src="{{ URL::asset('build/images/users/avatar-6.jpg') }}" alt="" class="avatar-xs rounded-circle material-shadow" loading="lazy">
                                                     </div>
                                                     <div class="flex-grow-1">Vihan Hudda</div>
                                                 </div>
@@ -906,7 +906,7 @@
                             </div>
                             <div class="acitivity-item py-3 d-flex">
                                 <div class="flex-shrink-0">
-                                    <img src="{{ URL::asset('build/images/users/avatar-2.jpg') }}" alt="" class="avatar-xs rounded-circle acitivity-avatar material-shadow">
+                                    <img src="{{ URL::asset('build/images/users/avatar-2.jpg') }}" alt="" class="avatar-xs rounded-circle acitivity-avatar material-shadow" loading="lazy">
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="mb-1 lh-base">Natasha Carey have liked the products</h6>
@@ -972,7 +972,7 @@
                             </div>
                             <div class="acitivity-item d-flex">
                                 <div class="flex-shrink-0">
-                                    <img src="{{ URL::asset('build/images/users/avatar-3.jpg') }}" alt="" class="avatar-xs rounded-circle acitivity-avatar material-shadow" />
+                                    <img src="{{ URL::asset('build/images/users/avatar-3.jpg') }}" alt="" class="avatar-xs rounded-circle acitivity-avatar material-shadow" loading="lazy">
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="mb-1 lh-base">Frank Hook Commented</h6>

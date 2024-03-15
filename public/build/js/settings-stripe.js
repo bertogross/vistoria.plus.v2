@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         html: '<img src="' + assetURL + 'build/images/stripe/white-small.png" title="Stripe" width="100" class="mb-3"><br>Redirecionado para a página de pagamento...'
                     });*/
 
-                    toastAlert('Redirecionado para a página de pagamento...', 'success', 10000);
+                    toastAlert('Redirecionando para a página de pagamento...', 'info', 10000);
 
                     clickedElement.setAttribute('disabled', true);
 
@@ -143,6 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Update subscription (change subscription plan)
+            /*
             if (clickedElement.id === 'btn-subscription-details') {
                 event.preventDefault();
                 clickedElement.blur();
@@ -181,18 +182,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
 
                     var checkoutURL = data.stripe.url;
-                    /*
-                    Swal.fire({
-                        confirmButtonClass: 'btn btn-outline-theme text-uppercase d-none',
-                        buttonsStyling: false,
-                        icon: '',
-                        title: '',
-                        html: '<img src="' + assetURL + 'build/images/stripe/white-small.png" title="Stripe" width="100" class="mb-3"><br>Redirecionado para a página de pagamento...'
-                    });*/
+
+                    //Swal.fire({
+                        //confirmButtonClass: 'btn btn-outline-theme text-uppercase d-none',
+                        //buttonsStyling: false,
+                        //icon: '',
+                        //title: '',
+                        //html: '<img src="' + assetURL + 'build/images/stripe/white-small.png" title="Stripe" />/width="100" class="mb-3"><br>Redirecionado para a página de pagamento...'
+                    //});
 
                     clickedElement.setAttribute('disabled', true);
 
-                    toastAlert('Redirecionado para a página de pagamento...', 'success', 10000);
+                    toastAlert('Redirecionando para a página de pagamento...', 'info', 10000);
 
                     setTimeout(function() {
                         window.location.href = checkoutURL;
@@ -207,6 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     showPreloader(false);
                 });
             }
+            */
 
             // Remove from cart
             /*

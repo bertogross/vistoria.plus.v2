@@ -4,8 +4,8 @@
     $countActive = 0;
     //appPrintR($users);
 @endphp
-<button type="button" id="btn-add-user" class="btn btn-sm btn-label right btn-outline-theme float-end waves-effect" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Adicionar Usuário">
-    <i class="ri-user-add-line label-icon align-middle fs-16 ms-2"></i>Adicionar
+<button id="btn-add-user" type="button" class="btn btn-sm btn-label right btn-outline-theme float-end waves-effect" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Adicionar Usuário">
+    Adicionar<i class="ri-user-add-line label-icon align-middle fs-16 ms-2"></i>
 </button>
 
 <h4 class="mb-0">Usuários Conectados</h4>
@@ -22,12 +22,14 @@
                         <th scope="col">Usuário</th>
                         <th scope="col" width="140">Desde</th>
                         <th scope="col">Nível</th>
+                        {{--
                         <th scope="col">Unidades Autorizadas</th>
+                        --}}
                         <th scope="col">Status</th>
                         {{--
                         <th scope="col">Valor</th>
                         --}}
-                        <th scope="col" width="82"></th>
+                        <th scope="col" width="80"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -39,7 +41,7 @@
                             $status = $user->status ?? 'inactive';
                                 $countActive += $status == 'active' ? 1 : 0;
                             $since = $user->since ?? null;
-                            $companies = $user->companies ?? getActiveCompanieIds();
+                            //$companies = $user->companies ?? getActiveCompanieIds();
                             $profileUrl = route('profileShowURL', ['id' => $userId]) . '?d=' . now()->timestamp;
                             $getUserData = getUserData($userId);
                             $avatar = $getUserData->avatar;
@@ -51,7 +53,7 @@
                                 <div class="d-flex gap-2 align-items-center">
                                     <div class="flex-shrink-0">
                                         <img src="{{ checkUserAvatar($avatar) }}" alt=""
-                                            class="avatar-xs rounded-circle">
+                                            class="avatar-xs rounded-circle" loading="lazy">
                                     </div>
                                     <div class="flex-grow-1" style="line-height: 16px;">
                                         {{$name}}
@@ -61,6 +63,7 @@
                             </td>
                             <td>{{$since ? date("d/m/Y H:i", strtotime($since)) : ''}}</td>
                             <td>{{$roleName}}</td>
+                            {{--
                             <td>
                                 @if (is_array($companies))
                                     <ul class="list-unstyled list-inline text-muted mb-0">
@@ -72,6 +75,7 @@
                                     -
                                 @endif
                             </td>
+                            --}}
                             <td>
                                 @switch($status)
                                     @case('active')
@@ -89,6 +93,12 @@
                                     @case('revoked')
                                         <span class="text-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Quando o usuário revogou a conexão">
                                             <i class="ri-alert-line fs-17 align-middle"></i> Desconectado
+                                        </span>
+                                        @break
+
+                                    @case('waiting')
+                                        <span class="text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Aguardando o aceite de seu convite">
+                                            <i class="ri-information-line fs-17 align-middle"></i> Aguardando
                                         </span>
                                         @break
 
@@ -112,8 +122,28 @@
                             --}}
                             <td>
                                 <button type="button" class="btn btn-sm btn-soft-dark waves-effect btn-edit-user ri-edit-line" data-user-id="{{$userId ?? ''}}" data-user-title="{{$name ?? ''}}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Editar"></button>
-
                                 <a href="{{$profileUrl}}" class="btn btn-sm btn-soft-dark waves-effect ri-eye-line" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Visualizar Tarefas"></a>
+                                {{--
+                                <div class="row">
+                                    <div class="col-auto">
+                                        <a href="{{$profileUrl}}" class="btn btn-sm btn-soft-dark waves-effect ri-eye-line" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Visualizar Tarefas"></a>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-check form-switch form-switch-success form-switch-lg" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Status"
+                                        @if ($status == 'revoked')
+                                            data-bs-content="Este usuário <span class='text-warning'>revogou</span> o acesso. Somente <span class='text-info'>{{$name}}</span> poderá reativar."
+                                        @else
+                                            data-bs-content="Se Desativado este usuário perderá o acesso ao seu {{appName()}}"
+                                        @endif
+                                        >
+                                            <input type="checkbox" class="form-check-input" name="status" id="user_status_{{$userId }}" value="active" {{ $status == 'active' ? 'checked' : '' }} {{ $status == 'revoked' ? 'disabled': '' }}>
+                                            <label class="form-check-label" for="user_status_{{$userId}}">
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                --}}
+
                             </td>
                         </tr>
                     @endforeach

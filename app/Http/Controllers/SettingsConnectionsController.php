@@ -9,7 +9,7 @@ class SettingsConnectionsController extends Controller
 {
     public function index()
     {
-        $myConnections = getUsersDataFromMyConnections();
+        $myConnections = getHostConnections();
 
         return view('settings.connections', compact('myConnections'));
     }

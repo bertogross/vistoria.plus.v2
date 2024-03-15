@@ -75,7 +75,7 @@
                                                 <img src="{{URL::asset('build/images/logo-dark.png')}}" alt="{{ appName() }}" height="31" loading="lazy">
                                             </p>
 
-                                            <h1 style="margin-top:0;color:#111111;font-size:24px;line-height:36px;font-weight:600;margin-bottom:24px;">Olá, {{$name}}!</h1>
+                                            <h1 style="margin-top:0;color:#111111;font-size:24px;line-height:36px;font-weight:600;margin-bottom:24px;">Olá{{ !empty($name) ? ', '.$name : ''}}!</h1>
 
                                             <p style="color:#4a5566;margin-top:20px;margin-bottom:20px;margin-right:0;margin-left:0;font-size:16px;line-height:28px;">
                                                 Obrigado por se cadastrar. Para aproveitar ao máximo seu {{ appName() }}, siga esta etapa:

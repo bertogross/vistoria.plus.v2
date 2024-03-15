@@ -333,8 +333,7 @@ class SurveysAssignmentsController extends Controller
         if($currentConnectionId == $currentUserId){
             $role = 1;
         }else{
-            $getUsersDataConnectedOnAccountId = getUsersDataConnectedOnAccountId($currentUserId);
-            $role = intval($getUsersDataConnectedOnAccountId->role) ?? null;
+            $role = 3;
         }
 
         if( !in_array($role, [1, 2]) ){

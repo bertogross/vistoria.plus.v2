@@ -1,5 +1,5 @@
 
-<div class="card mt-4 h-100">
+<div class="card mt-4">
     <div class="card-body p-4">
         <div class="text-center mt-2">
             <h4 class="text-theme">Login</h4>
@@ -11,13 +11,14 @@
 
             <form id="loginForm" class="no-enter-submit" action="{{ route('login') }}" method="POST">
                 @csrf
-
                 <input type="hidden" name="host_user_id" value="{{ isset($hostUserId) ? $hostUserId : '' }}">
-                <input type="hidden" name="quest_user_params" value="{{ isset($questUserParams) ? $questUserParams : '' }}">
+                {{--
+                <input type="hidden" name="quest_user_params" value="{{ isset($guestUserParams) ? $guestUserParams : '' }}">
+                --}}
 
                 <div class="mb-3">
                     <label for="username" class="form-label">E-mail</label>
-                    <input type="text" class="form-control @error('email') is-invalid @enderror" value="{{ isset($questUserEmail) ? $questUserEmail : old('email', '') }}" id="username" name="email" placeholder="Informe o e-mail" required>
+                    <input type="text" class="form-control @error('email') is-invalid @enderror" value="{{ isset($guestUserEmail) ? $guestUserEmail : old('email', '') }}" id="username" name="email" placeholder="Informe o e-mail" required>
                     @error('email')
                         <span class="invalid-feedback" role="alert">
                             <strong>{!! $message !!}</strong>

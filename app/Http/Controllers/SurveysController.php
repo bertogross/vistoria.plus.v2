@@ -91,7 +91,7 @@ class SurveysController extends Controller
 
         $getSurveyStatusTranslations = Survey::getSurveyStatusTranslations();
 
-        $getAuthorizedCompanies = getAuthorizedCompanies($currentUserId);
+        //$getAuthorizedCompanies = getAuthorizedCompanies($currentUserId);
 
         $dateRange = Survey::getSurveysDateRange();
         $firstDate = $dateRange['first_date'] ?? null;
@@ -102,7 +102,7 @@ class SurveysController extends Controller
             'templates',
             'getSurveyRecurringTranslations',
             'getSurveyStatusTranslations',
-            'getAuthorizedCompanies',
+            //'getAuthorizedCompanies',
             'firstDate',
             'lastDate',
         ));
@@ -227,7 +227,7 @@ class SurveysController extends Controller
         $users = getUsers();
 
         $getActiveCompanies = getActiveCompanies();
-        $getAuthorizedCompanies = getAuthorizedCompanies($currentUserId);
+        //$getAuthorizedCompanies = getAuthorizedCompanies($currentUserId);
         $getSurveyRecurringTranslations = Survey::getSurveyRecurringTranslations();
 
         $queryTemplates = SurveyTemplates::query();
@@ -246,7 +246,7 @@ class SurveysController extends Controller
                 'templates',
                 'users',
                 'getActiveCompanies',
-                'getAuthorizedCompanies',
+                //'getAuthorizedCompanies',
                 'getSurveyRecurringTranslations',
                 'countAllResponses',
                 'countTodayResponses'
@@ -285,7 +285,7 @@ class SurveysController extends Controller
         $users = getUsers();
 
         $getActiveCompanies = getActiveCompanies();
-        $getAuthorizedCompanies = getAuthorizedCompanies($currentUserId);
+        //$getAuthorizedCompanies = getAuthorizedCompanies($currentUserId);
         $getSurveyRecurringTranslations = Survey::getSurveyRecurringTranslations();
 
         $queryTemplates = SurveyTemplates::query();
@@ -302,7 +302,7 @@ class SurveysController extends Controller
                 'templates',
                 'users',
                 'getActiveCompanies',
-                'getAuthorizedCompanies',
+                //'getAuthorizedCompanies',
                 'getSurveyRecurringTranslations',
                 'countAllResponses',
                 'countTodayResponses'
@@ -316,12 +316,6 @@ class SurveysController extends Controller
 
         // Get today's date in 'Ymd' format
         $today = Carbon::now()->startOfDay();
-
-        $getActiveCompanies = getActiveCompanies();
-
-        /*$companyIds = $getActiveCompanies ? $getActiveCompanies : null;
-        $companyIds = $companyIds ? array_column($companyIds, 'id') : [1];
-        $companyIds = $companyIds && count($companyIds) > 1 ? array_unique($companyIds) : $companyIds;*/
 
         $getActiveCompanies = getActiveCompanies();
         $companyIds = $getActiveCompanies ? array_column($getActiveCompanies, 'id') : [1];
@@ -504,6 +498,7 @@ class SurveysController extends Controller
     //start/stop survey
     public function changeStatus(Request $request)
     {
+
         $currentUserId = auth()->id();
 
         $now = now()->format('Y-m-d H:i:s');
@@ -512,6 +507,18 @@ class SurveysController extends Controller
         $surveyId = intval($surveyId);
 
         $survey = Survey::findOrFail($surveyId);
+
+        $distributedData = $survey->distributed_data ? json_decode($survey->distributed_data, true) : null;
+
+        if($distributedData && $distributedData['surveyor']){
+            foreach ($distributedData['surveyor'] as $value) {
+                // If quest revoke connection or host turn user connection off, exit
+                $connectedAccountStatus = UserConnections::connectedAccountStatus($value['user_id']);
+                if(in_array($connectedAccountStatus, ['revoked', 'inactive'])){
+                    return response()->json(['success' => false, 'message' => 'Verifique sua lista de Atribuições pois um ou mais usuários podem estar indisponíveis']);
+                }
+            }
+        }
 
         $currentStatus = $survey->status;
 
@@ -531,7 +538,7 @@ class SurveysController extends Controller
         $countResponses = Survey::countSurveyAllResponsesFromToday($surveyId);
 
         if($countResponses > 0){
-            // TODO URGENT
+            // TODO URGENT ??
             // chek if it is necessary because when task is in progress I can stop
             //return response()->json(['success' => false, 'message' => 'Não será possível interromper esta tarefa pois dados já estão sendo coletados.']);
         }

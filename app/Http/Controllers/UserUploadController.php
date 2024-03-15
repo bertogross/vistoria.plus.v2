@@ -30,11 +30,14 @@ class UserUploadController extends Controller
         return $this->uploadFile($request, 'cover', 'covers');
     }
 
-    /**
-     * Generic method to handle file uploads.
-     */
+    // Generic method to handle file uploads.
     private function uploadFile(Request $request, $type, $folder)
     {
+        $freeDiskSpace = checkFreeDiskSpace();
+        if($freeDiskSpace <= 0){
+            return response()->json(['success' => false, 'message' => 'Espaço em disco insuficiente'], 404);
+
+        }
         try {
             // Validate the incoming request data
             $messages = [
@@ -180,5 +183,6 @@ class UserUploadController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
 
 }

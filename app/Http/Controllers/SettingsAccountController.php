@@ -45,7 +45,7 @@ class SettingsAccountController extends Controller
         $subscriptionItemId = '';
 
         //$users = getUsers();
-        $users = UserConnections::getUsersDataConnectedOnMyAccount();
+        $users = UserConnections::getGuestConnections();
 
         $user = auth()->user();
 
@@ -74,12 +74,10 @@ class SettingsAccountController extends Controller
             'phone.required' => 'O número de telefone é obrigatório.',
             'phone.max' => 'O número de telefone não pode ter mais de 16 caracteres.',
         ];
-
-        // Validate the request data
         $request->validate([
             'name' => 'required|string|max:191',
             //'user_name' => 'required|string|max:191',
-            'phone' => 'required|string|max:16',
+            'phone' => 'required|string|max:16'
         ], $messages);
 
         $this->updateOrInsertSetting('name', $request->name);
@@ -104,8 +102,8 @@ class SettingsAccountController extends Controller
             'user_name.required' => 'Seu nome é obrigatório.',
             'user_name.max' => 'Seu nome não pode ter mais de 100 caracteres.',
             'user_name.min' => 'Seu nome deve ter no mínimo 3 caracteres.',
-            'password.min' => 'A senha deve ter no mínimo 8 caracteres.',
-            'password.max' => 'A senha deve ter no máximo 20 caracteres.',
+            'password.min' => 'A senha deve ter no mínimo 8 caracteres e no máximo 20.',
+            'password.max' => 'A senha deve ter no máximo 20 caracteres e no mínimo 8.',
         ];
 
         // Validate the request data

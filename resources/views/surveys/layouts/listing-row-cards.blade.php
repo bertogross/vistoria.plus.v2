@@ -122,7 +122,7 @@ based on apps-crm-deals.blade.php
                             aria-expanded="false" aria-controls="leadDiscovered{{$index}}">
                             <div class="flex-shrink-0">
                                 <img src="{{ $avatar }}" alt="{{ $name }}"
-                                class="avatar-xs rounded-circle" />
+                                class="avatar-xs rounded-circle" loading="lazy">
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="fs-13 mb-1">{{ $name }}</h6>
@@ -214,7 +214,7 @@ based on apps-crm-deals.blade.php
                             role="button" aria-expanded="false" aria-controls="contactInitiated{{$index}}">
                             <div class="flex-shrink-0">
                                 <img src="{{ $avatar }}" alt="{{ $name }}"
-                                class="avatar-xs rounded-circle" />
+                                class="avatar-xs rounded-circle" loading="lazy">
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="fs-13 mb-1">{{ $name }}</h6>

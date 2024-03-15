@@ -2,16 +2,30 @@
     use App\Models\UserConnections;
 @endphp
 @foreach ($getActiveCompanies as $company)
-    <div class="col-sm-12 col-md-6 col-lg-4" id="distributed-tab-company-{{ $company->id }}"
-        @if (in_array($company->id, $selectedCompanies))
-            style="display: block;"
-        @else
-            style="display: none;"
-        @endif
-        >
+    @php
+        $colVisibility = 'style="display: block;"';
+        // TODO ??
+        if($surveyId && $data && $countTodayResponses > 0){
+            if(!in_array(intval($company->id), $selectedCompanies)){
+                $colVisibility = 'style="display: none;"';
+            }
+        }
+    @endphp
+    <div class="col-sm-12 col-md-6 col-lg-4" id="distributed-tab-company-{{ $company->id }}" {!! $colVisibility !!}>
         <div class="card bg-body">
             <div class="card-header bg-body text-uppercase fw-bold text-theme">
-                {{ $company->name }}
+                <div class="form-check form-switch form-switch-success form-switch-md">
+                    <input
+                    class="form-check-input form-check-input-companies wizard-switch-control"
+                    type="checkbox"
+                    role="switch"
+                    {{ !empty($selectedCompanies) && is_array($selectedCompanies) && in_array(intval($company->id), $selectedCompanies) ? 'checked' : '' }}
+                    id="company-{{ $company->id }}"
+                    name="companies[]"
+                    value="{{ $company->id }}"
+                    required>
+                    <label class="form-check-label" for="company-{{ $company->id }}">{{ empty($company->name) ? e($company->name) : e($company->name) }}</label>
+                </div>
             </div>
             <div class="card-body">
                 <ul class="list-unstyled vstack gap-2 mb-0">
@@ -20,17 +34,16 @@
                             $userId = $user->id;
                             $userName = $user->name;
                             $userAvatar = checkUserAvatar($user->avatar);
-                            $userCompanies = getAuthorizedCompanies($userId) ?? null;
                             $isDelegated = false;
 
                             if($userId == auth()->id()){
-                                $userCompanies = getActiveCompanieIds();
+                                //$userCompanies = getActiveCompanieIds();
                                 $userRole = 1;
                                 $userStatus = 'active';
                             }else{
-                                $connection = UserConnections::getUserDataFromConnectedAccountId($userId, auth()->id());
+                                $connection = UserConnections::getGuestDataFromConnectedHostId($userId, auth()->id());
 
-                                $userCompanies = $connection->companies;
+                                //$userCompanies = $connection->companies;
                                 $userRole = $connection->role;
                                 $userStatus = $connection->status;
                             }
@@ -45,8 +58,12 @@
                                 }
                             }
                         @endphp
-                        @if ( is_array($userCompanies) && in_array($company->id, $userCompanies) && in_array($userRole, [1, 3]) && $userStatus == 'active' )
-                            <li>
+                        @if ( in_array($userRole, [1, 3]) )
+                            <li
+                            @if (in_array($userStatus, ['inactive', 'revoked']))
+                                data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="<span class='text-danger'>Usuário indisponível</span>"
+                            @endif
+                            >
                                 <div class="form-check form-switch form-switch-success form-switch-md d-flex align-items-center">
                                     <input
                                         id="surveyor-user-{{ $company->id.$userId }}"
@@ -54,13 +71,14 @@
                                         type="radio"
                                         name="surveyor[{{$company->id}}]"
                                         {{ $isDelegated ? 'checked' : '' }}
+                                        {{ in_array($userStatus, ['inactive', 'revoked']) ? 'readonly' : '' }}
                                         value="{{ $userId }}">
                                     <label class="form-check-label d-flex align-items-center"
                                         for="surveyor-user-{{ $company->id.$userId }}">
                                         <span class="flex-shrink-0">
                                             <img src="{{$userAvatar}}" alt="{{ $userName }}" class="avatar-xxs rounded-circle">
                                         </span>
-                                        <span class="flex-grow-1 ms-2">{{ $userName }}</span>
+                                        <span class="flex-grow-1 ms-2 {{ in_array($userStatus, ['inactive', 'revoked']) ? 'text-danger' : '' }}">{{ $userName }}</span>
                                     </label>
                                 </div>
                             </li>

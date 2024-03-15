@@ -27,7 +27,6 @@
     const terms{{$companyId}} = @json($terms);
 
     document.addEventListener('DOMContentLoaded', function() {
-        ///////////////////////////////////////////////////////////////
         // START #barTermsChart
         var seriesData = [];
         var categories = [];
@@ -107,7 +106,6 @@
 
         // END #barTermsChart
 
-        ///////////////////////////////////////////////////////////////
         // START #mixedTermsChart
         var columnSeriesData = [];
         var lineSeriesData = [];
@@ -188,9 +186,7 @@
         var mixedTermsChart = new ApexCharts(document.querySelector("#mixedTermsChart{{$companyId}}"), optionsMixedTermsChart);
         mixedTermsChart.render();
         // END #mixedTermsChart
-        ///////////////////////////////////////////////////////////////
 
-        ///////////////////////////////////////////////////////////////
         // START #polarTermsAreaChart
         var seriesData = [];
         var labels = [];
@@ -273,7 +269,6 @@
         var polarTermsAreaChart = new ApexCharts(document.querySelector("#polarTermsAreaChart{{$companyId}}"), optionsTermsAreaChart);
         polarTermsAreaChart.render();
         // END #polarTermsAreaChart
-        ///////////////////////////////////////////////////////////////
 
     });
 </script>

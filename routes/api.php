@@ -8,7 +8,6 @@ use App\Http\Controllers\ClarifaiImageController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\StripeController;
 
-
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

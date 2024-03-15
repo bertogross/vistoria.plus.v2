@@ -1119,6 +1119,16 @@ export function lightbox(){
             title: false,
         });
     }
+
+    if(document.querySelectorAll('.image-single').length){
+        document.querySelectorAll('.image-single').forEach((element, index) => {
+            GLightbox({
+                selector: `.image-single-${index}`,
+                title: false,
+            });
+            element.classList.add(`image-single-${index}`); // Ensure each image has a unique class
+        });
+    }
 }
 
 

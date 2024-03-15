@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\UserMeta;
 use App\Models\User;
+use App\Models\Stripe;
 use Illuminate\Support\Facades\Crypt;
 
 /**
@@ -21,60 +22,63 @@ class UserConnections extends Model
 
     // The attributes that are mass assignable.
     protected $fillable = [
-        'user_id', 'connected_to', 'connection_role', 'connection_status', 'connection_companies'
+        'guest_id', 'host_id', 'connection_role', 'connection_status', 'connection_companies'
     ];
 
 
     // Store or update secondary users data
-    // $questUserId is the user to be a member from $hostUserId team
-    public static function setConnectionData($questUserId, $hostUserId, $questUserRole, $questUserStatus, $questUserCompanies)
+    // $guestUserId is the user to be a member from $hostUserId team
+    public static function setConnectionData($guestUserId, $hostUserId, $guestUserRole = 3, $guestUserStatus, $guestUserCompanies = null)
     {
         $onboardConnection = DB::connection('vpOnboard');
 
         // prevent user to invite yourself
-        if($questUserId == $hostUserId){
+        if($guestUserId == $hostUserId){
             return;
         }
 
-        // Convert the companies array to a JSON string
-        $questUserCompaniesJson = json_encode($questUserCompanies ?? []);
-
         $existingData = $onboardConnection->table('user_connections')
-            ->where('user_id', $questUserId)
-            ->where('connected_to', $hostUserId)
+            ->where('guest_id', $guestUserId)
+            ->where('host_id', $hostUserId)
             ->first();
 
-        if ($existingData) {
-            // TODO STRIPE:
-                // if $questUserStatus == inactive implement Stripe routine to cancel that subscription addon
-                // if $questUserStatus == active implement Stripe routine to add subscription addon
+        try {
+            if ($existingData) {
+                // Update existing record
+                $query = $onboardConnection->table('user_connections')
+                    ->where('id', $existingData->id)
+                    ->update([
+                        //'connection_role' => intval($guestUserRole),
+                        'connection_status' => $guestUserStatus,
+                        //'connection_companies' => $guestUserCompanies,
+                    ]);
+            } else {
+                // Insert new record
+                $query = $onboardConnection->table('user_connections')
+                    ->insert([
+                        'guest_id' => intval($guestUserId),
+                        'host_id' => intval($hostUserId),
+                        //'connection_role' => intval($guestUserRole),
+                        'connection_status' => $guestUserStatus,
+                        //'connection_companies' => $guestUserCompanies,
+                        'created_at' =>now()
+                    ]);
+            }
+        } catch (\Exception $e) {
+            \Log::error('setConnectionData error: ' . $e->getMessage());
 
-            // Update existing record
-            return $onboardConnection->table('user_connections')
-                ->where('id', $existingData->id)
-                ->update([
-                    'connection_role' => intval($questUserRole),
-                    'connection_status' => $questUserStatus,
-                    'connection_companies' => $questUserCompaniesJson,
-                ]);
-        } else {
-            // Insert new record
-            return $onboardConnection->table('user_connections')
-                ->insert([
-                    'user_id' => intval($questUserId),
-                    'connected_to' => intval($hostUserId),
-                    'connection_role' => intval($questUserRole),
-                    'connection_status' => $questUserStatus,
-                    'connection_companies' => $questUserCompaniesJson,
-                ]);
+            return false;
         }
 
-        return false;
+        // Stripe routine to cancel/active user subscription product_type == users
+        return Stripe::subscriptionGuestUserAddonUpdate();
+
     }
 
     // Accpet connection to another account
-    public static function acceptConnection($request, $questUserId)
+    public static function acceptConnection($request, $guestUserId)
     {
+        /*
         try {
             $decryptedValue = Crypt::decryptString($request->quest_user_params);
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
@@ -83,173 +87,49 @@ class UserConnections extends Model
             // Optionally, return or throw a custom error
             return response()->json(['error' => 'Decryption failed.'], 500);
         }
+        */
 
         try {
             $hostUserId = $request->host_user_id ? Crypt::decryptString($request->host_user_id) : null;
-            $questUserParams = $request->quest_user_params ? Crypt::decryptString($request->quest_user_params) : null;
+            //$guestUserParams = $request->quest_user_params ? Crypt::decryptString($request->quest_user_params) : null;
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
             // Handle the error, for example, log it or return a custom error response
             \Log::error('acceptConnection error: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Dados de convite corrompidos.'], 422);
         }
 
-        if($hostUserId && $questUserParams){
-            $decodeQuestUserParams = $questUserParams ? json_decode($questUserParams, true) : null;
+        /*
+        if($hostUserId && $guestUserParams){
+            $decodeQuestUserParams = $guestUserParams ? json_decode($guestUserParams, true) : null;
             $guestUserRole = $decodeQuestUserParams['role'] ?? 4;
-            $questUserCompanies = isset($decodeQuestUserParams['companies']) && is_array($decodeQuestUserParams['companies']) ? array_map('intval', $decodeQuestUserParams['companies']) : [];
+            $guestUserCompanies = isset($decodeQuestUserParams['companies']) && is_array($decodeQuestUserParams['companies']) ? array_map('intval', $decodeQuestUserParams['companies']) : [];
 
-            self::setConnectionData($questUserId, $hostUserId, $guestUserRole, 'active', $questUserCompanies);
+            self::setConnectionData($guestUserId, $hostUserId, $guestUserRole, 'active', $guestUserCompanies);
         }
+        */
+        $guestUserRole = 3;
+        $guestUserCompanies = null;
+        self::setConnectionData($guestUserId, $hostUserId, $guestUserRole, 'active', $guestUserCompanies);
+
+        $hostUserData = getUserData($hostUserId);
+        $hostEmail = $hostUserData->email;
+        $hostName = $hostUserData->name;
+
+        $guestUserData = getUserData($guestUserId);
+        $guestEmail = $guestUserData->email;
+        $guestName = $guestUserData->name;
+
+        $message = 'O convite para colaborar com sua conexão outrora enviado para ' . $guestEmail . ' foi aceito. ';
+
+        appSendEmail($hostEmail, $hostName, 'A Conexão foi Aceita :: [ ' . $guestName . ' ]', $message, 'default');
     }
 
-    // Unset all users connected in current account connections
-    // Use status: inactive | revoked
-    public static function unsetUsersConnectedOnHostAccount()
-    {
-        $hostId = auth()->id();
-
-        // TODO STRIPE:
-            // implement Stripe routine to cancel that subscription addon
-
-        return DB::connection('vpOnboard')->table('user_connections')
-            ->where('connected_to', $hostId)
-            ->where('connection_status', 'active')
-            ->update([
-                'connection_status' => 'inactive'
-            ]);
-
-    }
-
-    public static function preventUnauthorizedConnection()
-    {
-        $currentUserId = auth()->id();
-        $currentConnectionId = getCurrentConnectionByUserId($currentUserId);
-
-        $questUserStatus = getUserConnectionStatusById($currentUserId, $currentConnectionId);
-
-        if ($questUserStatus != 'active') {
-            // This line seems to reset the user's current connection to their own user ID when unauthorized.
-            UserMeta::updateUserMeta($currentUserId, 'current_database_connection', $currentUserId);
-
-            // Return an error response when the connection is not active
-            return response()->json(['error' => 'Você não possui autorização para acessar esta conexão'], 403);
-        }
-
-        // Return a success response when the connection is active
-        return response()->json(['authorization' => true], 200);
-    }
-
-    public static function getUsersDataConnectedOnAccountId($accountId)
-    {
-        $query = DB::connection('vpOnboard')->table('user_connections')
-            ->where('connected_to', $accountId)
-            ->select([
-                'user_id',
-                'connection_role AS role',
-                'connection_status AS status',
-                'connection_companies AS companies',
-                'created_at AS since'
-            ])
-            ->get();
-
-        // Decode the 'companies' JSON field
-        foreach ($query as $connection) {
-            $connection->companies = $connection->companies ? json_decode($connection->companies, true) : null;
-        }
-
-        return $query;
-    }
-
-    public static function getUserIdsConnectedOnAccountId($accountId)
-    {
-        return DB::connection('vpOnboard')->table('user_connections')
-            ->where('connected_to', $accountId)
-            ->pluck('user_id')
-            ->toArray();
-    }
-
-    public static function getUsersDataConnectedOnMyAccount()
-    {
-        $accountId = auth()->id();
-
-        $query = DB::connection('vpOnboard')->table('user_connections')
-            ->where('connected_to', $accountId)
-            ->select([
-                'user_id',
-                'connection_role AS role',
-                'connection_status AS status',
-                'connection_companies AS companies',
-                'created_at AS since'
-            ])
-            ->get();
-
-        // Decode the 'companies' JSON field
-        foreach ($query as $connection) {
-            $connection->companies = $connection->companies ? json_decode($connection->companies, true) : null;
-        }
-
-        return $query;
-    }
-
-    public static function getUserIdsConnectedOnMyAccount()
-    {
-        $accountId = auth()->id();
-
-        return DB::connection('vpOnboard')->table('user_connections')
-            ->where('connected_to', $accountId)
-            ->pluck('user_id')
-            ->toArray();
-    }
-
-    public static function getUsersDataFromMyConnections()
-    {
-        $userId = auth()->id();
-
-        $query = DB::connection('vpOnboard')->table('user_connections')
-            ->where('user_id', $userId)
-            ->select([
-                'connected_to',
-                'connection_role AS role',
-                'connection_status AS status',
-                'connection_companies AS companies',
-                'created_at AS since'
-            ])
-            ->get();
-
-        // Decode the 'companies' JSON field
-        foreach ($query as $connection) {
-            $connection->companies = $connection->companies ? json_decode($connection->companies, true) : null;
-        }
-
-        return $query;
-    }
-
-    public static function getUserDataFromConnectedAccountId($userId, $accountId)
-    {
-        $query = DB::connection('vpOnboard')->table('user_connections')
-            ->where('user_id', $userId)
-            ->where('connected_to', $accountId)
-            ->select([
-                'connection_role AS role',
-                'connection_status AS status',
-                'connection_companies AS companies',
-                'created_at AS since'
-            ])
-            ->first();
-
-        // Decode the 'companies' JSON field
-        if($query){
-            $query->companies = json_decode($query->companies, true) ?? null;
-        }
-
-        return $query ?? null;
-    }
 
     // Create user database based on vpDefaultSchema
-    public static function duplicateAndRenameDefaultSchema($accountId)
+    public static function duplicateAndRenameDefaultSchema($hostId)
     {
         $defaultSchema = 'vpDefaultSchema';
-        $newDatabaseName = 'vpApp'.$accountId; // The new name for the duplicated database
+        $newDatabaseName = 'vpApp'.$hostId; // The new name for the duplicated database
 
         // Check if database exists
         if (DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?", [$newDatabaseName])) {
@@ -287,9 +167,9 @@ class UserConnections extends Model
 
             $connectionId = $request->json('id');
 
-            $questUserStatus = getUserConnectionStatusById($currentUserId, $connectionId);
+            $guestUserStatus = getUserConnectionStatusById($currentUserId, $connectionId);
 
-            if($questUserStatus == 'inactive'){
+            if($guestUserStatus == 'inactive'){
                 UserMeta::updateUserMeta($currentUserId, 'current_database_connection',  $currentUserId);
 
                 return response()->json([
@@ -297,7 +177,7 @@ class UserConnections extends Model
                     'action' => 'infoAlert',
                     'message' => 'Conexão impossibilitada'
                 ]);
-            }else if($questUserStatus == 'waiting'){
+            }else if($guestUserStatus == 'waiting'){
                 UserMeta::updateUserMeta($currentUserId, 'current_database_connection',  $currentUserId);
 
                 return response()->json([
@@ -341,11 +221,19 @@ class UserConnections extends Model
 
         $onboardConnection = DB::connection('vpOnboard');
 
-        $questUserId = auth()->id();
+        $guestUserId = auth()->id();
+
+        $hostUserData = getUserData($hostUserId);
+        $hostEmail = $hostUserData->email;
+        $hostName = $hostUserData->name;
+
+        $guestUserData = getUserData($guestUserId);
+        $guestEmail = $guestUserData->email;
+        $guestName = $guestUserData->name;
 
         $existingData = $onboardConnection->table('user_connections')
-            ->where('user_id', $questUserId)
-            ->where('connected_to', $hostUserId)
+            ->where('guest_id', $guestUserId)
+            ->where('host_id', $hostUserId)
             ->first();
 
         if (!$existingData) {
@@ -365,25 +253,27 @@ class UserConnections extends Model
         }
 
         if($currentStatus == 'active'){
-            $questUserNewStatus = 'revoked';
+            $guestUserNewStatus = 'revoked';
             $message = 'A conexão foi revogada';
 
-            // TODO STRIPE:
-                // implement Stripe routine to cancel that subscription addon
+            $mailMessage = $guestName . ' Revogou a conexão com seu ' . appName();
+
+            //appSendEmail($hostEmail, $hostName, 'A Conexão foi Revogada :: [ ' . $guestName . ' ]', $mailMessage, 'default');
         }
         if($currentStatus == 'revoked'){
-            $questUserNewStatus = 'active';
+            $guestUserNewStatus = 'active';
             $message = 'A conexão foi restabelecida';
-            // TODO STRIPE:
-                // implement Stripe routine to active that subscription addon
-                // ATTENTION: When qUEST revoked, check if host have active subscription
+
+            $mailMessage = $guestName . ' Restabeleceu a conexão com seu ' . appName();
+
+            //appSendEmail($hostEmail, $hostName, 'A Conexão foi Restabelecida :: [ ' . $guestName . ' ]', $mailMessage, 'default');
         }
 
         // Update quest status record
         $query = $onboardConnection->table('user_connections')
             ->where('id', $existingData->id)
             ->update([
-                'connection_status' => $questUserNewStatus,
+                'connection_status' => $guestUserNewStatus,
             ]);
 
         if(!$query){
@@ -393,17 +283,154 @@ class UserConnections extends Model
             ], 500);
         }
 
+        // Stripe routine to cancel/active user subscription product_type == users
+        Stripe::subscriptionGuestUserAddonUpdate();
+
         // Change current connection immediately
-        $currentConnectionId = UserMeta::getUserMeta($questUserId, 'current_database_connection');
+        $currentConnectionId = UserMeta::getUserMeta($guestUserId, 'current_database_connection');
         if($currentConnectionId == $hostUserId){
-            UserMeta::updateUserMeta($questUserId, 'current_database_connection',  $questUserId);
+            UserMeta::updateUserMeta($guestUserId, 'current_database_connection',  $guestUserId);
         }
 
         return response()->json([
             'success' => true,
-            'status' => $questUserNewStatus,
+            'status' => $guestUserNewStatus,
             'message' => $message
             ], 200);
 
     }
+
+    // Unset all users connected in current account connections
+    // Use status: inactive | revoked
+    public static function unsetGuestsConnectedOnHost()
+    {
+        $hostId = auth()->id();
+
+        $query = DB::connection('vpOnboard')->table('user_connections')
+            ->where('host_id', $hostId)
+            ->where('connection_status', 'active')
+            ->update([
+                'connection_status' => 'inactive'
+            ]);
+
+        if($query){
+            // Stripe routine to cancel/active user subscription product_type == users
+            return Stripe::subscriptionGuestUserAddonUpdate();
+        }
+
+    }
+
+    public static function preventUnauthorizedConnection()
+    {
+        $currentUserId = auth()->id();
+        $currentConnectionId = getCurrentConnectionByUserId($currentUserId);
+
+        $guestUserStatus = getUserConnectionStatusById($currentUserId, $currentConnectionId);
+
+        if ($guestUserStatus != 'active') {
+            // This line seems to reset the user's current connection to their own user ID when unauthorized.
+            UserMeta::updateUserMeta($currentUserId, 'current_database_connection', $currentUserId);
+
+            // Return an error response when the connection is not active
+            return response()->json(['error' => 'Você não possui autorização para acessar esta conexão'], 403);
+        }
+
+        // Return a success response when the connection is active
+        return response()->json(['authorization' => true], 200);
+    }
+
+    //  Get Guests from HostId
+    public static function getGuestConnections($hostId = null)
+    {
+        if(!$hostId){
+            $hostId = auth()->id();
+        }
+        $query = DB::connection('vpOnboard')->table('user_connections')
+            ->where('host_id', $hostId)
+            ->select([
+                'guest_id AS user_id',
+                'connection_role AS role',
+                'connection_status AS status',
+                'connection_companies AS companies',
+                'created_at AS since'
+            ])
+            ->get();
+
+        // Decode the 'companies' JSON field
+        foreach ($query as $connection) {
+            $connection->companies = $connection->companies ? json_decode($connection->companies, true) : null;
+        }
+
+        return $query;
+    }
+
+    //  Get Hosts from GuestId
+    public static function getHostConnections($guestId = null)
+    {
+        if(!$guestId){
+            $guestId = auth()->id();
+        }
+        $query = DB::connection('vpOnboard')->table('user_connections')
+            ->where('guest_id', $guestId)
+            ->select([
+                'host_id AS user_id',
+                'connection_role AS role',
+                'connection_status AS status',
+                'connection_companies AS companies',
+                'created_at AS since'
+            ])
+            ->get();
+
+        // Decode the 'companies' JSON field
+        foreach ($query as $connection) {
+            $connection->companies = $connection->companies ? json_decode($connection->companies, true) : null;
+        }
+
+        return $query;
+    }
+
+    public static function getGuestIdsConnectedOnHostId($hostId = null)
+    {
+        if(!$hostId){
+            $hostId = auth()->id();
+        }
+        return DB::connection('vpOnboard')->table('user_connections')
+            ->where('host_id', $hostId)
+            ->pluck('guest_id')
+            ->toArray();
+    }
+
+    public static function getGuestDataFromConnectedHostId($guestId, $hostId)
+    {
+        $query = DB::connection('vpOnboard')->table('user_connections')
+            ->where('guest_id', $guestId)
+            ->where('host_id', $hostId)
+            ->select([
+                'connection_role AS role',
+                'connection_status AS status',
+                'connection_companies AS companies',
+                'created_at AS since'
+            ])
+            ->first();
+
+        // Decode the 'companies' JSON field
+        if($query){
+            $query->companies = json_decode($query->companies, true) ?? null;
+        }
+
+        return $query ?? null;
+    }
+
+
+    // Check if quest revoke connection or host turn user connection off
+    public static function connectedAccountStatus($guestId)
+    {
+        $config = config("database.connections.vpAppTemplate");
+        $connectionId = onlyNumber($config['database']);
+        $connectedAccount = self::getGuestDataFromConnectedHostId($guestId, $connectionId);
+
+        return $connectedAccount->status ?? null;
+    }
+
+
 }

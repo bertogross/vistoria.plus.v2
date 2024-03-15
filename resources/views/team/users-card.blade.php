@@ -18,7 +18,7 @@
         $userCompanies = getActiveCompanieIds();
         $role = 1;
     }else{
-        $connection = UserConnections::getUserDataFromConnectedAccountId($userId, $currentConnectionId);
+        $connection = UserConnections::getGuestDataFromConnectedHostId($userId, $currentConnectionId);
 
         $status = $connection->status ?? 'active';
         $userCompanies = $connection->companies ?? getActiveCompanieIds();
@@ -56,7 +56,7 @@
                 <div class="col-lg-4 col">
                     <div class="team-profile-img">
                         <div class="avatar-lg img-thumbnail rounded-circle flex-shrink-0">
-                            <img src="{{ checkUserAvatar($avatar) }}" alt="{{$name}}" class="member-img img-fluid d-block rounded-circle"loading="lazy">
+                            <img src="{{ checkUserAvatar($avatar) }}" alt="{{$name}}" class="member-img img-fluid d-block rounded-circle" loading="lazy">
                         </div>
                         <div class="team-content">
                             <h5 class="fs-16 mb-1 text-uppercase">{{$name}}</h5>

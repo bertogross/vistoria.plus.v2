@@ -60,7 +60,7 @@
                 asort($prices);
             @endphp
             @if( !empty($prices) && is_array($prices) && count($prices) > 0
-             && $productMetadata->type == 'addon' )
+             && $productMetadata->product_type == 'storage' )
                 @foreach( $prices as $key => $price)
                     @php
                         $PriceId = isset($price['id']) ? $price['id'] : '';
@@ -91,7 +91,7 @@
                         */
                     @endphp
 
-                    @include('settings.stripe.product-card-wide', ['type' => 'addon'])
+                    @include('settings.stripe.product-card-wide', ['product_type' => 'storage'])
 
                 @endforeach
             @endif

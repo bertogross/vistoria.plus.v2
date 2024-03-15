@@ -4,7 +4,7 @@
 
     $user = auth()->user();
 
-    $myConnections = getUsersDataFromMyConnections();
+    $myConnections = getHostConnections();
 
     $currentConnectionId = getCurrentConnectionByUserId($user->id);
     $currentConnectionName = getConnectionNameById($currentConnectionId);
@@ -36,7 +36,7 @@
                             @if ($companyLogo)
                                 <img src="{{ $companyLogo }}" alt="{{appName()}}" height="31" loading="lazy">
                             @else
-                                <img src="{{URL::asset('build/images/logo-dark.png')}}" alt="{{appName()}}" height="31" loading="lazy">
+                                <img src="{{ URL::asset('build/images/logo-dark.png') }}" alt="{{appName()}}" height="31" loading="lazy">
                             @endif
                         </span>
                     </a>
@@ -176,7 +176,7 @@
 
                                 @foreach ($myConnections as $key => $connection)
                                     @php
-                                        $hostUserId = $connection->connected_to;
+                                        $hostUserId = $connection->user_id;
                                         $hostUserName = getConnectionNameById($hostUserId);
 
                                         $questStatus = $connection->status;
@@ -209,7 +209,7 @@
                                                     <span class="position-absolute text-danger float-end me-0 end-0 ri-close-circle-line align-middle mt-n1 fs-16"
                                                     {!! $dataBs !!}
                                                     data-bs-title="Status da Conexão"
-                                                    data-bs-content="<strong class='text-danger'>Inoperante</strong><br><br><strong>{{$hostUserName}}</strong> inativou seu acesso"></span>
+                                                    data-bs-content="<strong class='text-danger'>Inoperante</strong><br><br>Consulte <strong>{{$hostUserName}}</strong> quanto da sua necessidade de reativação"></span>
                                                     @break
                                                 @case('revoked')
                                                     <span class="position-absolute text-warning float-end me-0 end-0 ri-question-line align-middle mt-n1 fs-16"

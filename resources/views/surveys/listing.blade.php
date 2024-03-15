@@ -1,4 +1,4 @@
-<div id="surveysList" class="card h-100">
+<div id="surveysList" class="card h-100 mb-3">
     <div class="card-header">
         <div class="d-flex align-items-center">
             <h5 class="card-title mb-0 flex-grow-1">

@@ -3,7 +3,7 @@
     <div class="card pricing-box bg-black bg-opacity-10 ribbon-box right">
         <div class="card-body p-4 m-2 {{ isset($currentPriceId) && $currentPriceId == $PriceId ? 'bg-light' : '' }}">
 
-            @if($subscriptionType == 'pro' && $productMetadata->type  == 'primary')
+            @if($subscriptionType == 'pro' && $productMetadata->product_type  == 'primary')
                 <div class="ribbon-two ribbon-two-theme"><span class="small">Vigente</span></div>
             @endif
 
@@ -44,7 +44,7 @@
                 @endif
             </div>
 
-            @if ($productMetadata->type == 'primary')
+            @if ($productMetadata->product_type == 'primary')
                 <input class="quantity-{{ $PriceId }}" type="hidden" value="1" readonly autocomplete="off">
             @else
                 <div class="input-step full-width light {{ isset($currentPriceId) && $currentPriceId == $PriceId ? 'bg-soft-primary' : '' }}">
@@ -59,10 +59,10 @@
                     class="btn btn-outline-theme w-100 waves-effect waves-light text-uppercase {{ isset($currentPriceId) && $currentPriceId == $PriceId ? 'btn-subscription-update' : 'btn-subscription' }}"
                     data-product_id="{{ $productId }}"
                     data-price_id="{{ $PriceId }}"
-                    data-type="{{ $productMetadata->type ?? '' }}"
+                    data-product_type="{{ $productMetadata->product_type ?? '' }}"
                     data-recurring="{{ $recurring }}"
                     data-interval_count="{{  $intervalCount }}"
-                    @if ($productMetadata->type == 'primary')
+                    @if ($productMetadata->product_type == 'primary')
                         data-current-quantity="1"
                         data-quantity="1"
                     @else
@@ -71,7 +71,7 @@
                     @endif
                     data-current-price_id="{{ isset($currentPriceId) ? $currentPriceId : '' }}"
                     data-subscription_item_id="{{ $subscriptionItemId }}"
-                    @if ($productMetadata->type == 'addon')
+                    @if ($productMetadata->product_type == 'storage')
                         disabled
                     @endif
                     >

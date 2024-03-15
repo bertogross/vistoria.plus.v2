@@ -1,4 +1,4 @@
-<div class="card mt-4 h-100">
+<div class="card mt-4">
     <div class="card-body p-4">
         <div class="text-center mt-2">
             <h4 class="text-theme">Registre-se</h4>
@@ -10,13 +10,14 @@
 
             <form id="registerForm" class="no-enter-submit" action="{{ route('register') }}" method="POST">
                 @csrf
-
                 <input type="hidden" name="host_user_id" value="{{ isset($hostUserId) ? $hostUserId : '' }}">
-                <input type="hidden" name="quest_user_params" value="{{ isset($questUserParams) ? $questUserParams : '' }}">
+                {{--}}
+                <input type="hidden" name="quest_user_params" value="{{ isset($guestUserParams) ? $guestUserParams : '' }}">
+                --}}
 
                 <div class="mb-3">
                     <label for="new_useremail" class="form-label">E-mail</label>
-                    <input type="email"  class="form-control @error('register_email') is-invalid @enderror" name="register_email" value="{{ isset($questUserEmailFromInvitation) && !$questUserEmail ? $questUserEmailFromInvitation : old('register_email') }}" id="new_useremail" placeholder="Informe seu e-mail" maxlength="150" required>
+                    <input type="email"  class="form-control @error('register_email') is-invalid @enderror" name="register_email" value="{{ $guestUserEmail ? $guestUserEmail : old('register_email') }}" id="new_useremail" placeholder="Informe seu e-mail" maxlength="150" required>
                     @error('register_email')
                         <span class="invalid-feedback" role="alert">
                             <strong>{!! $message !!}</strong>

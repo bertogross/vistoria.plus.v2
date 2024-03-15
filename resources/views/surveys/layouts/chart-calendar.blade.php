@@ -25,7 +25,7 @@
     const avatars{{$companyId}} = @json($avatarsJson);
 
     document.addEventListener('DOMContentLoaded', function() {
-        ///////////////////////////////////////////////////////////////
+
         // START #usersChart
         function getAvatarUrl(userId) {
             avatarsObj = JSON.parse(avatars{{$companyId}});
@@ -142,9 +142,7 @@
         var usersChart = new ApexCharts(document.querySelector("#usersChart{{$companyId}}"), options);
         usersChart.render();
         // END #usersChart
-        ///////////////////////////////////////////////////////////////
 
-        ///////////////////////////////////////////////////////////////
         // START #calendar
         var calendarEl = document.getElementById('calendar{{$companyId}}');
 
@@ -235,7 +233,6 @@
         //console.log(calendarEvents);
         calendar.render();
         // END #calendar
-        ///////////////////////////////////////////////////////////////
 
 
     });

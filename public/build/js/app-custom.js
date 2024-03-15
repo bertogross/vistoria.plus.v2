@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     var dataTheme = 'dark';
                 }
 
-                const url = profileChangeLayoutModeURL;
+                const url = changeLayoutModeURL;
                 const response = await fetch(url, {
                     method: 'POST',
                     body: JSON.stringify({ theme: dataTheme }),

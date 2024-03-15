@@ -12,7 +12,8 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\UserConnections;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Cookie;
+//use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
@@ -106,29 +107,48 @@ class RegisterController extends Controller
 
     public function invitationResponse(Request $request, $connectionCode = null)
     {
-        $hostUserId = $questUserParams = $hostUserIdCookie = $questUserParamsCookie = null;
+        $hostUserId = $guestUserParams = $hostUserIdCookie = $guestUserParamsCookie = $guestExists = $guestUserEmail = null;
 
         if ($connectionCode) {
             $decryptedValue = Crypt::decryptString($connectionCode);
             $connectionCodeParts = $decryptedValue ? explode('~~~', $decryptedValue) : null;
 
             $hostUserId = $connectionCodeParts[0] ? Crypt::encryptString($connectionCodeParts[0]) : null;
-            $questUserParams = $connectionCodeParts[2] ? Crypt::encryptString($connectionCodeParts[2]) : null;
+            //$guestUserParams = $connectionCodeParts[2] ? Crypt::encryptString($connectionCodeParts[2]) : null;
 
             // Create cookies
             //$hostUserIdCookie = cookie('vistoriaplus_hostUserId', $hostUserId, 60*24*30); // Expires in 30 days
-            //$questUserParamsCookie = cookie('vistoriaplus_questUserParams', $questUserParams, 60*24*30); // Expires in 30 days
+            //$guestUserParamsCookie = cookie('vistoriaplus_questUserParams', $guestUserParams, 60*24*30); // Expires in 30 days
+
+            $guestUserEmailFromInvitation = $connectionCodeParts[1] ?? null;
+
+            if($guestUserEmailFromInvitation){
+                $guestExists = DB::connection('vpOnboard')
+                    ->table('users')
+                    ->where('email', $guestUserEmailFromInvitation)
+                    ->first();
+                $guestUserEmail = $guestExists->email ?? null;
+            }
+
+            $hostUser = User::find($connectionCodeParts[0]);
+            $hostUserName = $hostUser->name ?? '';
+
         }
 
         // Attach cookies to the response
         return response()->view('auth.invitation', compact(
+                    'connectionCode',
                     'connectionCodeParts',
                     'hostUserId',
-                    'questUserParams'
+                    'hostUserName',
+                    //'questUserParams',
+                    //'questUserEmailFromInvitation',
+                    'guestExists',
+                    'questUserEmail'
                 )
             );
             //->cookie($hostUserIdCookie)
-            //->cookie($questUserParamsCookie);
+            //->cookie($guestUserParamsCookie);
     }
 
 

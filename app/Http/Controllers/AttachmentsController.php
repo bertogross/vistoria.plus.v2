@@ -32,7 +32,6 @@ class AttachmentsController extends Controller
                 'file.mimes' => 'Envie somente extensão JPG',
                 'file.max' => 'O arquivo deve pesar no máximo 5MB',
             ];
-
             $request->validate([
                 'file' => 'required|file|mimes:jpeg,jpg|max:5120',
             ], $messages);

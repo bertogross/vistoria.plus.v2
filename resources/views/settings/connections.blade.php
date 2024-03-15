@@ -36,14 +36,16 @@
                                 <th scope="col">Conexão</th>
                                 <th scope="col" width="140">Desde</th>
                                 <th scope="col">Nível</th>
+                                {{--
                                 <th scope="col">Unidades Autorizadas</th>
+                                --}}
                                 <th scope="col" class="text-end">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                         @foreach ($myConnections as $index => $connection)
                             @php
-                                $hostId = $connection->connected_to;
+                                $hostId = $connection->user_id;
                                 $getHostUserData = getUserData($hostId);
                                 $hostAvatar = $getHostUserData->avatar;
                                 $hostEmail = $getHostUserData->email;
@@ -54,14 +56,14 @@
                                 $questSince = $connection->since ?? null;
                                 $questRole = $connection->role ?? null;
                                 $questRoleName = User::getRoleName($questRole) ?? null;
-                                $questCompanies = $connection->companies ?? null;
+                                //$questCompanies = $connection->companies ?? null;
                             @endphp
                             <tr>
                                 <td class="align-middle">
                                     <div class="d-flex gap-2 align-items-center">
                                         <div class="flex-shrink-0">
                                             <img src="{{ checkUserAvatar($hostAvatar) }}" alt="{{$hostName}}"
-                                                class="avatar-xs rounded-circle">
+                                                class="avatar-xs rounded-circle" loading="lazy">
                                         </div>
                                         <div class="flex-grow-1" style="line-height: 16px;">
                                             {{$hostName}}
@@ -71,6 +73,7 @@
                                 </td>
                                 <td class="align-middle">{{$questSince ? date("d/m/Y H:i", strtotime($questSince)) : ''}}</td>
                                 <td class="align-middle">{{$questRoleName}}</td>
+                                {{--
                                 <td class="align-middle">
                                     @if (is_array($questCompanies))
                                         <ul class="list-unstyled list-inline text-muted mb-0">
@@ -82,6 +85,7 @@
                                         -
                                     @endif
                                 </td>
+                                --}}
                                 <td class="align-middle text-end" style="max-width: 100px;">
                                     @if ($questStatus == 'wainting')
                                         {{--

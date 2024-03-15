@@ -17,11 +17,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load the content for the user modal
     function loadUserSettingsModal(userId = null, userTitle = '', origin = null) {
 
+        /*
         if(origin == 'survey'){
-            sweetAlert('Para convidar um membro a fim de colaborar som suas tarefas, acesse <a href="'+settingsAccountShowURL+'/tab=users">Configurações >> Usuários</a>')
+            sweetAlert('Para convidar um membro a fim de colaborar com suas tarefas, acesse <a href="'+settingsAccountShowURL+'/tab=users" class="text-underline">Configurações >> Usuários</a><br><br><small>Após o novo usuário aceitar o convite é que será possível atribuir-lhe tarefas.</small>')
 
             return;
         }
+        */
 
         var xhr = new XMLHttpRequest();
 
@@ -63,9 +65,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         btnSaveUser.innerHTML = 'Atualizar';
 
                         injectScript("/build/js/pages/password-addon.init.js");
-                    } else if (origin == 'survey') {
+                    /*} else if (origin == 'survey') {
                         modalUserTitle.innerHTML = 'Convidar Usuário';
-                        btnSaveUser.innerHTML = 'Enviar Convite';
+                        btnSaveUser.innerHTML = 'Enviar Convite';*/
                     } else {
                         modalUserTitle.innerHTML = 'Novo Usuário';
                         btnSaveUser.innerHTML = 'Adicionar';

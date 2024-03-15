@@ -47,11 +47,15 @@ class SurveysTermsController extends Controller
 
     public function storeOrUpdate(Request $request)
     {
+        // Validate the incoming request data
         $validatedData = $request->validate([
-            'name' => 'required',
+            'name' => 'required|string|max:100'
+        ], [
+            'name.required' => 'Informe o Termo',
+            'name.max' => 'Termo deve possuir no máximo 100 caracteres.'
         ]);
 
-        $termName = SurveyTerms::cleanedName($validatedData->name);
+        $termName = SurveyTerms::cleanedName($validatedData['name']);
 
         $existingTerm = SurveyTerms::where('name', $termName)->first();
         if ($existingTerm) {
@@ -59,13 +63,19 @@ class SurveysTermsController extends Controller
             return response()->json(['success' => false, 'message' => 'Termo já existe!']);
         }
 
-        $currentUserId = auth()->id();
-
+        /*
         $term = new SurveyTerms;
         //$term->user_id = $currentUserId;
         $term->name = $termName;
         $term->slug = $this->createUniqueSlug($termName);
         $term->save();
+        */
+        // Create and save the new term
+        $term = SurveyTerms::create([
+            //'user_id' => auth()->id(),
+            'name' => $termName,
+            'slug' => $this->createUniqueSlug($termName),
+        ]);
 
         return response()->json(['success' => true, 'term' => $term, 'message' => 'Termo registrado!']);
     }

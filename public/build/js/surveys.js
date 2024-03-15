@@ -171,6 +171,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function loadSurveyFormModal(Id = null) {
+        showPreloader();
+
         var xhr = new XMLHttpRequest();
 
         var url = Id ? surveysEditURL + '/' + Id : surveysCreateURL;
@@ -207,8 +209,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     toastAlert('Não foi possível carregar o conteúdo', 'danger', 10000);
                 }
 
+                showPreloader(false);
             } else {
                 console.log("Fetching modal content:", xhr.statusText);
+
+                showPreloader(false);
             }
         };
         xhr.send();
@@ -285,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
 
                             // Additional logic for specific tabs
-                            if (nextTab === 'steparrow-recurring-info-tab') {
+                            if (nextTab === 'steparrow-template-info-tab') {
                                 const checkedControlCompanies = form.querySelectorAll(".tab-pane.show .form-check-input-companies:checked");
                                 if(form.querySelectorAll(".tab-pane.show .form-check-input-companies").length){
                                     if (checkedControlCompanies.length === 0) {
@@ -413,25 +418,41 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     */
 
+    /*
     function surveyCheckAllFormCheckInputs(origin = null) {//
         // Select all elements with the .form-check-input class
         var checkboxes = document.querySelectorAll('.form-check-input');
 
         // Define a reusable action as a function
         function handleCheckboxChange(checkbox) {
+
             if (checkbox.classList.contains('form-check-input-companies')) {
-                let companyId = checkbox.value;
 
-                let column = document.getElementById(`distributed-tab-company-${companyId}`);
+                // Select all company checkboxes
+                const companyCheckboxes = document.querySelectorAll('.form-check-input-companies');
 
-                // Simplify the display logic
-                column.style.display = checkbox.checked ? '' : 'none';
+                companyCheckboxes.forEach(function(checkbox) {
+                    // Add a change event listener to each company checkbox
+                    checkbox.addEventListener('change', function() {
+                        // Use the checkbox value to identify the corresponding column
+                        let companyId = this.value;
+                        let column = document.getElementById(`distributed-tab-company-${companyId}`);
 
-                // Set the required attribute based on the checkbox's checked state
-                column.querySelectorAll('input').forEach(input => input.required = checkbox.checked);
+                        // Proceed only if the column is found
+                        if (column) {
+                            // Find all surveyor radio buttons within the identified column
+                            const surveyorRadios = column.querySelectorAll('.form-check-input-users');
 
-                // every time any 'form-check-input-companies' checkbox changes state
-                removeCheckedAttributeFromUsers();
+                            // Set the checked state of all surveyor radios based on the company checkbox's state
+                            surveyorRadios.forEach(function(radio) {
+                                // If the company checkbox is unchecked, uncheck the surveyor radio buttons
+                                if (!checkbox.checked) {
+                                    radio.checked = false;
+                                }
+                            });
+                        }
+                    });
+                });
             }
         }
 
@@ -445,6 +466,45 @@ document.addEventListener('DOMContentLoaded', function() {
             inputCheckbox.addEventListener('change', function() {
                 handleCheckboxChange(this);
             });
+        });
+    }*/
+    function surveyCheckAllFormCheckInputs(origin = null) {
+        // This function is designed to be called with an optional 'origin' parameter.
+        // It sets up event listeners on checkboxes to manage related radio buttons within the same 'company' group.
+
+        // Attach change event listeners only to company checkboxes to avoid redundant event attachment.
+        const companyCheckboxes = document.querySelectorAll('.form-check-input-companies');
+
+        companyCheckboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                // Use the checkbox value to identify the corresponding column
+                let companyId = this.value;
+                let column = document.getElementById(`distributed-tab-company-${companyId}`);
+
+                // Proceed only if the column is found
+                if (column) {
+                    // Find all surveyor radio buttons within the identified column
+                    const surveyorRadios = column.querySelectorAll('.form-check-input-users');
+
+                    // Set the checked state of all surveyor radios based on the company checkbox's state
+                    surveyorRadios.forEach(function(radio) {
+                        // If the company checkbox is unchecked, uncheck the surveyor radio buttons
+                        radio.checked = checkbox.checked;
+                    });
+                }
+            });
+
+            // If the function is called with 'origin' as 'survey', apply the initial state logic immediately.
+            if (origin === 'survey') {
+                let companyId = checkbox.value;
+                let column = document.getElementById(`distributed-tab-company-${companyId}`);
+                if (column) {
+                    const surveyorRadios = column.querySelectorAll('.form-check-input-users');
+                    surveyorRadios.forEach(function(radio) {
+                        radio.checked = checkbox.checked;
+                    });
+                }
+            }
         });
     }
     // Attach it to the window object to get from another file (similar export)

@@ -70,7 +70,7 @@ Route::middleware(['auth', 'set-db-connection', 'check.authorization'])->group(f
     Route::prefix('profile')->group(function () {
         Route::get('/{id?}', [ProfileController::class, 'index'])->name('profileShowURL');
 
-        Route::post('/layout-mode', [ProfileController::class, 'changeLayoutMode'])->name('profileChangeLayoutModeURL');
+        Route::post('/layout-mode', [ProfileController::class, 'changeLayoutMode'])->name('changeLayoutModeURL');
 
     });
 
@@ -117,13 +117,12 @@ Route::middleware(['auth', 'set-db-connection', 'check.authorization'])->group(f
             Route::get('/terms/create', [SurveysTermsController::class, 'create'])->name('surveysTermsCreateURL');
             Route::get('/terms/form', [SurveysTermsController::class, 'form'])->name('surveysTermsFormURL');
             Route::get('/terms/edit/{id?}', [SurveysTermsController::class, 'edit'])->name('surveysTermsEditURL');
-            Route::post('/terms/store/{id?}', [SurveysTermsController::class, 'storeOrUpdate'])->name('surveysTermsStoreOrUpdateURL');
+            //Route::post('/terms/store/{id?}', [SurveysTermsController::class, 'storeOrUpdate'])->name('surveysTermsStoreOrUpdateURL');
+            Route::post('/terms/store', [SurveysTermsController::class, 'storeOrUpdate'])->name('surveysTermsStoreOrUpdateURL');
             Route::get('/terms/search', [SurveysTermsController::class, 'search'])->name('surveysTermsSearchURL');
 
             // Audit Routes
             Route::get('/audits/{id?}', [SurveysAuditController::class, 'index'])->name('surveysAuditIndexURL');
-
-
     });
 
     // Admin Settings

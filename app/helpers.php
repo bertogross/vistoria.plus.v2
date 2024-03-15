@@ -13,7 +13,7 @@ use App\Models\SurveyAssignments;
 use App\Models\Stripe;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\PostmarkappController;
-
+use Illuminate\Support\Facades\Storage;
 
 // Set the locale to Brazilian Portuguese
 Carbon::setLocale('pt_BR');
@@ -85,11 +85,11 @@ if( !function_exists('getUsers') ){
         $userIds[] = $currentConnectionId;
 
         // Fetch connected user data based on the current account ID
-        $getUsersDataConnectedOnAccountId = UserConnections::getUserIdsConnectedOnMyAccount();
+        $getGuestIdsConnectedOnHostId = UserConnections::getGuestIdsConnectedOnHostId($currentAccountId);
 
         // If there are connected users, add their IDs to the array
-        if ($getUsersDataConnectedOnAccountId) {
-            foreach ($getUsersDataConnectedOnAccountId as $userId) {
+        if ($getGuestIdsConnectedOnHostId) {
+            foreach ($getGuestIdsConnectedOnHostId as $userId) {
                 $userIds[] = $userId;
             }
         }
@@ -112,7 +112,7 @@ if (!function_exists('getUserRoleById')) {
         if($accountId == auth()->id()){
             $userRole = 1;
         }else{
-            $connection = UserConnections::getUserDataFromConnectedAccountId($userId, $accountId);
+            $connection = UserConnections::getGuestDataFromConnectedHostId($userId, $accountId);
             $userRole = isset($connection->role) ? $connection->role : null;
         }
 
@@ -145,7 +145,7 @@ if (!function_exists('getUserConnectionStatusById')) {
         if($accountId == auth()->id()){
             $userStatus = 'active';
         }else{
-            $connection = UserConnections::getUserDataFromConnectedAccountId($userId, $accountId);
+            $connection = UserConnections::getGuestDataFromConnectedHostId($userId, $accountId);
             $userStatus = isset($connection->status) ? $connection->status : null;
         }
 
@@ -165,6 +165,66 @@ if( !function_exists('getUserData') ){
             ->first();
     }
 }
+
+if( !function_exists('getDiskQuota') ){
+    function getDiskQuota($connectionId = null) {
+        if(!$connectionId){
+            $connectionId = auth()->id();
+        }
+
+        $getUserData = getUserData($connectionId);
+
+        $diskQuota = $getUserData->disk_quota;
+    }
+}
+
+if( !function_exists('checkFreeDiskSpace') ){
+    function checkFreeDiskSpace($connectionId = null) {
+        if(!$connectionId){
+            $connectionId = auth()->id();
+        }
+
+        $directory = 'vpApp'.$connectionId.'/attachments'; // Base directory
+
+        $getUserData = getUserData($connectionId); // Ensure this function returns an object with a disk_quota property
+
+        $diskQuotaGB = $getUserData->disk_quota; // Assuming disk_quota is in GB
+
+        // Convert $diskQuota from GB to Bytes
+        // 1 GB = 1,073,741,824 bytes
+        $diskQuotaBytes = $diskQuotaGB * 1073741824;
+
+        $files = collect(Storage::disk('public')->allFiles($directory));
+
+        // Calculate total usage in bytes
+        $totalUsageBytes = $files->reduce(function ($carry, $file) {
+            return $carry + Storage::disk('public')->size($file);
+        }, 0);
+
+        // Convert total usage to gigabytes (GB) for easier understanding
+        $totalUsageGB = $totalUsageBytes / 1073741824;
+
+        // Calculate the available space in bytes
+        $availableSpaceBytes = $diskQuotaBytes - $totalUsageBytes;
+
+        // Convert the available space to gigabytes (GB) for easier understanding
+        $availableSpaceGB = $availableSpaceBytes / 1073741824;
+
+        // Calculate the percentage of disk quota used
+        $percentageUsed = ($totalUsageBytes / $diskQuotaBytes) * 100;
+
+        // Return the calculated values, including available space
+        return [
+            'diskQuotaGB' => $diskQuotaGB,
+            'totalUsageGB' => number_format($totalUsageGB, 5),
+            'availableSpaceGB' => number_format($availableSpaceGB, 5),
+            'percentageUsed' => number_format($percentageUsed, 5)
+        ];
+    }
+
+}
+
+
 
 if( !function_exists('getUserAvatar') ){
     function getUserAvatar($userId = null) {
@@ -254,33 +314,22 @@ if (!function_exists('getCurrentConnectionId')) {
     }
 }
 
-if (!function_exists('getUsersDataConnectedOnAccountId')) {
-    function getUsersDataConnectedOnAccountId($accountId) {
-        return UserConnections::getUsersDataConnectedOnAccountId($accountId);
+
+if (!function_exists('getGuestConnections')) {
+    function getGuestConnections() {
+        return UserConnections::getGuestConnections();
     }
 }
 
-/*if (!function_exists('getUserIdsConnectedOnAccountId')) {
-    function getUserIdsConnectedOnAccountId($accountId) {
-        return UserConnections::getUserIdsConnectedOnAccountId($accountId);
-    }
-}*/
-
-if (!function_exists('getUserIdsConnectedOnMyAccount')) {
-    function getUserIdsConnectedOnMyAccount() {
-        return UserConnections::getUserIdsConnectedOnMyAccount();
+if (!function_exists('getHostConnections')) {
+    function getHostConnections() {
+        return UserConnections::getHostConnections();
     }
 }
 
-if (!function_exists('getUsersDataConnectedOnMyAccount')) {
-    function getUsersDataConnectedOnMyAccount() {
-        return UserConnections::getUsersDataConnectedOnMyAccount();
-    }
-}
-
-if (!function_exists('getUsersDataFromMyConnections')) {
-    function getUsersDataFromMyConnections() {
-        return UserConnections::getUsersDataFromMyConnections();
+if (!function_exists('getGuestIdsConnectedOnHostId')) {
+    function getGuestIdsConnectedOnHostId() {
+        return UserConnections::getGuestIdsConnectedOnHostId();
     }
 }
 
@@ -288,13 +337,13 @@ if (!function_exists('getCurrentConnectionUserRoleName')) {
     function getCurrentConnectionUserRoleName() {
         $user = auth()->user();
 
-        $currentConnectionId = getCurrentConnectionByUserId($user->id);
+        $currentHostId = getCurrentConnectionByUserId($user->id);
 
-        $getUsersDataConnectedOnAccountId = getUsersDataConnectedOnAccountId($currentConnectionId);
+        $getHostConnections = getHostConnections($currentHostId);
 
-        $firstConnection = $getUsersDataConnectedOnAccountId->first();
+        $firstConnection = $getHostConnections->first();
 
-        if($currentConnectionId == $user->id){
+        if($currentHostId == $user->id){
             $userRole = 1;
         }else{
             $userRole = isset($firstConnection->role) ? intval($firstConnection->role) : null;
@@ -402,34 +451,6 @@ if (!function_exists('extractDatabaseId')) {
         $database = onlyNumber($databaseConnection);
 
         return intval($database);
-    }
-}
-
-// Get authorized companies from the user_metas table
-if (!function_exists('getAuthorizedCompanies')) {
-    function getAuthorizedCompanies($userId) {
-        $currentUserId = auth()->id();
-
-        if (!$userId) {
-            $userId = $currentUserId;
-        }
-
-        $currentConnectionId = getCurrentConnectionByUserId($userId);
-
-        if ($currentUserId == $currentConnectionId) {
-            $companies = DB::connection('vpAppTemplate')
-                ->table('companies')
-                ->where('status', 1)
-                ->pluck('id') // Use pluck to get an array of company IDs
-                ->toArray();
-        } else {
-            $getUsersDataConnectedOnAccountId = getUsersDataConnectedOnAccountId($userId);
-
-            // Assuming companies is stored as a JSON string
-            $companies = isset($getUsersDataConnectedOnAccountId->companies) ? $getUsersDataConnectedOnAccountId->companies : null;
-        }
-
-        return $companies;
     }
 }
 
@@ -703,6 +724,14 @@ if (!function_exists('getTermNameById')) {
         $term = $termId ? SurveyTerms::find($termId) : null;
 
         return $term ? $term->name : null;
+    }
+}
+
+if (!function_exists('getSurveyNameById')) {
+    function getSurveyNameById($surveyId) {
+        $survey = $surveyId ? Survey::find($surveyId) : null;
+
+        return $survey ? $survey->title : null;
     }
 }
 

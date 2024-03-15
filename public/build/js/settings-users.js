@@ -16,6 +16,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load the content for the user modal
     function loadUserSettingsModal(userId = null, userTitle = '', origin = null) {
+
+        /*
+        if(origin == 'survey'){
+            sweetAlert('Para convidar um membro a fim de colaborar com suas tarefas, acesse <a href="'+settingsAccountShowURL+'/tab=users" class="text-underline">Configurações >> Usuários</a><br><br><small>Após o novo usuário aceitar o convite é que será possível atribuir-lhe tarefas.</small>')
+
+            return;
+        }
+        */
+
         var xhr = new XMLHttpRequest();
 
         showPreloader();
@@ -56,9 +65,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         btnSaveUser.innerHTML = 'Atualizar';
 
                         injectScript("/build/js/pages/password-addon.init.js");
-                    } else if (origin == 'survey') {
+                    /*} else if (origin == 'survey') {
                         modalUserTitle.innerHTML = 'Convidar Usuário';
-                        btnSaveUser.innerHTML = 'Enviar Convite';
+                        btnSaveUser.innerHTML = 'Enviar Convite';*/
                     } else {
                         modalUserTitle.innerHTML = 'Novo Usuário';
                         btnSaveUser.innerHTML = 'Adicionar';
@@ -68,7 +77,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     attachModalEventListeners();
 
-                    attachImage("#member-image-input", "#avatar-img", uploadAvatarURL);
+                    attachImage("#member-image-input", ".avatar-img", uploadAvatarURL);
+
                     attachImage("#cover-image-input", "#cover-img", uploadCoverURL);
                 }else{
                     toastAlert('Não foi possível carregar o conteúdo', 'danger', 10000);
@@ -154,7 +164,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const userId = form.querySelector('input[name="user_id"]').value;
 
-
                 if (!form.checkValidity()) {
                     event.stopPropagation();
                     form.classList.add('was-validated');
@@ -193,20 +202,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         }else{
                             toastAlert(data.message, 'success', 20000);
 
-                            // reload page
                             if(form.dataset.id){
                                 showPreloader();
                             }
 
+                            // reload page
                             setTimeout(() => {
-                                location.reload();
+                                //location.reload();
+                                window.location.href = settingsAccountShowURL + '?tab=users';
                             }, 5000);
 
                             btnSaveUser.remove();
                         }
 
                     } else if( data.action == 'subscriptionAlert'){
-                        sweetWizardAlert(data.message, settingsIndexURL + '?tab=subscription', 'warning', 'Voltar', 'Ativar Assinatura')
+                        sweetWizardAlert(data.message, settingsAccountShowURL + '?tab=subscription', 'warning', 'Voltar', 'Ativar Assinatura')
                     } else {
                         sweetAlert(data.message);
                     }

@@ -132,7 +132,7 @@ export function addTerms(){
     if(btnAddTerm){
         btnAddTerm.addEventListener('click', function() {
             var termInput = document.getElementById('termiInput');
-            var term = termInput.value.trim();
+            var termName = termInput.value.trim();
             //console.log(JSON.stringify({ name: term }));
 
             if (term) {
@@ -143,7 +143,7 @@ export function addTerms(){
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // Laravel CSRF token
                     },
-                    body: JSON.stringify({ name: term })
+                    body: JSON.stringify({ name: termName })
                 })
                 .then(response => response.json())
                 .then(data => {

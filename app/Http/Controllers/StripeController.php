@@ -77,10 +77,23 @@ class StripeController extends Controller
 
         try {
             // Deactive all connected users
-            UserConnections::unsetUsersConnectedOnHostAccount();
+            UserConnections::unsetGuestsConnectedOnHost();
 
             // Delete subscriptions
             Stripe::cancelStripeSubscriptionItems();
+
+
+            // Send message to user
+            $hostUserId = auth()->id();
+            $hostUserData = getUserData($hostUserId);
+            $hostEmail = $hostUserData->email;
+            $hostName = $hostUserData->name;
+
+            $mailMessage = 'Sua assinatura no ' . appName() . ' foi cancelada.';
+            $mailMessage .= '<br><br>Você poderá continuar acessando seus registros no modo FREE e reativar a assinatura PRO a qualquer momento.';
+            $mailMessage .= '<br>Caso você não reative sua assinatura, após 30 dias seus anexos (fotos relaciondas aos Checklists) serão removidos.';
+
+            appSendEmail($hostEmail, $hostName, 'Assinatura Cancelada', $mailMessage, 'default');
 
             return response()->json(['success' => true, 'message' => 'Assinatura cancelada!']);
         } catch (\Exception $e) {

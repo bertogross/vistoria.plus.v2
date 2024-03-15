@@ -1,6 +1,6 @@
 <div class="col">
     <div class="card pricing-box ribbon-box right text-center">
-        @if($subscriptionType == 'pro' && $productMetadata->type  == 'primary')
+        @if($subscriptionType == 'pro' && $productMetadata->product_type  == 'primary')
             <div class="ribbon-two ribbon-two-theme"><span class="small">Vigente</span></div>
         @endif
 
@@ -23,7 +23,7 @@
                         </h2>
                         <div class="form-text text-center text-body">
                             <span>
-                                @if ($productMetadata->type == 'primary')
+                                @if ($productMetadata->product_type == 'primary')
                                     recorrência mensal
                                 @else
                                     {{$productDescription ? 'Cada '.$productDescription.': ' : ''}}
@@ -35,7 +35,7 @@
                     </div>
 
                     <div class="text-center plan-btn mt-2">
-                        @if ($productMetadata->type == 'primary')
+                        @if ($productMetadata->product_type == 'primary')
                             <input class="quantity-{{ $PriceId }}" type="hidden" value="1" readonly autocomplete="off">
                         @else
                             <div class="input-step full-width light mb-3 {{ isset($currentPriceId) && $currentPriceId == $PriceId ? 'bg-soft-primary' : '' }}">
@@ -48,18 +48,18 @@
                         @endif
                         <button
                             class="btn w-100
-                            @if($productMetadata->type  == 'primary')
+                            @if($productMetadata->product_type  == 'primary')
                                 {{ $subscriptionType == 'pro' ? ' btn-subscription-cancel btn-outline-light ' : ' btn-subscription btn-theme ' }}
-                            @elseif($productMetadata->type  == 'addon')
+                            @elseif($productMetadata->product_type  == 'storage')
                                 {{ isset($currentPriceId) && $currentPriceId == $PriceId ? ' btn-subscription-update btn-outline-light ' : ' btn-subscription btn-theme' }}
                             @endif
                             waves-effect waves-light text-uppercase"
                             data-product_id="{{ $productId }}"
                             data-price_id="{{ $PriceId }}"
-                            data-type="{{ $productMetadata->type ?? '' }}"
+                            data-product_type="{{ $productMetadata->product_type ?? '' }}"
                             data-recurring="{{ $recurring }}"
                             data-interval_count="{{  $intervalCount }}"
-                            @if ($productMetadata->type == 'primary')
+                            @if ($productMetadata->product_type == 'primary')
                                 data-current-quantity="1"
                                 data-quantity="1"
                             @else
@@ -68,13 +68,13 @@
                             @endif
                             data-current-price_id="{{ isset($currentPriceId) ? $currentPriceId : '' }}"
                             data-subscription_item_id="{{ $subscriptionItemId }}"
-                            @if ($productMetadata->type == 'addon')
+                            @if ($productMetadata->product_type == 'storage')
                                 disabled
                             @endif
                             >
-                                @if($productMetadata->type  == 'primary')
+                                @if($productMetadata->product_type  == 'primary')
                                     {{ $subscriptionType == 'pro' ? 'Cancelar' : 'Atualizar para Versão PRO' }}
-                                @elseif($productMetadata->type  == 'addon')
+                                @elseif($productMetadata->product_type  == 'storage')
                                     {{ isset($currentPriceId) && $currentPriceId == $PriceId ? 'Atualizar' : 'Contratar' }}
                                 @else
                                     <div class="alert alert-danger">Necessário via Stripe declarar o Metadado type</div>

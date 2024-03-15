@@ -60,7 +60,7 @@
                                             @else
                                                 src="{{URL::asset('build/images/no-logo.png')}}"
                                             @endif
-                                            id="logo-img" alt="logo" data-user-id="1" style="max-height: 100px;" />
+                                            id="logo-img" alt="logo" data-user-id="1" style="max-height: 100px;" loading="lazy">
                                         </div>
                                     </div>
                                 </div>

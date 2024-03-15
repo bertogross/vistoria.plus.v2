@@ -176,7 +176,7 @@
                         <div class="col small">
                             <div class="avatar-group ps-0">
                                 @if ($surveyorId === $auditorId)
-                                    <a href="{{ route('profileShowURL', $surveyorId) }}" class="d-inline-block me-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" data-bs-placement="top" title="Tarefas de Vistoria e Auditoria delegadas a <u>{{ $surveyorName }}</u>">
+                                    <a href="{{ route('profileShowURL', $surveyorId) }}" class="d-inline-block me-1" data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" data-bs-placement="top" title="Tarefas delegadas a <u>{{ $surveyorName }}</u>">
                                         <img src="{{ checkUserAvatar($surveyorAvatar) }}"
                                         alt="{{ $surveyorName }}" class="rounded-circle avatar-xxs border border-1 border-white" loading="lazy">
                                     </a>

@@ -48,7 +48,7 @@
 
                         $status = !empty($upcoming['status']) ? $upcoming['status'] : '';
 
-                        $btn_result = '<button id="btn-modal-upcoming" class="btn btn-sm btn-outline-light text-uppercase" type="button" title="Visualizar Detalhes"><i class="ri-error-warning-line me-1 float-start"></i>Detalhes</button>';
+                        $btn_result = '<button id="btn-modal-upcoming" class="btn btn-sm btn-outline-info text-uppercase" type="button" title="Visualizar Detalhes"><i class="ri-error-warning-line me-1 float-start"></i>Detalhes</button>';
                     @endphp
 
                     @if( !empty($status) && $status == 'draft' )
@@ -72,7 +72,7 @@
                                 {{!empty($total) ? $total : '-'}}
                             </td>
                             <td class="align-middle text-end" data-label="Actions">
-                                {{$btn_result}}
+                                {!! $btn_result !!}
                             </td>
                         </tr>
                     @endif

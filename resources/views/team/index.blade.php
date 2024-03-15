@@ -75,6 +75,7 @@
         var getUserFormContentURL = "{{ route('getUserFormContentURL') }}";
         var settingsUsersStoreURL = "{{ route('settingsUsersStoreURL') }}";
         var settingsUsersUpdateURL = "{{ route('settingsUsersUpdateURL') }}";
+        var settingsAccountShowURL = "{{ route('settingsAccountShowURL') }}";
     </script>
     <script src="{{ URL::asset('build/js/settings-users.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 

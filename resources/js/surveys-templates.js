@@ -6,6 +6,7 @@ import {
     revalidationOnInput,
     allowUncheckRadioButtons,
     goTo,
+    showPreloader,
     showButtonWhenInputChange
 } from './helpers.js';
 
@@ -23,7 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
         //console.log('Clicked element:', clickedElement);
 
         if(clickedElement){
-
 
             const clickedElementId = clickedElement.id;
             //console.log(clickedElementId);
@@ -152,6 +152,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 //console.log(JSON.stringify(transformedData, null, 2));
                 //return;
 
+                showPreloader();
+
                 formData.append('template_data', JSON.stringify(transformedData, null, 2));
 
                 try {
@@ -167,6 +169,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
 
                     if (!response.ok) {
+                        showPreloader(false);
+
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
 
@@ -187,9 +191,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else {
                         toastAlert(data.message, 'danger', 10000);
                     }
+
+                    showPreloader(false);
                 } catch (error) {
                     toastAlert('Error: ' + error, 'danger', 60000);
                     console.error('Error:', error);
+
+                    showPreloader(false);
                 }
             }
 

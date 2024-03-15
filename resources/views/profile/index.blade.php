@@ -17,8 +17,8 @@
         $connectedToName = getConnectionNameById($currentConnectionId);
         //appPrintR($profileUserId);
 
-        $getUserIdsConnectedOnMyAccount = getUserIdsConnectedOnMyAccount();
-        //appPrintR($getUserIdsConnectedOnMyAccount);
+        $getGuestIdsConnectedOnHost = getGuestIdsConnectedOnHostId();
+        //appPrintR($getGuestIdsConnectedOnHost);
 
         $titleLabel = $connectedToName ? '<span class="badge bg-light-subtle text-body badge-border float-end" title="Conta Conectada">'.$connectedToName.'</span>' : '';
 
@@ -29,7 +29,7 @@
         //appPrintR($assignmentData);
     @endphp
 
-    @if ( $profileUserId == auth()->id() || in_array($profileUserId, $getUserIdsConnectedOnMyAccount) )
+    @if ( $profileUserId == auth()->id() || in_array($profileUserId, $getGuestIdsConnectedOnHost) )
         <div class="profile-foreground position-relative mx-n4 mt-n5">
             <div class="profile-wid-bg">
                 <img src="{{checkUserCover($user->cover)}}" alt="cover" class="profile-wid-img" loading="lazy"/>

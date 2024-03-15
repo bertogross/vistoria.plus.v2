@@ -85,8 +85,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     */
 
-    attachImage("#logo-image-input", "#logo-img", uploadLogoURL);
-
+    if(uploadLogoURL){
+        attachImage("#logo-image-input", "#logo-img", uploadLogoURL);
+    }
 
     // Function to handle the deletion of a file
     const deleteLogoBtn = document.getElementById("btn-delete-logo");

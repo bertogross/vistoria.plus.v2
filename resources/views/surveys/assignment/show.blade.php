@@ -180,7 +180,7 @@
                             <div class="card">
                                 <div class="card-body" style="height: 145px;">
                                     <a href="{{route('profileShowURL', $surveyorId)}}">
-                                        <img src="{{ $surveyorAvatar }}" alt="{{$surveyorName}}" class="avatar-xs rounded-circle float-end" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Vistoria realizada por {{$surveyorName}}.<br>Clique para acessar o Perfil." />
+                                        <img src="{{ $surveyorAvatar }}" alt="{{$surveyorName}}" class="avatar-xs rounded-circle float-end" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Vistoria realizada por {{$surveyorName}}.<br>Clique para acessar o Perfil." loading="lazy">
                                     </a>
                                     <h6 class="text-muted text-uppercase mb-4">Vistoria</h6>
                                     <span class="text-success" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="Avaliações positivas efetuadas pelo(a) vistoriador(a)">Conforme</span>: {{$complianceSurveyorYesCount}}
@@ -198,7 +198,7 @@
                                         <span class="fs-5 float-end ri-time-line text-secondary" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="Dentro do prazo para realizar Auditoria"></span>
                                     @else
                                         <a href="{{route('profileShowURL', $auditorId)}}">
-                                            <img src="{{$auditorAvatar}}" alt="{{$auditorName}}" class="avatar-xs rounded-circle float-end" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Auditoria realizada por {{$auditorName}}.<br>Clique para acessar o Perfil." />
+                                            <img src="{{$auditorAvatar}}" alt="{{$auditorName}}" class="avatar-xs rounded-circle float-end" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Auditoria realizada por {{$auditorName}}.<br>Clique para acessar o Perfil." loading="lazy">
                                         </a>
                                     @endif
 
@@ -436,7 +436,7 @@
                                                                         <div class="gallery-box card p-0 m-1">
                                                                             <div class="gallery-container">
                                                                                 <a href="{{ $attachmentUrl }}" class="image-popup" title="Imagem capturada em {{$dateAttachment}}hs" data-gallery="gallery-{{$responseId}}">
-                                                                                    <img class="rounded gallery-img" alt="image" height="70" src="{{ $attachmentUrl }}">
+                                                                                    <img class="rounded gallery-img" alt="image" height="70" src="{{ $attachmentUrl }}" loading="lazy">
 
                                                                                     <div class="gallery-overlay">
                                                                                         <h5 class="overlay-caption fs-10">{{$dateAttachment}}</h5>
@@ -481,7 +481,7 @@
                                                                         <div class="gallery-box card p-0 m-1">
                                                                             <div class="gallery-container">
                                                                                 <a href="{{ $attachmentUrl }}" class="image-popup" title="Imagem capturada em {{$dateAttachment}}hs" data-gallery="gallery-{{$responseId}}">
-                                                                                    <img class="rounded gallery-img" alt="image" height="70" src="{{ $attachmentUrl }}">
+                                                                                    <img class="rounded gallery-img" alt="image" height="70" src="{{ $attachmentUrl }}" loading="lazy">
 
                                                                                     <div class="gallery-overlay">
                                                                                         <h5 class="overlay-caption fs-10">{{$dateAttachment}}</h5>
@@ -552,7 +552,6 @@
             const terms = @json($terms);
 
             document.addEventListener('DOMContentLoaded', function() {
-                ///////////////////////////////////////////////////////////////
                 // START #barTermsChart
                 var seriesData = [];
                 var categories = [];
@@ -641,9 +640,7 @@
                 var barTermsChart = new ApexCharts(document.querySelector("#barTermsChart"), optionsTermsChart);
                 barTermsChart.render();
                 // END #barTermsChart
-                ///////////////////////////////////////////////////////////////
 
-                ///////////////////////////////////////////////////////////////
                 // START #mixedTermsChart
                 var columnSeriesData = [];
                 var lineSeriesData = [];
@@ -729,9 +726,8 @@
                 var mixedTermsChart = new ApexCharts(document.querySelector("#mixedTermsChart"), optionsMixedTermsChart);
                 mixedTermsChart.render();
                 // END #mixedTermsChart
-                ///////////////////////////////////////////////////////////////
 
-                ///////////////////////////////////////////////////////////////
+
                 // START #polarTermsAreaChart
                 var seriesData = [];
                 var labels = [];
@@ -823,7 +819,6 @@
                 var polarTermsAreaChart = new ApexCharts(document.querySelector("#polarTermsAreaChart"), optionsTermsAreaChart);
                 polarTermsAreaChart.render();
                 // END #polarTermsAreaChart
-                ///////////////////////////////////////////////////////////////
             });
         </script>
     @endif

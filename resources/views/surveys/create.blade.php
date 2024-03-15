@@ -23,21 +23,21 @@
 
     $surveyStatus = $data->status ?? '';
 
-    $alertMessage0 = $data && $countAllResponses > 0 ? '<div class="alert alert-danger alert-dismissible alert-label-icon label-arrow fade show mt-2 mb-2" role="alert">
+    $alertMessage0 = $data && $countAllResponses > 0 ? '<div class="alert alert-danger alert-dismissible alert-label-icon label-arrow fade show mt-2 mb-3" role="alert">
             <i class="ri-alert-line label-icon"></i> Esta rotina já foi iniciada e a alteração do Modelo não poderá ser efetuada. Prossiga se necessitar editar as atribuições.<br>
             Se a intenção for a de modificar tópicos dos processos em andamento, não será possível devido ao armazenamento de informações para comparativo. Portanto, o caminho adequado será o de encerrar/arquivar esta atividade e gerar um novo registro.
         </div>' : '';
-    $alertMessage1 = $data && $countAllResponses > 0 ? '<div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show mt-2 mb-2" role="alert">
+    $alertMessage1 = $data && $countAllResponses > 0 ? '<div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show mt-2 mb-3" role="alert">
             <i class="ri-alert-line label-icon"></i> Esta rotina já foi iniciada e a alteração da Recorrência não poderá ser efetuada. Prossiga se necessitar editar as atribuições.<br>
             Se a intenção for a de modificar a recorrência de processos em andamento, não será possível devido ao armazenamento de informações para comparativo. Portanto, o caminho adequado será o de encerrar/arquivar esta atividade e gerar um novo registro.
         </div>' : '';
 
-    $alertMessage2 = $data && $countAllResponses > 0 ? '<div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show mt-2 mb-2" role="alert">
+    $alertMessage2 = $data && $countAllResponses > 0 ? '<div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show mt-2 mb-3" role="alert">
             <i class="ri-alert-line label-icon"></i> Esta rotina já foi iniciada e a alteração em Unidades não poderá ser efetuada. Prossiga se necessitar editar as atribuições.<br>
             Se a intenção for a de ativar/desativar unidades de processos em andamento, não será possível devido ao armazenamento de informações para comparativo. Portanto, o caminho adequado será o de encerrar/arquivar esta atividade e gerar um novo registro.
         </div>' : '';
 
-    $alertMessage3 = $data && $countTodayResponses > 0 ? '<div class="alert alert-info alert-dismissible alert-label-icon label-arrow fade show mt-2 mb-2" role="alert">
+    $alertMessage3 = $data && $countTodayResponses > 0 ? '<div class="alert alert-info alert-dismissible alert-label-icon label-arrow fade show mt-2 mb-3" role="alert">
         <i class="ri-alert-line label-icon"></i> Esta tarefa já está recebendo dados. Portanto, alterações em Atribuições poderão ser efetuadas mas só terão efeito a partir da próxima interação. Por exemplo, no caso de tarefas diárias, a próxima interação ocorrerá amanhã.
     </div>' : '';
 
@@ -50,7 +50,7 @@
             <div class="modal-header p-3 bg-soft-info">
                 <h5 class="modal-title">
                     @if($surveyId)
-                        Edição de: <span class="text-theme">{{ limitChars(getSurveyTemplateNameById($templateId), 30) }}</span>
+                        Edição de: <span class="text-theme">{{ limitChars(getSurveyNameById($surveyId), 30) }}</span>
                     @else
                         Registrando Checklist
                     @endif
@@ -80,11 +80,19 @@
                             <ul class="nav nav-pills custom-nav nav-pills-theme nav-justified" role="tablist">
                                 <li class="nav-item" role="presentation">
                                     <button type="button" class="nav-link active" data-bs-toggle="pill" role="tab"
+                                    id="steparrow-users-info-tab"
+                                    data-bs-target="#steparrow-users-info"
+                                    aria-controls="steparrow-users-info"
+                                    aria-selected="false" disabled>Atribuições</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button type="button" class="nav-link" data-bs-toggle="pill" role="tab"
                                     id="steparrow-template-info-tab"
                                     data-bs-target="#steparrow-template-info"
                                     aria-controls="steparrow-template-info"
                                     aria-selected="true" disabled>Modelo</button>
                                 </li>
+                                {{--
                                 <li class="nav-item" role="presentation">
                                     <button type="button" class="nav-link" data-bs-toggle="pill" role="tab"
                                     id="steparrow-companies-info-tab"
@@ -92,19 +100,13 @@
                                     aria-controls="steparrow-companies-info"
                                     aria-selected="true" disabled>Unidades</button>
                                 </li>
+                                --}}
                                 <li class="nav-item" role="presentation">
                                     <button type="button" class="nav-link" data-bs-toggle="pill" role="tab"
                                     id="steparrow-recurring-info-tab"
                                     data-bs-target="#steparrow-recurring-info"
                                     aria-controls="steparrow-recurring-info"
                                     aria-selected="false" disabled>Recorrencia</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button type="button" class="nav-link" data-bs-toggle="pill" role="tab"
-                                    id="steparrow-users-info-tab"
-                                    data-bs-target="#steparrow-users-info"
-                                    aria-controls="steparrow-users-info"
-                                    aria-selected="false" disabled>Atribuições</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button type="button" class="nav-link" role="tab" data-bs-toggle="pill"
@@ -117,9 +119,49 @@
                         </div>
 
                         <div class="tab-content">
-                            <div class="tab-pane fade show active" role="tabpanel"
-                            id="steparrow-template-info"
-                            aria-labelledby="steparrow-template-info-tab">
+
+                            <div id="steparrow-users-info" class="tab-pane fade show active" role="tabpanel" aria-labelledby="steparrow-users-info-tab">
+                                @if ( empty($getActiveCompanies) || !is_array($getActiveCompanies) )
+                                    @component('components.nothing')
+                                        @slot('warning', 'Será necessário primeiramente solicitar a(o) Administrador(a) a autorização de acesso a Unidades')
+                                    @endcomponent
+                                @elseif ($users->isEmpty())
+                                    @component('components.nothing')
+                                        @slot('warning', 'Não há usuários cadastrados/ativos. Consulte o(a) Administrador(a)')
+                                    @endcomponent
+                                @else
+                                    <div>
+                                        <label class="form-label mb-0">Atribuições para este Checklist:</label>
+
+                                        @if (in_array(getUserRoleById($currentUserId, $currentConnectionId), [1]))
+                                            <button id="btn-add-user" type="button" class="btn btn-sm btn-label right btn-outline-light float-end waves-effect" data-origin="survey" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Convidar Usuário" data-bs-content="Caso necessite convidar outro usuário para colaborar com esta atividade, clique em adicionar.">
+                                                Convidar<i class="ri-user-add-line label-icon align-middle fs-16 ms-2"></i>
+                                            </button>
+                                        @endif
+
+                                        {{--
+                                        @if ($getActiveCompanies && count($getActiveCompanies) > 1)
+                                            <div class="form-text mt-0 mb-3">Selecione quem irá desempenhar esta tarefa. 1 colaborador(a) por Unidade</div>
+                                        @else
+                                            <div class="form-text mt-0 mb-3">Selecione o(a) colaborador(a) que irá desempenhar esta tarefa</div>
+                                        @endif
+                                        --}}
+                                        <div class="form-text mt-0 mb-3">Selecione quem irá desempenhar esta tarefa. 1 colaborador(a) por Unidade</div>
+
+                                        {!! $alertMessage3 !!}
+
+                                        <div id="load-users-tab" data-survey-id="{{$surveyId}}" class="row">
+                                            @include('surveys.layouts.create-users-tab')
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex align-items-start gap-3 mt-4">
+                                        <button type="button" class="btn btn-outline-theme btn-label right ms-auto nexttab" data-nexttab="steparrow-template-info-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Próximo</button>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div id="steparrow-template-info" class="tab-pane fade" role="tabpanel" aria-labelledby="steparrow-template-info-tab">
 
                                 @if ( !$templates || $templates->isEmpty() )
                                     @component('components.nothing')
@@ -149,12 +191,15 @@
                                     </div>
 
                                     <div class="d-flex align-items-start gap-3 mt-4">
-                                        <button type="button" class="btn btn-outline-theme btn-label right ms-auto nexttab" data-nexttab="steparrow-companies-info-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Próximo</button>
+                                        <button type="button" class="btn btn-light btn-label previestab" data-previous="steparrow-users-info-tab"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i> Voltar</button>
+
+                                        <button type="button" class="btn btn-outline-theme btn-label right ms-auto nexttab" data-nexttab="steparrow-recurring-info-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Próximo</button>
                                     </div>
                                 @endif
                             </div>
 
-                            <div class="tab-pane fade" role="tabpanel" id="steparrow-companies-info" aria-labelledby="steparrow-companies-info-tab">
+                            {{--
+                            <div id="steparrow-companies-info" class="tab-pane fade" role="tabpanel" aria-labelledby="steparrow-companies-info-tab">
                                 <div class="mb-4">
                                     <label class="mb-0">Unidades:</label>
                                     @if ( $data && $countAllResponses > 0 && !in_array($surveyStatus, ['new', 'scheduled']) )
@@ -180,7 +225,7 @@
                                                         name="companies[]"
                                                         value="{{ $company->id }}"
                                                         required>
-                                                        <label class="form-check-label" for="company-{{ $company->id }}">{{ empty($company->name) ? e($company->company_name) : e($company->name) }}</label>
+                                                        <label class="form-check-label" for="company-{{ $company->id }}">{{ empty($company->name) ? e($company->name) : e($company->name) }}</label>
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -194,8 +239,9 @@
                                     <button type="button" class="btn btn-outline-theme btn-label right ms-auto nexttab" data-nexttab="steparrow-recurring-info-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Próximo</button>
                                 </div>
                             </div>
+                            --}}
 
-                            <div class="tab-pane fade" role="tabpanel" id="steparrow-recurring-info" aria-labelledby="steparrow-recurring-info-tab">
+                            <div id="steparrow-recurring-info" class="tab-pane fade" role="tabpanel" aria-labelledby="steparrow-recurring-info-tab">
                                 <div class="mb-3">
                                     <label for="date-recurring-field" class="form-label">Tipo de Recorrência: {{ $getSurveyRecurringTranslations['$recurring'] ?? '' }}</label>
                                     @if ( $data && $countAllResponses > 0 && !in_array($surveyStatus, ['new', 'scheduled']) )
@@ -234,57 +280,13 @@
                                 </div>
 
                                 <div class="d-flex align-items-start gap-3 mt-4">
-                                    <button type="button" class="btn btn-light btn-label previestab" data-previous="steparrow-companies-info-tab"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i> Voltar</button>
+                                    <button type="button" class="btn btn-light btn-label previestab" data-previous="steparrow-template-info-tab"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i> Voltar</button>
 
-                                    <button type="button" class="btn btn-outline-theme btn-label right ms-auto nexttab" data-nexttab="steparrow-users-info-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Próximo</button>
+                                    <button type="button" class="btn btn-outline-theme btn-label right ms-auto nexttab" data-nexttab="steparrow-success-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Próximo</button>
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade" role="tabpanel"
-                            id="steparrow-users-info"
-                            aria-labelledby="steparrow-users-info-tab">
-                                @if ( empty($getActiveCompanies) || !is_array($getActiveCompanies) )
-                                    @component('components.nothing')
-                                        @slot('warning', 'Será necessário primeiramente solicitar a(o) Administrador(a) a autorização de acesso a Unidades')
-                                    @endcomponent
-                                @elseif ($users->isEmpty())
-                                    @component('components.nothing')
-                                        @slot('warning', 'Não há usuários cadastrados/ativos. Consulte o(a) Administrador(a)')
-                                    @endcomponent
-                                @else
-                                    <div>
-                                        <label class="form-label mb-0">Atribuições para este Checklist:</label>
-
-                                        @if (in_array(getUserRoleById($currentUserId, $currentConnectionId), [1]))
-                                            <button type="button" id="btn-add-user" class="btn btn-sm btn-label right btn-outline-light float-end waves-effect" data-origin="survey" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Convidar Usuário" data-bs-content="Caso necessite convidar outro usuário para colaborar com esta atividade, clique em adicionar.">
-                                                <i class="ri-user-add-line label-icon align-middle fs-16 ms-2"></i>Convidar
-                                            </button>
-                                        @endif
-
-                                        @if ($getActiveCompanies && count($getActiveCompanies) > 1)
-                                            <div class="form-text mt-0 mb-3">Selecione quem irá desempenhar esta tarefa. 1 colaborador(a) por Unidade</div>
-                                        @else
-                                            <div class="form-text mt-0 mb-3">Selecione o(a) colaborador(a) que irá desempenhar esta tarefa</div>
-                                        @endif
-
-                                        {!! $alertMessage3 !!}
-
-                                        <div id="load-users-tab" data-survey-id="{{$surveyId}}" class="row">
-                                            @include('surveys.layouts.create-users-tab')
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex align-items-start gap-3 mt-4">
-                                        <button type="button" class="btn btn-light btn-label previestab" data-previous="steparrow-recurring-info-tab"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i> Voltar</button>
-
-                                        <button type="button" class="btn btn-outline-theme btn-label right ms-auto nexttab" data-nexttab="steparrow-success-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Próximo</button>
-                                    </div>
-                                @endif
-                            </div>
-
-                            <div class="tab-pane fade" role="tabpanel"
-                            id="steparrow-success"
-                            aria-labelledby="steparrow-success-tab">
+                            <div id="steparrow-success" class="tab-pane fade" role="tabpanel" aria-labelledby="steparrow-success-tab">
                                 <div class="text-center">
                                     <div class="avatar-md mt-5 mb-4 mx-auto">
                                         <div class="avatar-title bg-light text-success display-4 rounded-circle">

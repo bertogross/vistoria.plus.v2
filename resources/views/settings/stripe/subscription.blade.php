@@ -109,7 +109,7 @@
 
                 asort($prices);
             @endphp
-            @if( !empty($prices) && is_array($prices) && count($prices) > 0 && $productMetadata->type == 'primary' )
+            @if( !empty($prices) && is_array($prices) && count($prices) > 0 && $productMetadata->product_type == 'primary' )
                 @foreach( $prices as $key => $price)
                     @php
                         $PriceId = isset($price['id']) ? $price['id'] : '';

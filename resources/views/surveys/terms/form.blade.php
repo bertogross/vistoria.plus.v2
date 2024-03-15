@@ -8,7 +8,7 @@
         <i class="ri-question-line text-info non-printable align-top" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Explicação" data-bs-content="Considere <u>Termo</u> o mesmo que Setor/Departamento/Ambiente/Local/Categoria.<br>Ao construir seu modelo, o Termo será o nome do bloco que conterá os Tópicos (questões)."></i>
     </label>
     <div class="input-group">
-        <input type="text" name="term" class="form-control" id="termiInput" maxlength="90" autocomplete="off">
+        <input type="text" class="form-control" id="termiInput" maxlength="100" autocomplete="off">
         <button id="btn-add-survey-term" type="button" class="btn btn-label btn-outline-theme waves-effect" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Adicionar Termo"><i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Termo</button>
     </div>
 </div>
@@ -37,5 +37,5 @@
         </div>
     </form>
 @else
-        <div class="text-muted text-center">Novos Termos ainda não foram registrados</div>
+    <div class="text-muted text-center">Novos Termos ainda não foram registrados</div>
 @endif

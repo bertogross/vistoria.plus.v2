@@ -37,7 +37,7 @@ class Stripe extends Model
         }
 
         // Assuming you have a method to get the customer ID
-        $customerId = self::handleGetStripeCustomerId();
+        $customerId = self::getStripeCustomerId();
 
         if (!$customerId) {
             return response()->json([
@@ -64,6 +64,119 @@ class Stripe extends Model
                 'success' => false,
                 'message' => 'Erro ao cancelar assinatura'
             ]);
+        }
+    }
+
+    // Stripe routine to cancel/active user subscription item with metadata product_type == users
+    public static function subscriptionGuestUserAddonUpdate()
+    {
+        try {
+            $stripe = Stripe::getStripeClient();
+        } catch (\Exception $e) {
+            \Log::error('cancelStripeSubscription: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Falha na conexão com a Stripe'
+            ]);
+        }
+
+        $subscriptionItemId = $subscriptionItemPriceId = null;
+
+        $subscriptionData = getSubscriptionData();
+        $subscriptionId = $subscriptionData && isset($subscriptionData['subscription_id']) ? $subscriptionData['subscription_id'] : null;
+
+        $customerId = self::getStripeCustomerId();
+
+        // Example: Count active user connections from your database
+        $activeUserConnectionsCount = UserConnections::where('connection_status', 'active')->count();
+
+        $metaKey = 'product_type';
+        $metaValue = 'users';
+
+        //Get all subscriptions by metadata product_type == users
+        try {
+            $allSubscriptionItems = $stripe->subscriptionItems->all([
+                'limit' => 100,
+                'subscription' => $subscriptionId,
+            ]);
+
+            foreach ($allSubscriptionItems->autoPagingIterator() as $item) {
+                // Retrieve the price object
+                $price = $stripe->prices->retrieve($item->price->id, ['expand' => ['product']]);
+
+                // Now, $price->product contains the product object associated with this price
+                // Check if the product's metadata matches your criteria
+                if (isset($price->product->metadata[$metaKey]) && $price->product->metadata[$metaKey] == $metaValue) {
+                    $subscriptionItemId = $item->id; // Capture the subscription item ID
+
+                    break; // Found the match, exit the loop
+                }
+            }
+        } catch (\Exception $e) {
+            // Handle any errors that occur during the API call
+            \Log::error('Failed to get all subscriptions: ' . $e->getMessage());
+            //return response()->json(['success' => false, 'error' => $e->getMessage()]);
+            return false;
+        }
+
+        // First: if are, find the current user subscription item id
+        if($subscriptionItemId){
+            try {
+                // Update the quantity of the subscription item
+                $stripe->subscriptionItems->update($subscriptionItemId,[
+                        'quantity' => $activeUserConnectionsCount
+                    ]
+                );
+
+                //return response()->json(['success' => true, 'message' => 'Subscription add-on quantity updated successfully.']);
+                return true;
+            } catch (\Exception $e) {
+                // Handle any errors that occur during the update
+                \Log::error('Failed first step to update subscription add-on users quantity: ' . $e->getMessage());
+
+                //return response()->json(['success' => false, 'message' => 'Failed to update subscription add-on users quantity: ' . $e->getMessage()]);
+                return false;
+            }
+        }else{
+            // Second: else, find the price item id by metadata product_type == users and update current subscription with new item
+            try {
+                $allPrices = $stripe->prices->all([
+                    'limit' => 100,
+                    'active' => true,
+                    'expand' => ['data.product'] // Expand the product data within each price object
+                ]);
+
+                foreach ($allPrices->data as $price) {
+                    // Since the product is expanded in the price object, you can directly access the product's metadata
+                    if (isset($price->product->metadata[$metaKey]) && $price->product->metadata[$metaKey] == $metaValue) {
+                        $subscriptionItemPriceId = $price->id; // Capture the price ID
+
+                        break; // Found the match, exit the loop
+                    }
+                }
+            } catch (\Exception $e) {
+                // Handle any errors that occur during the API call
+                \Log::error('Failed to get all prices: ' . $e->getMessage());
+                //return response()->json(['success' => false, 'error' => $e->getMessage()]);
+                return false;
+            }
+
+            try {
+                $stripe->subscriptionItems->create([
+                    'subscription' => $subscriptionId,
+                    'price' => $subscriptionItemPriceId,
+                    'quantity' => $activeUserConnectionsCount
+                ]);
+
+                //return response()->json(['success' => true, 'subscriptionItem' => $subscriptionItem]);
+                return true;
+            } catch (\Exception $e) {
+                // Handle any errors that occur during the API call
+                \Log::error('Failed second step to update subscription add-on users quantity: ' . $e->getMessage());
+                //return response()->json(['success' => false, 'error' => $e->getMessage()]);
+                return false;
+            }
         }
     }
 
@@ -96,11 +209,11 @@ class Stripe extends Model
         $userEmail = $user->email;
 
         try {
-            $customerId = self::handleGetStripeCustomerId($userEmail);
+            $customerId = self::getStripeCustomerId($userEmail);
 
             // If customer doesn't exist, create
             if (!$customerId) {
-                $customerId = self::handleCreateStripeCustomer($userEmail);
+                $customerId = self::createStripeCustomer($userEmail);
             }
 
             return $customerId;
@@ -114,7 +227,7 @@ class Stripe extends Model
         }
     }
 
-    public static function handleGetStripeCustomerId($userEmail = null)
+    public static function getStripeCustomerId($userEmail = null)
     {
         if($userEmail){
             $user = User::findUserByEmail($userEmail);
@@ -155,7 +268,7 @@ class Stripe extends Model
         return $customerId;
     }
 
-    public static function handleCreateStripeCustomer($userEmail = null)
+    public static function createStripeCustomer($userEmail = null)
     {
         if($userEmail){
             $user = User::findUserByEmail($userEmail);
@@ -217,10 +330,6 @@ class Stripe extends Model
 
         $customerId = $checkout->customer;
         $subscriptionId = $checkout->subscription;
-
-        // Cancel other subscriptions
-        // TODO STRIPE ????
-        // self::stripeSubscriptionCancelOthers($subscriptionId, $customerId);
 
         if (!empty($subscriptionId)) {
             try {
@@ -355,16 +464,12 @@ class Stripe extends Model
 
         $customerId = isset($subscription->customer) ? $subscription->customer : '';
 
-        $subscriptionStatus = isset($subscription->status) ? $subscription->status : 'active';
-
-        // TODO STRIPE??? delete/pause all subscription (users and addons)
-
         if( !empty($customerId) && !empty($subscriptionId) ){
 
             $data = [
                 'customer_id' => $customerId,
                 'subscription_id' => $subscriptionId,
-                'subscription_status' => $subscriptionStatus,
+                'subscription_status' => 'inactive',
                 'subscription_quantity' => 0,
                 'subscription_type' => 'free'
             ];

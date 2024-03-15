@@ -1,7 +1,3 @@
-@php
-    use App\Models\User;
-    use Illuminate\Support\Facades\DB;
-@endphp
 @extends('layouts.master-without-nav')
 @section('title')
     Convite
@@ -24,59 +20,54 @@
                     </div>
                 </div>
 
-                @php
-                    //appPrintR($connectionCodeParts);
-                    //$hostUserId = $connectionCodeParts[0] ?? request()->cookie('vistoriaplus_hostUserId');
-
-                    $questUserEmailFromInvitation = $connectionCodeParts[1] ?? null;
-
-                    if($questUserEmailFromInvitation){
-                        $guestExists = DB::connection('vpOnboard')
-                            ->table('users')
-                            ->where('email', $questUserEmailFromInvitation)
-                            ->first();
-                        $questUserEmail = $guestExists->email ?? null;
-                    }
-
-                    //$questUserParams = $connectionCodeParts[2] ?? request()->cookie('vistoriaplus_questUserParams');
-                @endphp
-
-                @if ($hostUserId && $questUserParams && $questUserEmailFromInvitation)
-                    @php
-                        $hostUser = User::find($hostUserId);
-                        $hostUserName = $hostUser->name ?? '';
-                    @endphp
+                @if ($hostUserId && $guestUserEmail)
+                    {{--
                     <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show mt-4" role="alert">
                         <i class="ri-check-double-line label-icon"></i>
                         Você redebeu um contive para colaborar com <strong class="text-theme">{{$hostUserName}}</strong>.<br>
-                        @if (isset($questUserEmailFromInvitation))
-                            O convite foi enviado para <u>{{$questUserEmailFromInvitation}}</u> . Utilize-o para registro ou informe outro.
-                        @elseif(isset($questUserEmail))
-                            O e-mail <u>{{$questUserEmail}}</u> já contacomo contaem nossa base de dados. Utileze-o para Login.
+                        @if (isset($guestUserEmailFromInvitation))
+                            O convite foi enviado para <u>{{$guestUserEmailFromInvitation}}</u> . Utilize-o para registro ou informe outro.
+                        @elseif(isset($guestUserEmail))
+                            O e-mail <u>{{$guestUserEmail}}</u> já consta como conta em nossa base de dados. Utileze-o para Login.
                         @else
                             Registre-se ou efetue Login.
                         @endif
                     </div>
 
-                    {{--
                     @include('components.alerts')
                     --}}
 
                     <div class="row justify-content-center">
-
-                        <div class="col-sm-12 col-md-6">
-                            @include('auth.login-card')
+                        <div class="col-sm-6 col-md-6">
+                            <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show mt-4" role="alert">
+                                <i class="ri-check-double-line label-icon"></i>
+                                Você redebeu um contive para colaborar com <strong class="text-theme">{{$hostUserName}}</strong>.<br>
+                                O e-mail de conexão deverá ser o <u>{{$guestUserEmail}}</u> .<br>
+                                @if ($guestExists)
+                                    Efetue Login!
+                                @else
+                                    Registre-se!
+                                    <br>Se você já possui uma conta, informe ao <u>{{$hostUserName}}</u> que o convite deverá ser enviado a outro e-mail.
+                                @endif
+                            </div>
                         </div>
-
-                        <div class="col-sm-12 col-md-6">
-                            @include('auth.register-card')
-                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        @if ($guestExists)
+                            <div class="col-sm-6 col-md-6">
+                                @include('auth.login-card')
+                            </div>
+                        @else
+                            <div class="col-sm-6 col-md-6">
+                                @include('auth.register-card')
+                            </div>
+                        @endif
 
                     </div>
                 @else
                     <div class="alert alert-danger alert-dismissible alert-label-icon label-arrow fade show mt-4" role="alert">
                         <i class="ri-error-warning-fill label-icon"></i>
-                        O parâmetros deste convite estão incorretos.<br>Clique no link enviado ao seu e-mail ou solcitie seu convite novamente.
+                        O parâmetros deste convite estão incorretos.<br>Clique no link enviado ao seu e-mail ou solicite novamente.
                     </div>
                 @endif
                 <!-- end row -->

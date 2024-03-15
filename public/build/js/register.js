@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('btn-register').addEventListener('click', function(event) {
         event.preventDefault();
 
-        let email = document.getElementById('useremail').value;
-        let name = document.getElementById('username').value;
+        let email = document.getElementById('new_useremail').value;
+        let name = document.getElementById('new_username').value;
 
         if(!email && !name){
             toastAlert('Preencha o formulário', 'danger', 5000);

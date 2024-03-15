@@ -8,23 +8,26 @@ export function attachImage(inputSelector, imageSelector, uploadUrl, withPreview
 
     if (inputFile) {
         inputFile.addEventListener("change", function() {
-            const preview = document.querySelector(imageSelector);
+            var userID = false;
+            const previewSelector = document.querySelectorAll(imageSelector);
 
-            const userID = preview.getAttribute("data-user-id") ?? false;
+            /*if(previewSelector.getAttribute("data-user-id")){
+                userID = previewSelector.getAttribute("data-user-id");
+            }*/
 
             //console.log("userID:", userID);
             //console.log("Selector:", `${imageSelector}-${userID}`);
 
             var previewCard = false;
-            if( withPreviewCard && userID){
+            /*if( withPreviewCard && userID){
                 previewCard = document.querySelector(imageSelector+'-'+userID);
-            }
+            }*/
             const file = inputFile.files[0];
             const reader = new FileReader();
 
             reader.addEventListener("load", function() {
-                //preview.src = reader.result;
-                //console.log("Image source:", preview.src);
+                //previewSelector.src = reader.result;
+                //console.log("Image source:", previewSelector.src);
 
                 const img = new Image();
                 img.src = reader.result;
@@ -36,7 +39,7 @@ export function attachImage(inputSelector, imageSelector, uploadUrl, withPreview
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
 
-                    if (imageSelector == '#avatar-img') {
+                    if (imageSelector == '.avatar-img') {
                         canvas.width = 200;
                         canvas.height = 200;
                         //console.log("Canvas dimensions:", canvas.width, "x", canvas.height);
@@ -118,9 +121,9 @@ export function attachImage(inputSelector, imageSelector, uploadUrl, withPreview
                     canvas.toBlob(function(blob) {
                         const formData = new FormData();
                         formData.append('file', blob, file.name);
-                        if(userID){
+                        /*if(userID){
                             formData.append('user_id', userID);
-                        }
+                        }*/
 
                         //console.log("Blob size:", blob.size);
 
@@ -136,9 +139,12 @@ export function attachImage(inputSelector, imageSelector, uploadUrl, withPreview
                         .then(data => {
                             if (data.success) {
                                 toastAlert(data.message, 'success');
+
                                 if (data.path) {
-                                    if(preview){
-                                        preview.src = '/storage/' + data.path;
+                                    if(previewSelector){
+                                        previewSelector.forEach(function(imgTag){
+                                            imgTag.src = '/storage/' + data.path;
+                                        });
                                     }
                                     if(previewCard){
                                         previewCard.src = '/storage/' + data.path;

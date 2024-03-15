@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Attachments;
 use App\Models\SurveyResponse;
+use App\Models\UserConnections;
 
 class SurveyAssignments extends Model
 {
@@ -163,6 +164,30 @@ class SurveyAssignments extends Model
             SurveyAssignments::removeDistributingAssignments($surveyId);
 
             foreach ($distributedData['surveyor'] as $value) {
+                // If quest revoke connection or host turn user connection off, change chacklit to stoped and send mail notification to host
+                $connectedAccountStatus = UserConnections::connectedAccountStatus($value['user_id']);
+                if(in_array($connectedAccountStatus, ['revoked', 'inactive'])){
+
+                    // Remove assigments
+                    SurveyAssignments::removeDistributingAssignments($surveyId);
+
+                    // Change survey status to stopped
+                    $columns['status'] = 'stopped';
+                    $survey->update($columns);
+
+                    // Send notification message to host
+                    $message = 'A tarefa <strong>' . getSurveyNameById($surveyId) . '</strong> não foi inicializada e seus status foi modificado para <em>Interrompido</em> pois um dos membros foi desativado.<br><br>';
+                    $message .= 'Para ajustar, acesse seu Painel em <a href="' . route('settingsAccountShowURL') . '/tab=users">' . route('settingsAccountShowURL') . '/tab=users</a> e verifique se será possível reativar a conexão. <br>Se não for possível restabelecer a conexão, edite o Checklist intitulado <u>' . getSurveyNameById($surveyId) . '</u> alterando as Atribuições.';
+
+                    $getUserData = getUserData($connectionId);
+                    $hostEmail = $getUserData->email;
+                    $hostName = $getUserData->name;
+
+                    appSendEmail($hostEmail, $hostName, 'Tarefa Não Inicializada :: [ ' . getSurveyNameById($surveyId) . ' ]', $message, 'default');
+
+                    break;
+                }
+
 
                 // Check if this surveyor_id has recent completed task
                 $findRecentlySurveyorAssignment = DB::connection('vpAppTemplate')
