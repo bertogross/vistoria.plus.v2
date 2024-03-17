@@ -1,5 +1,6 @@
 import {
     toastAlert,
+    sweetAlert,
     sweetWizardAlert,
     initFlatpickr,
     maxLengthTextarea,
@@ -108,6 +109,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         } else {
                             // Handle error
                             console.error('Error start/stop survey:', data.message);
+
+                            if(data.action = 'userStatusAlert'){
+                                sweetAlert(data.message, title = 'Atenção')
+
+                                return;
+                            }
 
                             toastAlert(data.message, 'danger', 5000);
                         }

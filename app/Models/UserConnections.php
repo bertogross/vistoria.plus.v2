@@ -180,7 +180,7 @@ class UserConnections extends Model
             $guestUserStatus = getUserConnectionStatusById($currentUserId, $connectionId);
 
             if($guestUserStatus == 'inactive'){
-                UserMeta::updateUserMeta($currentUserId, 'current_database_connection',  $currentUserId);
+                UserMeta::setUserMeta($currentUserId, 'current_database_connection',  $currentUserId);
 
                 return response()->json([
                     'success' => false,
@@ -188,7 +188,7 @@ class UserConnections extends Model
                     'message' => 'Conexão impossibilitada'
                 ]);
             }else if($guestUserStatus == 'waiting'){
-                UserMeta::updateUserMeta($currentUserId, 'current_database_connection',  $currentUserId);
+                UserMeta::setUserMeta($currentUserId, 'current_database_connection',  $currentUserId);
 
                 return response()->json([
                     'success' => false,
@@ -197,7 +197,7 @@ class UserConnections extends Model
                 ]);
             }
 
-            UserMeta::updateUserMeta($currentUserId, 'current_database_connection',  $connectionId);
+            UserMeta::setUserMeta($currentUserId, 'current_database_connection',  $connectionId);
 
             return response()->json([
                 'success' => true,
@@ -300,7 +300,7 @@ class UserConnections extends Model
         // Change current connection immediately
         $currentConnectionId = UserMeta::getUserMeta($guestUserId, 'current_database_connection');
         if($currentConnectionId == $hostUserId){
-            UserMeta::updateUserMeta($guestUserId, 'current_database_connection',  $guestUserId);
+            UserMeta::setUserMeta($guestUserId, 'current_database_connection',  $guestUserId);
         }
 
         return response()->json([
@@ -397,7 +397,7 @@ class UserConnections extends Model
 
         if ($guestUserStatus != 'active') {
             // This line seems to reset the user's current connection to their own user ID when unauthorized.
-            UserMeta::updateUserMeta($currentUserId, 'current_database_connection', $currentUserId);
+            UserMeta::setUserMeta($currentUserId, 'current_database_connection', $currentUserId);
 
             // Return an error response when the connection is not active
             return response()->json(['error' => 'Você não possui autorização para acessar esta conexão'], 403);
@@ -474,6 +474,8 @@ class UserConnections extends Model
             ->where('guest_id', $guestId)
             ->where('host_id', $hostId)
             ->select([
+                'guest_id',
+                'host_id',
                 'connection_role AS role',
                 'connection_status AS status',
                 'connection_companies AS companies',
@@ -490,13 +492,13 @@ class UserConnections extends Model
     }
 
     // Check if quest revoke connection or host turn user connection off
-    public static function connectedAccountStatus($guestId)
+    public static function connectedAccountData($guestId)
     {
         $config = config("database.connections.vpAppTemplate");
         $connectionId = onlyNumber($config['database']);
         $connectedAccount = self::getGuestDataFromConnectedHostId($guestId, $connectionId);
 
-        return $connectedAccount->status ?? null;
+        return $connectedAccount ?? null;
     }
 
     public function acceptOrDeclineConnection(Request $request)
@@ -521,7 +523,7 @@ class UserConnections extends Model
         }
 
         // check if $questId has the $hostId invitation
-        $getHostConnections = getHostConnections($guestId);
+        $getHostConnections = self::getHostConnections($guestId);
         $firstConnection = $getHostConnections->first();
         if(!$firstConnection){
             return $error;

@@ -73,7 +73,7 @@ class LoginController extends Controller
             }
 
             // Reset current connection
-            UserMeta::updateUserMeta($user->id, 'current_database_connection', $user->id);
+            UserMeta::setUserMeta($user->id, 'current_database_connection', $user->id);
 
             // Connect to another account
             UserConnections::acceptConnection($request, $user->id);

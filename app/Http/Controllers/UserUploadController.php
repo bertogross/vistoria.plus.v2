@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\Storage;
 
 class UserUploadController extends Controller
 {
-    // Define the custom database connection name
-    protected $connection = 'vpOnboard';
-
     // Fill created_at
     public $timestamps = true;
 

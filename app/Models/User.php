@@ -202,7 +202,7 @@ class User extends Authenticatable
 
     public static function findUserByEmail($email)
     {
-        $user = User::where('email', $email)->first();
+        $user = DB::connection('vpOnboard')->table('users')->where('email', $email)->first();
 
         if ($user) {
             // User was found

@@ -1,3 +1,6 @@
+@php
+    use App\Models\SurveyAssignments;
+@endphp
 @extends('layouts.master')
 @section('title')
     {{ $user->name }}
@@ -9,9 +12,9 @@
         $phone = getUserMeta($profileUserId, 'phone');
         $phone = formatPhoneNumber($phone);
 
-        $countSurveyorTasks = \App\Models\SurveyAssignments::countSurveyAssignmentSurveyorTasks($profileUserId);
+        $countSurveyorTasks = SurveyAssignments::countSurveyAssignmentSurveyorTasks($profileUserId);
 
-        $countAuditorTasks = \App\Models\SurveyAssignments::countSurveyAssignmentAuditorTasks($profileUserId);
+        $countAuditorTasks = SurveyAssignments::countSurveyAssignmentAuditorTasks($profileUserId);
 
         $currentConnectionId = getCurrentConnectionByUserId($profileUserId);
         $connectedToName = getConnectionNameById($currentConnectionId);
@@ -312,51 +315,51 @@
     @endif
 @endsection
 @section('script')
-<script>
-    var profileShowURL = "{{ route('profileShowURL') }}";
+    <script>
+        var profileShowURL = "{{ route('profileShowURL') }}";
 
-    var surveysIndexURL = "{{ route('surveysIndexURL') }}";
-    var surveysCreateURL = "{{ route('surveysCreateURL') }}";
-    var surveysEditURL = "{{ route('surveysEditURL') }}";
-    var surveysChangeStatusURL = "{{ route('surveysChangeStatusURL') }}";
-    var surveysShowURL = "{{ route('surveysShowURL') }}";
-    var surveysStoreOrUpdateURL = "{{ route('surveysStoreOrUpdateURL') }}";
-    var formSurveyorAssignmentURL = "{{ route('formSurveyorAssignmentURL') }}";
-    var formAuditorAssignmentURL = "{{ route('formAuditorAssignmentURL') }}";
-    var changeAssignmentSurveyorStatusURL = "{{ route('changeAssignmentSurveyorStatusURL') }}";
-    var changeAssignmentAuditorStatusURL = "{{ route('changeAssignmentAuditorStatusURL') }}";
-</script>
-<script src="{{ URL::asset('build/js/surveys.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
+        var surveysIndexURL = "{{ route('surveysIndexURL') }}";
+        var surveysCreateURL = "{{ route('surveysCreateURL') }}";
+        var surveysEditURL = "{{ route('surveysEditURL') }}";
+        var surveysChangeStatusURL = "{{ route('surveysChangeStatusURL') }}";
+        var surveysShowURL = "{{ route('surveysShowURL') }}";
+        var surveysStoreOrUpdateURL = "{{ route('surveysStoreOrUpdateURL') }}";
+        var formSurveyorAssignmentURL = "{{ route('formSurveyorAssignmentURL') }}";
+        var formAuditorAssignmentURL = "{{ route('formAuditorAssignmentURL') }}";
+        var changeAssignmentSurveyorStatusURL = "{{ route('changeAssignmentSurveyorStatusURL') }}";
+        var changeAssignmentAuditorStatusURL = "{{ route('changeAssignmentAuditorStatusURL') }}";
+    </script>
+    <script src="{{ URL::asset('build/js/surveys.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 
-<script>
-    var assignmentShowURL = "{{ route('assignmentShowURL') }}";
-    var formSurveyorAssignmentURL = "{{ route('formSurveyorAssignmentURL') }}";
-    var changeAssignmentSurveyorStatusURL = "{{ route('changeAssignmentSurveyorStatusURL') }}";
-    var responsesSurveyorStoreOrUpdateURL = "{{ route('responsesSurveyorStoreOrUpdateURL') }}";
-</script>
-<script src="{{ URL::asset('build/js/surveys-surveyor.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
+    <script>
+        var assignmentShowURL = "{{ route('assignmentShowURL') }}";
+        var formSurveyorAssignmentURL = "{{ route('formSurveyorAssignmentURL') }}";
+        var changeAssignmentSurveyorStatusURL = "{{ route('changeAssignmentSurveyorStatusURL') }}";
+        var responsesSurveyorStoreOrUpdateURL = "{{ route('responsesSurveyorStoreOrUpdateURL') }}";
+    </script>
+    <script src="{{ URL::asset('build/js/surveys-surveyor.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 
-<script>
-    var changeAssignmentAuditorStatusURL = "{{ route('changeAssignmentAuditorStatusURL') }}";
-    var responsesAuditorStoreOrUpdateURL = "{{ route('responsesAuditorStoreOrUpdateURL') }}";
-    var enterAssignmentAuditorURL = "{{ route('enterAssignmentAuditorURL') }}";
-    //var requestAssignmentAuditorURL = "{{-- route('requestAssignmentAuditorURL') --}}";
-    var revokeAssignmentAuditorURL = "{{ route('revokeAssignmentAuditorURL') }}";
-</script>
-<script src="{{ URL::asset('build/js/surveys-auditor.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
+    <script>
+        var changeAssignmentAuditorStatusURL = "{{ route('changeAssignmentAuditorStatusURL') }}";
+        var responsesAuditorStoreOrUpdateURL = "{{ route('responsesAuditorStoreOrUpdateURL') }}";
+        var enterAssignmentAuditorURL = "{{ route('enterAssignmentAuditorURL') }}";
+        //var requestAssignmentAuditorURL = "{{-- route('requestAssignmentAuditorURL') --}}";
+        var revokeAssignmentAuditorURL = "{{ route('revokeAssignmentAuditorURL') }}";
+    </script>
+    <script src="{{ URL::asset('build/js/surveys-auditor.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 
-<script type="module">
-    import { attachImage } from '{{ URL::asset('build/js/settings-attachments.js') }}';
+    <script type="module">
+        import { attachImage } from '{{ URL::asset('build/js/settings-attachments.js') }}';
 
-    var uploadAvatarURL = "{{ route('uploadAvatarURL') }}";
+        var uploadAvatarURL = "{{ route('uploadAvatarURL') }}";
 
-    attachImage("#member-image-input", ".avatar-img", uploadAvatarURL, false);
-</script>
+        attachImage("#member-image-input", ".avatar-img", uploadAvatarURL, false);
+    </script>
 
-<script>
-    // Auto refresh page
-    setInterval(function() {
-        window.location.reload();// true to cleaning cache
-    }, 600000); // 600000 milliseconds = 10 minutes
-</script>
+    <script>
+        // Auto refresh page
+        setInterval(function() {
+            window.location.reload();// true to cleaning cache
+        }, 600000); // 600000 milliseconds = 10 minutes
+    </script>
 @endsection

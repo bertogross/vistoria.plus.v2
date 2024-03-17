@@ -67,7 +67,7 @@
 
                                 @if (!$templateId)
                                     <div id="accordion-templates-label">
-                                        <p class="text-body mb-4">Componha seu Checklist.<br>Você poderá configurar seu próprio formulário cadastrando seus Termos e Tópicos inicializando com um dos Modelos pré-configurados.</p>
+                                        <p class="text-body mb-4">Componha seu Modelo de Checklist.<br>Você poderá configurar seu próprio formulário cadastrando seus Termos e Tópicos inicializando com um dos Modelos pré-configurados.</p>
 
                                         <div class="dropstart float-end mt-n2">
                                             <button type="button" class="btn btn-sm fs-4 pe-0 me-n2" data-bs-toggle="dropdown" aria-expanded="true" data-bs-auto-close="outside" title="Opções"><i class="ri-more-2-line text-theme"></i></button>

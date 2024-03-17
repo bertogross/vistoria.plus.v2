@@ -32,7 +32,7 @@ class ResetPasswordController extends Controller
 
         $email = $user->email;
         $name = $user->name;
-        
+
         // Specify the database connection if it's not the default one
         $connection = DB::connection('vpOnboard');
 
@@ -52,7 +52,7 @@ class ResetPasswordController extends Controller
         // Prepare the URL with the token
         $resetUrl = route('passwordResetFormURL', ['token' => $token, 'email' => $email]);
         $content = 'Você solicitou a redefinição de sua senha?<br><br> Para prosseguir <a href=" ' . $resetUrl. ' ">clique aqui</a>.<br><p>Se não foi você ou isto foi um engano, por favor ignore esta mensagem e nenhuma alteração será realizada.</p>';
-        
+
         if(appSendEmail($email, $name, 'Redefinição de Senha', $content, 'reset-password')){
             return view('auth.passwords.confirm', compact('email'));
         }else{
@@ -110,16 +110,16 @@ class ResetPasswordController extends Controller
         if ($user) {
             $user->password = Hash::make($request->password);
             $user->save();
-        
+
             // Delete the password reset record
             $connection->table('password_resets')->where('email', $request->email)->delete();
-        
+
             // Fire the password reset event
             event(new PasswordReset($user));
-        
+
             // Optionally, log the user in
             //Auth::login($user);
-        
+
             // Redirect to the login page with a success message
             return redirect()->route('loginURL')->with('success', 'Senha modificada. Prossiga com seu login.');
         } else {

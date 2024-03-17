@@ -43,23 +43,22 @@ if (!function_exists('appSendEmail')) {
     }
 }
 
-if (!function_exists('setDatabaseConnection')) {
+/*if (!function_exists('setDatabaseConnection')) {
     function setDatabaseConnection(){
-        $userId = auth()->id();
+        if (auth()->check()) {
+            $userId = auth()->id();
+            $currentConnectionId = getCurrentConnectionByUserId($userId);
 
-        $currentConnectionId = getCurrentConnectionByUserId($userId);
+            if ($currentConnectionId) {
+                $databaseName = 'vpApp' . $currentConnectionId;
 
-        if ($currentConnectionId) {
-            $databaseName = 'vpApp' . $currentConnectionId;
-
-            if (!DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?", [$databaseName])) {
-                return;
+                if (DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?", [$databaseName])) {
+                    config(['database.connections.vpAppTemplate.database' => $databaseName]);
+                }
             }
-
-            config(['database.connections.vpAppTemplate.database' => $databaseName]);
         }
     }
-}
+}*/
 
 // Get all users with status = 1, ordered by name
 /*if (!function_exists('getUsers')) {
@@ -293,27 +292,16 @@ if (!function_exists('getUserMeta')) {
     }
 }
 
-if (!function_exists('getCurrentConnectionId')) {
+if (!function_exists('getCurrentConnectionByUserId')) {
     function getCurrentConnectionByUserId($userId = false) {
         if(!$userId){
             $userId = auth()->id();
         }
         $connectionId = UserMeta::getUserMeta($userId, 'current_database_connection');
 
-        return $connectionId ? intval($connectionId) : null;
+        return $connectionId ? intval($connectionId) : $userId;
     }
 }
-
-if (!function_exists('getCurrentConnectionId')) {
-    function getCurrentConnectionId() {
-        $userId = auth()->id();
-
-        $connectionId = UserMeta::getUserMeta($userId, 'current_database_connection');
-
-        return $connectionId ? intval($connectionId) : null;
-    }
-}
-
 
 if (!function_exists('getGuestConnections')) {
     function getGuestConnections() {
@@ -411,7 +399,7 @@ if (!function_exists('getSubscriptionData')) {
             $connectionId = auth()->id();
         }
         // Fetch user_erp_data where ID is $databaseId
-        $query = User::where('id', $connectionId)
+        $query = DB::connection('vpOnboard')->table('users')->where('id', $connectionId)
             ->select([
                 'subscription_data',
             ])
@@ -613,25 +601,28 @@ if (!function_exists('getWarehouseTermNameById')) {
 
 if (!function_exists('getSettings')) {
     function getSettings($key) {
-        // Static variable to hold the settings array
-        static $settingsCache = null;
 
-        // Check if settings have already been loaded
-        if ($settingsCache === null) {
-            // Load settings and cache them
-            $settingsCache = DB::connection('vpAppTemplate')->table('settings')->pluck('value', 'key')->toArray();
+        if(!$key){
+            return null;
         }
 
-        // Return the setting if it exists, or an empty string as a default
-        return isset($settingsCache[$key]) ? $settingsCache[$key] : '';
+        //$dbConnection = DB::connection('vpAppTemplate');
+        //\Log::debug('Database getSettings connection: ', ['connection' => $dbConnection->getDatabaseName()]);
+
+        $settingValue = DB::connection('vpAppTemplate')->table('settings')
+            ->where('key', $key)
+            ->value('value'); // Directly get the value of the 'value' column
+
+        // Return the setting value if found, or null as a default
+        return $settingValue ?? null;
     }
 }
 
 if (!function_exists('getCompanyLogo')) {
     function getCompanyLogo(){
-        $getSettingsLogo = getSettings('logo');
+        $settingsLogo = getSettings('logo');
         // Use the 'getSettings' function which uses a cached version of settings
-        return $getSettingsLogo ? URL::asset('storage/' . $getSettingsLogo) : null;
+        return $settingsLogo ? URL::asset('storage/' . $settingsLogo) : null;
     }
 }
 

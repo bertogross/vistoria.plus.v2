@@ -9,9 +9,9 @@ class SettingsConnectionsController extends Controller
 {
     public function index()
     {
-        $myConnections = getHostConnections();
+        $hostConnections = getHostConnections();
 
-        return view('settings.connections', compact('myConnections'));
+        return view('settings.connections', compact('hostConnections'));
     }
 
 

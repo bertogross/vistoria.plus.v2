@@ -210,6 +210,19 @@ Route::prefix('forgot-password')->group(function () {
     Route::post('/reset', [ResetPasswordController::class, 'resetPassword'])->name('passwordResetURL');
 });
 
+/*
+//use Illuminate\Support\Facades\DB;
+Route::get('/test-db', function () {
+    try {
+        DB::connection('vpAppTemplate')->getPdo();
+        return 'Connection to vpAppTemplate is OK!';
+    } catch (\Exception $e) {
+        return 'Error connecting to vpAppTemplate: ' . $e->getMessage();
+    }
+});
+*/
+
+
 //Route::get('/send-email', [PostmarkappController::class, 'sendEmail']);
 
 Route::fallback(function () {
@@ -218,3 +231,4 @@ Route::fallback(function () {
 
 // Catch-All Route
 Route::get('{any}', [HomeController::class, 'index'])->where('any', '.*')->name('index');
+

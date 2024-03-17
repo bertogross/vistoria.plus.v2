@@ -20,12 +20,14 @@
 @if ( !empty($data) && is_array($data) )
     @foreach ($data as $key => $assignment)
         @php
-            $assignmentId = intval($assignment['id']);
             $surveyId = intval($assignment['survey_id']);
+            $survey = Survey::find($surveyId);
+            if(!$survey){
+                break;
+            }
 
+            $assignmentId = intval($assignment['id']);
             $createdAt = $assignment['created_at'];
-
-            $survey = Survey::findOrFail($surveyId);
 
             $title = $survey->title;
 

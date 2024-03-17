@@ -17,7 +17,7 @@
 
                 <div class="mb-3">
                     <label for="new_useremail" class="form-label">E-mail</label>
-                    <input type="email"  class="form-control @error('register_email') is-invalid @enderror" name="register_email" value="{{ $guestUserEmail ? $guestUserEmail : old('register_email') }}" id="new_useremail" placeholder="Informe seu e-mail" maxlength="150" required>
+                    <input type="email"  class="form-control @error('register_email') is-invalid @enderror" name="register_email" value="{{ isset($guestUserEmail) ? $guestUserEmail : old('register_email') }}" id="new_useremail" placeholder="Informe seu e-mail" maxlength="150" required>
                     @error('register_email')
                         <span class="invalid-feedback" role="alert">
                             <strong>{!! $message !!}</strong>

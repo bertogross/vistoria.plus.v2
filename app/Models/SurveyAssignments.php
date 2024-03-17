@@ -27,7 +27,7 @@ class SurveyAssignments extends Model
         $today = Carbon::today();
         $survey = Survey::findOrFail($surveyId);
 
-        SurveyAssignments::checkSurveyAssignmentUntilYesterday($survey->id);
+        self::checkSurveyAssignmentUntilYesterday($survey->id);
 
         $startAt = $survey->start_at; // Date when the survey started
         $endIn = $survey->end_in; // The final date
@@ -40,7 +40,7 @@ class SurveyAssignments extends Model
         if ($distributedData && $status == 'started') {
 
             // Check if there are survey assignments for today
-            $assignmentsCount = SurveyAssignments::where('survey_id', $surveyId)
+            $assignmentsCount = self::where('survey_id', $surveyId)
                 ->whereDate('created_at', '=', $today)
                 ->count();
 
@@ -48,10 +48,10 @@ class SurveyAssignments extends Model
             if ($assignmentsCount == 0) {
                 switch ($recurring) {
                     case 'once':
-                        SurveyAssignments::distributingAssignments($surveyId);
+                        self::distributingAssignments($surveyId);
                     break;
                     case 'daily':
-                        SurveyAssignments::distributingAssignments($surveyId);
+                        self::distributingAssignments($surveyId);
                     break;
                     case 'weekly':
                         // Calculate the day of the week for both $startAt and $today
@@ -59,7 +59,7 @@ class SurveyAssignments extends Model
                         $currentDayOfWeek = $today->dayOfWeek;
 
                         if ($specificDayOfWeek === $currentDayOfWeek) {
-                            SurveyAssignments::distributingAssignments($surveyId);
+                            self::distributingAssignments($surveyId);
                         }
                     break;
                     case 'biweekly':
@@ -68,7 +68,7 @@ class SurveyAssignments extends Model
 
                         // Check if today matches the calculated biweekly date
                         if ($today->equalTo($biweeklyDate)) {
-                            SurveyAssignments::distributingAssignments($surveyId);
+                            self::distributingAssignments($surveyId);
                         }
                     break;
                     case 'monthly':
@@ -81,7 +81,7 @@ class SurveyAssignments extends Model
                         }
 
                         if ($today->day == $specificDayOfMonth) {
-                            SurveyAssignments::distributingAssignments($surveyId);
+                            self::distributingAssignments($surveyId);
                         }
                     break;
                     case 'annual':
@@ -98,7 +98,7 @@ class SurveyAssignments extends Model
                         }
 
                         if ($today->day == $specificDay && $today->month == $specificMonth) {
-                            SurveyAssignments::distributingAssignments($surveyId);
+                            self::distributingAssignments($surveyId);
                         }
                     break;
                 }
@@ -112,7 +112,7 @@ class SurveyAssignments extends Model
         $yesterday = Carbon::yesterday()->format('Y-m-d');
 
         // Get all survey assignments that were not completed by yesterday
-        $assignments = SurveyAssignments::where('survey_id', $surveyId)
+        $assignments = self::where('survey_id', $surveyId)
             ->whereDate('created_at', '<=', $yesterday)
             ->get();
 
@@ -129,24 +129,6 @@ class SurveyAssignments extends Model
 
             $assignment->save();
         }
-        /*
-        foreach ($assignments as $assignment) {
-            if ($assignment->surveyor_status === 'completed' || $assignment->surveyor_status === 'auditing') {
-                if ($assignment->auditor_status !== 'completed') {
-                    // Change auditor_status to 'bypass' and surveyor_status to 'completed'
-                    $assignment->auditor_status = 'bypass';
-                    $assignment->surveyor_status = 'completed';
-                }
-            } elseif ($assignment->surveyor_status !== 'completed' && $assignment->auditor_status !== 'completed') {
-                // Change surveyor_status to 'losted' and auditor_status to 'bypass'
-                $assignment->auditor_status = 'bypass';
-                $assignment->surveyor_status = 'losted';
-            }
-
-            $assignment->save();
-        }
-        */
-
     }
 
     // Start the task by distributing to each party
@@ -161,15 +143,15 @@ class SurveyAssignments extends Model
         // Populate/repopulate = depends on are or not completed indivisual user tasks
         if($distributedData && $distributedData['surveyor']){
             // Get the most recent date of assignment for the specific survey and remove
-            SurveyAssignments::removeDistributingAssignments($surveyId);
+            self::removeDistributingAssignments($surveyId);
 
             foreach ($distributedData['surveyor'] as $value) {
                 // If quest revoke connection or host turn user connection off, change chacklit to stoped and send mail notification to host
-                $connectedAccountStatus = UserConnections::connectedAccountStatus($value['user_id']);
-                if(in_array($connectedAccountStatus, ['revoked', 'inactive'])){
+                $connectedAccountData = UserConnections::connectedAccountData($value['user_id']);
+                if( isset($connectedAccountData->status) && in_array($connectedAccountData->status, ['revoked', 'inactive']) ){
 
                     // Remove assigments
-                    SurveyAssignments::removeDistributingAssignments($surveyId);
+                    self::removeDistributingAssignments($surveyId);
 
                     // Change survey status to stopped
                     $columns['status'] = 'stopped';
@@ -179,7 +161,7 @@ class SurveyAssignments extends Model
                     $message = 'A tarefa <strong>' . getSurveyNameById($surveyId) . '</strong> não foi inicializada e seus status foi modificado para <em>Interrompido</em> pois um dos membros foi desativado.<br><br>';
                     $message .= 'Para ajustar, acesse seu Painel em <a href="' . route('settingsAccountShowURL') . '/tab=users">' . route('settingsAccountShowURL') . '/tab=users</a> e verifique se será possível reativar a conexão. <br>Se não for possível restabelecer a conexão, edite o Checklist intitulado <u>' . getSurveyNameById($surveyId) . '</u> alterando as Atribuições.';
 
-                    $getUserData = getUserData($connectionId);
+                    $getUserData = getUserData($connectedAccountData->host_id);
                     $hostEmail = $getUserData->email;
                     $hostName = $getUserData->name;
 
@@ -221,14 +203,13 @@ class SurveyAssignments extends Model
     // Get the most recent date of assignment for the specific survey only if task is not completed
     public static function removeDistributingAssignments($surveyId)
     {
-        $lastDate = DB::connection('vpAppTemplate')->table('survey_assignments')
-            ->where('survey_id', $surveyId)
+        $lastDate = self::where('survey_id', $surveyId)
             ->whereIn('surveyor_status', ['new', 'pending', 'in_progress', ''])
             ->max(DB::raw('DATE(created_at)'));
 
         if ($lastDate) {
             // Fetch the assignments to be deleted
-            $assignments = SurveyAssignments::whereDate('created_at', $lastDate)
+            $assignments = self::whereDate('created_at', $lastDate)
                 ->where('survey_id', $surveyId)
                 ->whereIn('surveyor_status', ['new', 'pending', 'in_progress', ''])
                 ->get();
@@ -242,7 +223,7 @@ class SurveyAssignments extends Model
             }
 
             // Delete related responses and each attachments
-            SurveyAssignments::deleteSurveyResponsesAndAttachments($assignmentIds);
+            self::deleteSurveyResponsesAndAttachments($assignmentIds);
         }
     }
 
@@ -280,14 +261,14 @@ class SurveyAssignments extends Model
 
     public static function countSurveyAssignmentBySurveyId($surveyId)
     {
-        return SurveyAssignments::where('survey_id', $surveyId)
+        return self::where('survey_id', $surveyId)
             ->whereIn('surveyor_status', ['completed'])
             ->count();
     }
 
     public static function getSurveyAssignmentBySurveyId($surveyId)
     {
-        return SurveyAssignments::where('survey_id', $surveyId)
+        return self::where('survey_id', $surveyId)
             ->orderBy('updated_at', 'desc')
             ->get();
     }
@@ -329,7 +310,7 @@ class SurveyAssignments extends Model
         }
 
         // Second, get from assignments
-        $surveyorQuery = SurveyAssignments::where('survey_id', $surveyId)
+        $surveyorQuery = self::where('survey_id', $surveyId)
             ->select('surveyor_id AS user_id', 'company_id')
             ->when(!empty($filterCompanies), function ($query) use ($filterCompanies) {
                 $query->whereIn('company_id', $filterCompanies);
@@ -340,7 +321,7 @@ class SurveyAssignments extends Model
             ->get()
             ->toArray();
 
-        $auditorQuery = SurveyAssignments::where('survey_id', $surveyId)
+        $auditorQuery = self::where('survey_id', $surveyId)
             ->select('auditor_id AS user_id', 'company_id')
             ->when(!empty($filterCompanies), function ($query) use ($filterCompanies) {
                 $query->whereIn('company_id', $filterCompanies);
@@ -372,7 +353,7 @@ class SurveyAssignments extends Model
 
     /*public static function getSurveysDelegatedsByUserId($userId)
     {
-        return SurveyAssignments::where('surveyor_id', $userId)
+        return self::where('surveyor_id', $userId)
             ->orWhere('auditor_id', $userId)
             ->select('survey_id')
             ->get()
@@ -381,7 +362,7 @@ class SurveyAssignments extends Model
 
     public static function changeSurveyorAssignmentStatus($assignmentId, $status)
     {
-        $data = SurveyAssignments::findOrFail($assignmentId);
+        $data = self::findOrFail($assignmentId);
 
         $surveyorId = $data->surveyor_id;
         $surveyId = $data->survey_id;
@@ -412,7 +393,7 @@ class SurveyAssignments extends Model
 
     public static function changeAuditorAssignmentStatus($assignmentId, $status)
     {
-        $data = SurveyAssignments::findOrFail($assignmentId);
+        $data = self::findOrFail($assignmentId);
 
         $surveyorId = $data->surveyor_id;
         $surveyId = $data->survey_id;
@@ -436,12 +417,10 @@ class SurveyAssignments extends Model
 
     public static function getAssignmentDateRange()
     {
-        $firstDate = DB::connection('vpAppTemplate')->table('survey_assignments')
-            ->select(DB::raw('DATE_FORMAT(MIN(created_at), "%Y-%m-%d") as first_date'))
+        $firstDate = self::select(DB::raw('DATE_FORMAT(MIN(created_at), "%Y-%m-%d") as first_date'))
             ->first();
 
-        $lastDate = DB::connection('vpAppTemplate')->table('survey_assignments')
-            ->select(DB::raw('DATE_FORMAT(MAX(created_at), "%Y-%m-%d") as last_date'))
+        $lastDate = self::select(DB::raw('DATE_FORMAT(MAX(created_at), "%Y-%m-%d") as last_date'))
             ->first();
 
         return [
@@ -591,24 +570,51 @@ class SurveyAssignments extends Model
         }
     }
 
+    // Count the number of survey assignments for a surveyor based on status.
     public static function countSurveyAssignmentSurveyorTasks($userId, $keys = false)
     {
+        //$dbConnection = DB::connection('vpAppTemplate');
+        //\Log::debug('Database survey_assignments connection: ', ['connection' => $dbConnection->getDatabaseName()]);
+
+        if(!$userId){
+            return ;
+        }
+
         $keys = is_array($keys) ? $keys : ['new', 'pending', 'in_progress', 'auditing', 'completed', 'losted'];
 
-        return SurveyAssignments::where('surveyor_id', $userId)
+        /*return DB::connection('vpAppTemplate')->table('survey_assignments')->where('surveyor_id', $userId)
             ->whereIn('surveyor_status', $keys)
-            ->count();
+            ->count();*/
+
+        $assignments = DB::connection('vpAppTemplate')->table('survey_assignments')
+            ->where('surveyor_id', $userId)
+            ->whereIn('surveyor_status', $keys)
+            ->get();
+
+        return $assignments ? $assignments->count() : 0;
     }
 
+    // Count the number of survey assignments for an auditor based on status.
     public static function countSurveyAssignmentAuditorTasks($userId, $keys = false)
     {
+        if(!$userId){
+            return ;
+        }
+
         $keys = is_array($keys) ? $keys : ['new', 'pending', 'in_progress', 'completed', 'losted'];
 
-        return SurveyAssignments::where('auditor_id', $userId)
+        /*$dbConnection = DB::connection('vpAppTemplate');
+        return $dbConnection->table('survey_assignments')->where('auditor_id', $userId)
             ->whereIn('auditor_status', $keys)
-            ->count();
-    }
+            ->count();*/
 
+        $assignments = DB::connection('vpAppTemplate')->table('survey_assignments')
+            ->where('auditor_id', $userId)
+            ->whereIn('auditor_status', $keys)
+            ->get();
+
+        return $assignments ? $assignments->count() : 0;
+    }
 
 
 

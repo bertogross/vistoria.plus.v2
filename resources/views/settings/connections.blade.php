@@ -24,7 +24,7 @@
 
     <div class="card">
         <div class="card-body">
-            @if($myConnections->isEmpty())
+            @if($hostConnections->isEmpty())
                 @component('components.nothing')
                     @slot('text', 'Você ainda não possui conexão entre contas.')
                 @endcomponent
@@ -43,7 +43,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach ($myConnections as $index => $connection)
+                        @foreach ($hostConnections as $index => $connection)
                             @php
                                 $hostId = $connection->user_id;
                                 $getHostUserData = getUserData($hostId);

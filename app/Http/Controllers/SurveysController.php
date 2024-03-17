@@ -505,7 +505,6 @@ class SurveysController extends Controller
     //start/stop survey
     public function changeStatus(Request $request)
     {
-
         $currentUserId = auth()->id();
 
         $now = now()->format('Y-m-d H:i:s');
@@ -520,9 +519,9 @@ class SurveysController extends Controller
         if($distributedData && $distributedData['surveyor']){
             foreach ($distributedData['surveyor'] as $value) {
                 // If quest revoke connection or host turn user connection off, exit
-                $connectedAccountStatus = UserConnections::connectedAccountStatus($value['user_id']);
-                if(in_array($connectedAccountStatus, ['revoked', 'inactive'])){
-                    return response()->json(['success' => false, 'message' => 'Verifique sua lista de Atribuições pois um ou mais usuários podem estar indisponíveis']);
+                $connectedAccountData = UserConnections::connectedAccountData($value['user_id']);
+                if( isset($connectedAccountData->status) && in_array($connectedAccountData->status, ['revoked', 'inactive']) ){
+                    return response()->json(['success' => false, 'action' => 'userStatusAlert', 'message' => 'Verifique sua lista de Atribuições pois usuários podem estar desconectados']);
                 }
             }
         }

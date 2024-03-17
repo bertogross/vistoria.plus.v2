@@ -54,7 +54,7 @@ class UserMeta extends Model
      * @param string $metaValue  The meta value to set.
      * @return void
      */
-    public static function updateUserMeta($userId, $metaKey, $metaValue = null)
+    public static function setUserMeta($userId, $metaKey, $metaValue = null)
     {
         if($metaValue){
             if( $userId && $metaKey ){
