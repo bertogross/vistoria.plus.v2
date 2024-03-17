@@ -41,12 +41,12 @@
                         <div class="row g-3">
 
                             <div class="col-sm-12 col-md col-lg">
-                                <input type="text" class="form-control flatpickr-range" name="created_at" placeholder="- Período -" data-min-date="{{ $firstDate ?? '' }}" data-max-date="{{ $lastDate ?? '' }}" value="{{ request('created_at', '') }}">
+                                <input type="text" class="form-control flatpickr-range" name="created_at" placeholder="- Período -" data-min-date="{{ $firstDate ?? '' }}" data-max-date="{{ $lastDate ?? '' }}" value="{{ request('created_at', '') }}" title="Selecione o Período">
                             </div>
 
                             <div class="col-sm-12 col-md col-lg">
-                                <label for="select-status" class="d-none">"Status</label>
-                                <select class="form-control form-select" name="status" id="select-status">
+                                <label for="select-status" class="d-none" title="Selecione o Status">"Status</label>
+                                <select class="form-control form-select" name="status" id="select-status" title="Selecione o Status">
                                     <option value="">- Status -</option>
                                     @foreach ( ['pending', 'in_progress', 'completed', 'losted'] as $key)
                                         <option

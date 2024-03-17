@@ -4,6 +4,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta name="robots" content="noindex,nofollow,nopreview,nosnippet,notranslate,noimageindex,nomediaindex,novideoindex,noodp,noydir">
         <title>{{ appName() }}</title>
         <!--[if !mso]><!-->
         <style type="text/css">
@@ -72,7 +74,7 @@
                                         <td class="ms-content-body" style="word-break:break-word;font-family:Helvetica, Arial, sans-serif;font-size:16px;line-height:24px;padding-top:40px;padding-bottom:40px;padding-right:50px;padding-left:50px;">
 
                                             <p class="logo" style="margin-right:0;margin-left:0;line-height:28px;font-weight:600;font-size:21px;color:#111111;text-align:center;margin-top:0;margin-bottom:40px;">
-                                                <img src="{{URL::asset('build/images/logo-email.png')}}" alt="{{ appName() }}" height="60" loading="lazy">
+                                                <img src="{{URL::asset('build/images/logo-email.png')}}" alt="{{ appName() }}" height="80" loading="lazy">
                                             </p>
 
                                             <h1 style="margin-top:0;color:#111111;font-size:24px;line-height:36px;font-weight:600;margin-bottom:24px;">Olá{{ !empty($name) ? ', '.$name : ''}}!</h1>

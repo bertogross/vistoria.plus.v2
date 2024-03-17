@@ -822,22 +822,24 @@ File: Main Js File
 		// Demo show code
 		document.addEventListener("DOMContentLoaded", function () {
 			var checkbox = document.getElementsByClassName("code-switcher");
-			Array.from(checkbox).forEach(function (check) {
-				check.addEventListener("change", function () {
-					var card = check.closest(".card");
-					var preview = card.querySelector(".live-preview");
-					var code = card.querySelector(".code-view");
+            if(checkbox.length){
+                Array.from(checkbox).forEach(function (check) {
+                    check.addEventListener("change", function () {
+                        var card = check.closest(".card");
+                        var preview = card.querySelector(".live-preview");
+                        var code = card.querySelector(".code-view");
 
-					if (check.checked) {
-						preview.classList.add("d-none");
-						code.classList.remove("d-none");
-					} else {
-						preview.classList.remove("d-none");
-						code.classList.add("d-none");
-					}
-				});
-			});
-			feather.replace();
+                        if (check.checked) {
+                            preview.classList.add("d-none");
+                            code.classList.remove("d-none");
+                        } else {
+                            preview.classList.remove("d-none");
+                            code.classList.add("d-none");
+                        }
+                    });
+                });
+                feather.replace();
+            }
 		});
 
 		window.addEventListener("resize", windowResizeHover);

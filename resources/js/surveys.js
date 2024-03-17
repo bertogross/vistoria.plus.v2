@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             location.reload(true);
                         } else {
                             // Handle error
-                            console.error('Error start/stop survey:', data.message);
+                            //console.error('Error start/stop survey:', data.message);
 
                             if(data.action = 'userStatusAlert'){
                                 sweetAlert(data.message, title = 'Atenção')

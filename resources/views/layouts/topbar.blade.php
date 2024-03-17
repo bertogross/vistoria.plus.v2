@@ -27,16 +27,16 @@
                         <a href="{{ url('/') }}" class="logo logo-dark" title="Ir para inicial do {{appName()}}">
                             <span class="logo-sm">
                                 @if ($companyLogo)
-                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" height="31" loading="lazy">
+                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
                                 @else
-                                    <img src="{{ URL::asset('build/images/logo-sm.png') }}" alt="{{appName()}}" height="31" loading="lazy">
+                                    <img src="{{ URL::asset('build/images/logo-sm.png') }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
                                 @endif
                             </span>
                             <span class="logo-lg">
                                 @if ($companyLogo)
-                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" height="31" loading="lazy">
+                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
                                 @else
-                                    <img src="{{ URL::asset('build/images/logo-dark.png') }}" alt="{{appName()}}" height="31" loading="lazy">
+                                    <img src="{{ URL::asset('build/images/logo-dark.png') }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
                                 @endif
                             </span>
                         </a>
@@ -44,16 +44,16 @@
                         <a href="{{ url('/') }}" class="logo logo-light" title="Ir para inicial do {{appName()}}">
                             <span class="logo-sm">
                                 @if ($companyLogo)
-                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" height="31" loading="lazy">
+                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
                                 @else
-                                    <img src="{{ URL::asset('build/images/logo-sm.png') }}" alt="{{appName()}}" height="31" loading="lazy">
+                                    <img src="{{ URL::asset('build/images/logo-sm.png') }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
                                 @endif
                             </span>
                             <span class="logo-lg">
                                 @if ($companyLogo)
-                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" height="31" loading="lazy">
+                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
                                 @else
-                                    <img src="{{ URL::asset('build/images/logo-light.png') }}" alt="{{appName()}}" height="31" loading="lazy">
+                                    <img src="{{ URL::asset('build/images/logo-light.png') }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
                                 @endif
                             </span>
                         </a>

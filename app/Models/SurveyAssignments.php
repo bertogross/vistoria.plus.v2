@@ -577,7 +577,7 @@ class SurveyAssignments extends Model
         //\Log::debug('Database survey_assignments connection: ', ['connection' => $dbConnection->getDatabaseName()]);
 
         if(!$userId){
-            return ;
+            return 0;
         }
 
         $keys = is_array($keys) ? $keys : ['new', 'pending', 'in_progress', 'auditing', 'completed', 'losted'];
@@ -598,7 +598,7 @@ class SurveyAssignments extends Model
     public static function countSurveyAssignmentAuditorTasks($userId, $keys = false)
     {
         if(!$userId){
-            return ;
+            return 0;
         }
 
         $keys = is_array($keys) ? $keys : ['new', 'pending', 'in_progress', 'completed', 'losted'];

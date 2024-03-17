@@ -6,6 +6,7 @@
         <title>@yield('title') | {{appName()}}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+
         <meta http-equiv="pragma" content="no-cache">
         <meta http-equiv="Expires" content="-1">
         <meta name="robots" content="noindex,nofollow,nopreview,nosnippet,notranslate,noimageindex,nomediaindex,novideoindex,noodp,noydir">
@@ -21,7 +22,7 @@
         <link rel="shortcut icon" href="{{ URL::asset('build/images/favicons/favicon.ico')}}">
 
         @laravelPWA
-        
+
         @include('layouts.head-css')
     </head>
     <body>
