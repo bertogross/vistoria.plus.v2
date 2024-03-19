@@ -13,14 +13,14 @@
                         <div class="text-center mt-sm-5 mb-4 text-white-50">
                             <div>
                                 <a href="index" class="d-inline-block auth-logo">
-                                    <img src="{{ URL::asset('build/images/logo-light.png') }}" alt="{{appName()}}" height="39">
+                                    <img src="{{ URL::asset('build/images/logo-light.png') }}" alt="{{appName()}}" height="39" loading="lazy">
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                @if ($hostUserId && $guestUserEmail)
+                @if ($hostId && $guestUserEmail)
                     {{--
                     <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show mt-4" role="alert">
                         <i class="ri-check-double-line label-icon"></i>
@@ -39,15 +39,15 @@
 
                     <div class="row justify-content-center">
                         <div class="col-sm-6 col-md-6">
-                            <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show mt-4" role="alert">
+                            <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow pe-2 fade show mt-4" role="alert">
                                 <i class="ri-check-double-line label-icon"></i>
-                                Você redebeu um contive para colaborar com <strong class="text-theme">{{$hostUserName}}</strong>.<br>
+                                Você redebeu um contive para colaborar com <strong class="text-info">{{$hostUserName}}</strong>.<br>
                                 O e-mail de conexão deverá ser o <u>{{$guestUserEmail}}</u> .<br>
                                 @if ($guestExists)
                                     Efetue Login!
                                 @else
                                     Registre-se!
-                                    <br>Se você já possui uma conta, informe ao <u>{{$hostUserName}}</u> que o convite deverá ser enviado a outro e-mail.
+                                    <br>Se você já possui uma conta, informe a <u>{{$hostUserName}}</u> que o convite deverá ser enviado a outro e-mail.
                                 @endif
                             </div>
                         </div>
@@ -77,7 +77,7 @@
         <!-- end auth page content -->
 
         <!-- footer -->
-        <footer class="footer">
+        <footer class="footer d-none d-lg-block d-xl-block">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">

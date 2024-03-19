@@ -28,19 +28,19 @@ class UserConnections extends Model
 
 
     // Store or update secondary users data
-    // $guestUserId is the user to be a member from $hostUserId team
-    public static function setConnectionData($guestUserId, $hostUserId, $guestUserRole = 3, $guestUserStatus, $guestUserCompanies = null)
+    // $guestId is the user to be a member from $hostId team
+    public static function setConnectionData($guestId, $hostId, $guestUserRole = 3, $guestUserStatus, $guestUserCompanies = null)
     {
         $onboardConnection = DB::connection('vpOnboard');
 
         // prevent user to invite yourself
-        if($guestUserId == $hostUserId){
+        if($guestId == $hostId){
             return;
         }
 
         $existingData = $onboardConnection->table('user_connections')
-            ->where('guest_id', $guestUserId)
-            ->where('host_id', $hostUserId)
+            ->where('guest_id', $guestId)
+            ->where('host_id', $hostId)
             ->first();
 
         try {
@@ -57,8 +57,8 @@ class UserConnections extends Model
                 // Insert new record
                 $query = $onboardConnection->table('user_connections')
                     ->insert([
-                        'guest_id' => intval($guestUserId),
-                        'host_id' => intval($hostUserId),
+                        'guest_id' => intval($guestId),
+                        'host_id' => intval($hostId),
                         //'connection_role' => intval($guestUserRole),
                         'connection_status' => $guestUserStatus,
                         //'connection_companies' => $guestUserCompanies,
@@ -72,11 +72,11 @@ class UserConnections extends Model
         }
 
         // Stripe routine to cancel/active user subscription product_type == users
-        return Stripe::subscriptionGuestUserAddonUpdate();
+        return Stripe::subscriptionGuestUserAddonUpdate($hostId);
     }
 
     // Accpet connection to another account
-    public static function acceptConnection($request, $guestUserId)
+    public static function acceptConnection($request, $guestId)
     {
         /*
         try {
@@ -91,7 +91,7 @@ class UserConnections extends Model
 
 
         try {
-            $hostUserId = $request->host_user_id ? Crypt::decryptString($request->host_user_id) : null;
+            $hostId = $request->host_user_id ? Crypt::decryptString($request->host_user_id) : null;
             //$guestUserParams = $request->quest_user_params ? Crypt::decryptString($request->quest_user_params) : null;
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
             // Handle the error, for example, log it or return a custom error response
@@ -100,29 +100,29 @@ class UserConnections extends Model
         }
 
         /*
-        if($hostUserId && $guestUserParams){
+        if($hostId && $guestUserParams){
             $decodeQuestUserParams = $guestUserParams ? json_decode($guestUserParams, true) : null;
             $guestUserRole = $decodeQuestUserParams['role'] ?? 4;
             $guestUserCompanies = isset($decodeQuestUserParams['companies']) && is_array($decodeQuestUserParams['companies']) ? array_map('intval', $decodeQuestUserParams['companies']) : [];
 
-            self::setConnectionData($guestUserId, $hostUserId, $guestUserRole, 'active', $guestUserCompanies);
+            self::setConnectionData($guestId, $hostId, $guestUserRole, 'active', $guestUserCompanies);
         }
         */
 
-        if(!$hostUserId){
+        if(!$hostId){
             return;
         }
 
-        if($hostUserId != $guestUserId){
+        if($hostId != $guestId){
             $guestUserRole = 3;
             $guestUserCompanies = null;
-            self::setConnectionData($guestUserId, $hostUserId, $guestUserRole, 'active', $guestUserCompanies);
+            self::setConnectionData($guestId, $hostId, $guestUserRole, 'active', $guestUserCompanies);
 
-            $hostUserData = getUserData($hostUserId);
+            $hostUserData = getUserData($hostId);
             $hostEmail = $hostUserData->email;
             $hostName = $hostUserData->name;
 
-            $guestUserData = getUserData($guestUserId);
+            $guestUserData = getUserData($guestId);
             $guestEmail = $guestUserData->email;
             $guestName = $guestUserData->name;
 
@@ -219,9 +219,9 @@ class UserConnections extends Model
     // When the quest user decides to log out of another account
     public function revokeConnection(Request $request)
     {
-        $hostUserId = $request->json('id');
+        $hostId = $request->json('id');
 
-        if(!$hostUserId){
+        if(!$hostId){
             return response()->json([
                 'success' => false,
                 'message' => 'Não foi possível executar esta solicitação.'
@@ -230,19 +230,19 @@ class UserConnections extends Model
 
         $onboardConnection = DB::connection('vpOnboard');
 
-        $guestUserId = auth()->id();
+        $guestId = auth()->id();
 
-        $hostUserData = getUserData($hostUserId);
+        $hostUserData = getUserData($hostId);
         $hostEmail = $hostUserData->email;
         $hostName = $hostUserData->name;
 
-        $guestUserData = getUserData($guestUserId);
+        $guestUserData = getUserData($guestId);
         $guestEmail = $guestUserData->email;
         $guestName = $guestUserData->name;
 
         $existingData = $onboardConnection->table('user_connections')
-            ->where('guest_id', $guestUserId)
-            ->where('host_id', $hostUserId)
+            ->where('guest_id', $guestId)
+            ->where('host_id', $hostId)
             ->first();
 
         if (!$existingData) {
@@ -295,12 +295,12 @@ class UserConnections extends Model
         }
 
         // Stripe routine to cancel/active user subscription product_type == users
-        Stripe::subscriptionGuestUserAddonUpdate();
+        Stripe::subscriptionGuestUserAddonUpdate($hostId);
 
         // Change current connection immediately
-        $currentConnectionId = UserMeta::getUserMeta($guestUserId, 'current_database_connection');
-        if($currentConnectionId == $hostUserId){
-            UserMeta::setUserMeta($guestUserId, 'current_database_connection',  $guestUserId);
+        $currentConnectionId = UserMeta::getUserMeta($guestId, 'current_database_connection');
+        if($currentConnectionId == $hostId){
+            UserMeta::setUserMeta($guestId, 'current_database_connection',  $guestId);
         }
 
         return response()->json([
@@ -383,7 +383,7 @@ class UserConnections extends Model
 
         if($query){
             // Stripe routine to cancel/active user subscription product_type == users
-            return Stripe::subscriptionGuestUserAddonUpdate();
+            return Stripe::subscriptionGuestUserAddonUpdate($hostId);
         }
 
     }

@@ -64,7 +64,9 @@
         @endslot
         @slot('title')
             Tarefa <i class="ri-arrow-drop-right-line text-theme ms-2 me-2 align-bottom"></i>
-            <small>#<span class="text-theme">{{$surveyId}}</span> {{ limitChars($templateName ?? '', 20) }}</small>
+            <small>
+                #<span class="text-theme">{{$surveyId}}</span> {{ limitChars($templateName ?? '', 20) }}
+            </small>
         @endslot
     @endcomponent
     <div id="content" class="rounded rounded-2 mb-4" style="max-width: 700px; margin: 0 auto;">
@@ -116,7 +118,7 @@
                 <br>
                 <a href="{{ route('assignmentShowURL', $assignmentId) }}"
                     data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
-                    title="Visualizar" class="btn btn-sm waves-effect btn-soft-dark mt-2">
+                    title="Visualizar" class="btn btn-sm btn-soft-dark mt-2">
                     Visualizar
                 </a>
             </div>
@@ -126,7 +128,7 @@
                 <br>
                 <a href="{{ route('assignmentShowURL', $assignmentId) }}"
                     data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
-                    title="Visualizar" class="btn btn-sm waves-effect btn-soft-success mt-2">
+                    title="Visualizar" class="btn btn-sm btn-soft-success mt-2">
                     Visualizar
                 </a>
             </div>

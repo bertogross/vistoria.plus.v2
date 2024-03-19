@@ -84,8 +84,8 @@ class StripeController extends Controller
 
 
             // Send message to user
-            $hostUserId = auth()->id();
-            $hostUserData = getUserData($hostUserId);
+            $hostId = auth()->id();
+            $hostUserData = getUserData($hostId);
             $hostEmail = $hostUserData->email;
             $hostName = $hostUserData->name;
 

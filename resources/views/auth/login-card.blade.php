@@ -11,7 +11,7 @@
 
             <form id="loginForm" class="no-enter-submit" action="{{ route('login') }}" method="POST">
                 @csrf
-                <input type="hidden" name="host_user_id" value="{{ isset($hostUserId) ? $hostUserId : '' }}">
+                <input type="hidden" name="host_user_id" value="{{ isset($hostId) ? $hostId : '' }}">
                 {{--
                 <input type="hidden" name="quest_user_params" value="{{ isset($guestUserParams) ? $guestUserParams : '' }}">
                 --}}
@@ -57,7 +57,7 @@
                         <h5 class="fs-13 mb-4 title">Ou</h5>
                     </div>
                     <div>
-                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light w-100"><i class="ri-google-fill fs-16 me-2"></i>Login com Google</button>
+                        <button type="button" class="btn btn-danger btn-icon w-100"><i class="ri-google-fill fs-16 me-2"></i>Login com Google</button>
                     </div>
                 </div>
                 --}}

@@ -10,7 +10,7 @@
 
             <form id="registerForm" class="no-enter-submit" action="{{ route('register') }}" method="POST">
                 @csrf
-                <input type="hidden" name="host_user_id" value="{{ isset($hostUserId) ? $hostUserId : '' }}">
+                <input type="hidden" name="host_user_id" value="{{ isset($hostId) ? $hostId : '' }}">
                 {{--}}
                 <input type="hidden" name="quest_user_params" value="{{ isset($guestUserParams) ? $guestUserParams : '' }}">
                 --}}
@@ -50,16 +50,16 @@
 
                     <div>
                         <button type="button"
-                            class="btn btn-primary btn-icon waves-effect waves-light"><i
+                            class="btn btn-primary btn-icon"><i
                                 class="ri-facebook-fill fs-16"></i></button>
                         <button type="button"
-                            class="btn btn-danger btn-icon waves-effect waves-light"><i
+                            class="btn btn-danger btn-icon"><i
                                 class="ri-google-fill fs-16"></i></button>
                         <button type="button"
-                            class="btn btn-dark btn-icon waves-effect waves-light"><i
+                            class="btn btn-dark btn-icon"><i
                                 class="ri-github-fill fs-16"></i></button>
                         <button type="button"
-                            class="btn btn-info btn-icon waves-effect waves-light"><i
+                            class="btn btn-info btn-icon"><i
                                 class="ri-twitter-fill fs-16"></i></button>
                     </div>
                 </div>

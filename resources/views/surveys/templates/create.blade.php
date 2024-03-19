@@ -15,7 +15,9 @@
         @slot('title')
             @if($data)
                 Edição de Modelo <i class="ri-arrow-drop-right-line text-theme ms-2 me-2 align-bottom"></i>
-                <small>#<span class="text-theme me-2">{{$data->id}}</span> {{ limitChars($data->title ?? '', 20) }}</small>
+                <small>
+                    #<span class="text-theme me-2">{{$data->id}}</span> {{ limitChars($data->title ?? '', 20) }}
+                </small>
             @else
                 Compor Formulário Modelo
             @endif

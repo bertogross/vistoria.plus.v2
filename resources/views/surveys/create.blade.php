@@ -134,7 +134,7 @@
                                         <label class="form-label mb-0">Atribuições para este Checklist:</label>
 
                                         @if (in_array(getUserRoleById($currentUserId, $currentConnectionId), [1]))
-                                            <button id="btn-add-user" type="button" class="btn btn-sm btn-label right btn-outline-light float-end waves-effect" data-origin="survey" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Convidar Usuário" data-bs-content="Caso necessite convidar outro usuário para colaborar com esta atividade, clique em adicionar.">
+                                            <button id="btn-add-user" type="button" class="btn btn-sm btn-label right btn-outline-light float-end" data-origin="survey" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Convidar Usuário" data-bs-content="Caso necessite convidar outro usuário para colaborar com esta atividade, clique em adicionar.">
                                                 Convidar<i class="ri-user-add-line label-icon align-middle fs-16 ms-2"></i>
                                             </button>
                                         @endif
@@ -297,7 +297,7 @@
                                 </div>
 
                                 <div class="d-flex align-items-start gap-3 mt-4">
-                                    <button type="button" class="btn btn-light btn-label previestab" data-previous="steparrow-users-info-tab"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i> Voltar</button>
+                                    <button type="button" class="btn btn-light btn-label previestab" data-previous="steparrow-recurring-info-tab"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i> Voltar</button>
 
                                     <button type="button" id="btn-surveys-store-or-update" class="btn btn-outline-theme btn-label right ms-auto"><i class="ri-save-3-line label-icon align-middle fs-16 ms-2"></i>Salvar</button>
                                 </div>

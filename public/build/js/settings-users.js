@@ -48,6 +48,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     document.getElementById('modalContainer2').innerHTML = xhr.responseText;
 
+                    if(origin){
+                        document.querySelectorAll('.modal-backdrop').forEach(function(backdrop) {
+                            backdrop.remove();
+                        });
+                    }
+
                     var modalElement = document.getElementById('userModal');
                     var modal = new bootstrap.Modal(modalElement, {
                         backdrop: origin ? false : 'static',
@@ -175,7 +181,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 let formData = new FormData(form);
 
-
                 //let url = form.dataset.user_id ? settingsUsersUpdateURL + `/${form.dataset.user_id}` : settingsUsersStoreURL;
                 let url = userId ? settingsUsersUpdateURL + '/' + userId : settingsUsersStoreURL;
 
@@ -218,7 +223,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if( data.action == 'subscriptionAlert'){
                         sweetWizardAlert(data.message, settingsAccountShowURL + '?tab=subscription', 'warning', 'Voltar', 'Ativar Assinatura')
                     } else {
-                        sweetAlert(data.message);
+                        if(origin == 'survey'){
+                            sweetAlert(data.message, 'Ok!', 'success');
+
+                            // Access surveyReloadUsersTab directly from surveys.js
+                            if (window.surveyReloadUsersTab) {
+                                window.surveyReloadUsersTab(origin);
+
+                                //Close user modal
+                                document.querySelector('#userModal .btn-close').click();
+                            }
+                        }else{
+                            sweetAlert(data.message);
+                        }
                     }
                 })
                 .catch(error => {

@@ -1,4 +1,4 @@
-<div id="surveysList" class="card h-100 mb-3">
+<div id="surveysList" class="card mb-3">
     <div class="card-header">
         <div class="d-flex align-items-center">
             <h5 class="card-title mb-0 flex-grow-1">
@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="col-sm-12 col-md-auto col-lg-auto wrap-form-btn">{{-- d-none --}}
-                    <button type="submit" name="filter" value="true" class="btn btn-theme waves-effect w-100 init-loader">
+                    <button type="submit" name="filter" value="true" class="btn btn-theme w-100 init-loader">
                         <i class="ri-equalizer-fill me-1 align-bottom"></i> Filtrar
                     </button>
                 </div>
@@ -62,7 +62,7 @@
                         que servirá de modelo para posterior <br>
                         configuração dos Checklists
                     </p>
-                    <a class="btn btn-label right btn-outline-theme waves-effect mt-3" href="{{ route('surveysTemplateCreateURL') }}" title="Compor Modelo">
+                    <a class="btn btn-label right btn-outline-theme mt-3" href="{{ route('surveysTemplateCreateURL') }}" title="Compor Modelo">
                         <i class="ri-add-line label-icon align-middle fs-16 ms-2"></i>Componha seu Primeiro Modelo
                     </a>
                 </div>
@@ -75,7 +75,7 @@
                         <p class="fs-5">
                             Está em tempo de registrar seu Checklist
                         </p>
-                        <button class="btn btn-label right btn-outline-theme waves-effect mt-3" id="btn-surveys-create" title="Adicionar Checklist">
+                        <button class="btn btn-label right btn-outline-theme mt-3" id="btn-surveys-create" title="Adicionar Checklist">
                             <i class="ri-add-line label-icon align-middle fs-16 ms-2"></i>Registrar meu Primeiro Checklist
                         </button>
                     </div>
@@ -248,7 +248,7 @@
                                     @if (in_array($surveyStatus, ['new', 'started', 'stopped']))
                                         <button type="button" data-survey-id="{{ $survey->id }}"
                                             data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top"
-                                            class="btn btn-sm btn-label right waves-effect btn-soft-{{ $getSurveyStatusTranslations[$surveyStatus]['color'] }} btn-surveys-change-status"
+                                            class="btn btn-sm btn-label right btn-soft-{{ $getSurveyStatusTranslations[$surveyStatus]['color'] }} btn-surveys-change-status"
                                             data-current-status="{{ $surveyStatus }}"
                                             title="{{ $getSurveyStatusTranslations[$surveyStatus]['reverse'] }}">
                                             <i class="{{ $getSurveyStatusTranslations[$surveyStatus]['icon'] }} label-icon align-middle fs-16"></i>{{ $getSurveyStatusTranslations[$surveyStatus]['reverse'] }}
@@ -258,7 +258,7 @@
                                     {{-- TODO --}}
                                     @if (env('APP_DEBUG'))
                                         <button type="button" onclick="alert('In development stage')"
-                                        class="btn btn-sm btn-soft-dark waves-effect ri-survey-line btn-survey-form-preview"
+                                        class="btn btn-sm btn-soft-dark ri-survey-line btn-survey-form-preview"
                                         data-survey-id="{{ $surveyId }}"
                                         data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Pré-visualizar Formulário"></button>
                                     @endif
@@ -266,10 +266,10 @@
                                     @if (!in_array($surveyStatus, ['completed', 'filed']))
                                         <button type="button"
                                             @if ($authorId != auth()->id())
-                                                class="btn btn-sm btn-soft-dark waves-effect ri-edit-line"
+                                                class="btn btn-sm btn-soft-dark ri-edit-line"
                                                 onclick="alert('Você não possui autorização para editar um registro gerado por outra pessoa');"
                                             @else
-                                                class="btn btn-sm btn-soft-dark waves-effect btn-surveys-edit ri-edit-line"
+                                                class="btn btn-sm btn-soft-dark btn-surveys-edit ri-edit-line"
                                                 data-survey-id="{{ $surveyId }}"
                                             @endif
                                             data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top"
@@ -283,7 +283,7 @@
                                             @else
                                                 onclick="alert('Não há dados para relatório pois nenhuma tarefa foi executada')"
                                             @endif
-                                            class="btn btn-sm btn-soft-dark waves-effect ri-line-chart-fill {{ $countSurveyAssignmentBySurveyId == 0 ? 'cursor-not-allowed' : '' }}"
+                                            class="btn btn-sm btn-soft-dark ri-line-chart-fill {{ $countSurveyAssignmentBySurveyId == 0 ? 'cursor-not-allowed' : '' }}"
                                             data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top"
                                             title="Visualização Analítica"></a>
                                     @endif

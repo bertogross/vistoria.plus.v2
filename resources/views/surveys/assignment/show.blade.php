@@ -176,7 +176,7 @@
             <div class="row mb-2 mt-4">
                 <div class="col-sm-6 col-md-4">
                     <div class="row">
-                        <div class="col">
+                        <div class="col-sm-12 col-md-6">
                             <div class="card">
                                 <div class="card-body" style="height: 145px;">
                                     <a href="{{route('profileShowURL', $surveyorId)}}">
@@ -189,7 +189,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col {{-- !$auditorId || !in_array($auditorStatus, ['losted', 'bypass']) ? 'col' : 'd-none' --}}">
+                        <div class="col-sm-12 col-md-6 {{-- !$auditorId || !in_array($auditorStatus, ['losted', 'bypass']) ? 'col' : 'd-none' --}}">
                             <div class="card">
                                 <div class="card-body" style="height: 145px;">
                                     @if(in_array($auditorStatus, ['losted', 'bypass']))
@@ -209,7 +209,7 @@
                                             <button type="button"
                                             data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
                                             title="Requisitar esta tarefa de Auditoria"
-                                            class="btn btn-label right waves-effect btn-soft-secondary btn-assignment-audit-enter w-100"
+                                            class="btn btn-label right btn-soft-secondary btn-assignment-audit-enter w-100"
                                             data-assignment-id="{{$assignmentId}}">
                                                 <i class="ri-fingerprint-2-line label-icon align-middle fs-16"></i> Auditar
                                             </button>
@@ -223,7 +223,7 @@
                                                     <button type="button"
                                                     data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
                                                     title="Revogar esta tarefa de Auditoria"
-                                                    class="btn btn-sm btn-label right waves-effect btn-soft-warning btn-assignment-audit-enter w-100"
+                                                    class="btn btn-sm btn-label right btn-soft-warning btn-assignment-audit-enter w-100"
                                                     data-assignment-id="{{$assignmentId}}">
                                                         <i class="ri-subtract-line label-icon align-middle fs-16"></i> Revogar
                                                     </button>
@@ -235,7 +235,7 @@
                                                     @else
                                                         onclick="alert('Necessário aguardar finalização da Vistoria')"
                                                     @endif
-                                                    class="btn btn-sm btn-label right waves-effect btn-soft-secondary w-100" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Abrir formulário">
+                                                    class="btn btn-sm btn-label right btn-soft-secondary w-100" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Abrir formulário">
                                                         <i class="ri-fingerprint-2-line label-icon align-middle fs-16"></i> Auditar
                                                     </a>
                                                 </div>
@@ -246,7 +246,7 @@
                                             </div>
                                         @else
                                             <button type="button" onclick="alert('Não é possível Auditar uma Vistoria por você realizada.')"
-                                            class="btn btn-label right waves-effect btn-soft-secondary w-100 cursor-not-allowed" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Não é possível Auditar uma Vistoria por você realizada.">
+                                            class="btn btn-label right btn-soft-secondary w-100 cursor-not-allowed" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Não é possível Auditar uma Vistoria por você realizada.">
                                                 <i class="ri-fingerprint-2-line label-icon align-middle fs-16"></i> Auditar
                                             </button>
 
@@ -257,7 +257,7 @@
                                     @elseif($auditorStatus == 'in_progress')
                                         @if(in_array(getUserRoleById($currentUserId, $currentConnectionId), [1,2]))
                                             <a href="{{route('formAuditorAssignmentURL', $assignmentId)}}"
-                                            class="btn btn-label right waves-effect btn-soft-secondary mb-2" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Abrir formulário">
+                                            class="btn btn-label right btn-soft-secondary mb-2" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Abrir formulário">
                                                 <i class="ri-fingerprint-2-line label-icon align-middle fs-16 blink"></i> Prosseguir com a Auditoria
                                             </a>
                                         @else

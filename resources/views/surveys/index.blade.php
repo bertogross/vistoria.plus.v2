@@ -36,12 +36,12 @@
                             <form action="javascript:void(0);">
                                 <div class="row g-3 mb-0 align-items-center">
                                     <div class="col-auto">
-                                        <a class="btn btn-label right btn-soft-theme float-end waves-effect" href="{{ route('surveysTemplateCreateURL') }}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Adicionar/Editar Modelo">
+                                        <a class="btn btn-label right btn-soft-theme float-end" href="{{ route('surveysTemplateCreateURL') }}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Adicionar/Editar Modelo">
                                             <i class="ri-edit-box-fill label-icon align-middle fs-16 ms-2"></i>Modelo
                                         </a>
                                     </div>
                                     <div class="col-auto">
-                                        <button type="button" class="btn btn-soft-theme btn-icon waves-effect waves-light layout-rightside-btn" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Exibir/Ocultar Atividades"><i class="ri-pulse-line"></i></button>
+                                        <button type="button" class="btn btn-soft-theme btn-icon layout-rightside-btn" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Exibir/Ocultar Atividades"><i class="ri-pulse-line"></i></button>
                                     </div>
                                 </div>
                             </form>

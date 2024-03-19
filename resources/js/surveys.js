@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             //console.error('Error start/stop survey:', data.message);
 
                             if(data.action = 'userStatusAlert'){
-                                sweetAlert(data.message, title = 'Atenção')
+                                sweetAlert(data.message)
 
                                 return;
                             }
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     var modalElement = document.getElementById('surveysModal');
                     var modal = new bootstrap.Modal(modalElement, {
-                        backdrop: false,// 'static'
+                        backdrop: 'static',// 'static'
                         keyboard: false
                     });
                     modal.show();

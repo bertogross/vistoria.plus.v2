@@ -33,7 +33,7 @@
                                     <!--<h1 class="display-1 fw-medium">404</h1>-->
                                     <h3 class="text-uppercase">Desculpe, 😭</h3>
                                     <p class="text-muted mb-4">A sessão que você está procurando não está disponível!</p>
-                                    <a href="{{ url('/') }}" class="btn btn-success"><i class="mdi mdi-home me-1"></i>Voltar ao início</a>
+                                    <a href="{{ url('/') }}" class="init-loader btn btn-theme"><i class="mdi mdi-home me-1"></i>Voltar ao início</a>
                                 </div>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
             <!-- end auth page content -->
 
             <!-- footer -->
-            <footer class="footer">
+            <footer class="footer d-none d-lg-block d-xl-block">
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">

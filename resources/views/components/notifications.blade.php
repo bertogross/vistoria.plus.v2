@@ -20,17 +20,17 @@
 
             <div class="px-2 pt-2">
                 <ul class="nav nav-tabs dropdown-tabs nav-tabs-custom" data-dropdown-tabs="true" id="notificationItemsTab" role="tablist">
-                    <li class="nav-item waves-effect waves-light">
+                    <li class="nav-item">
                         <a class="nav-link active" data-bs-toggle="tab" href="#all-noti-tab" role="tab" aria-selected="true">
                             All (4)
                         </a>
                     </li>
-                    <li class="nav-item waves-effect waves-light">
+                    <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#messages-tab" role="tab" aria-selected="false">
                             Messages
                         </a>
                     </li>
-                    <li class="nav-item waves-effect waves-light">
+                    <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#alerts-tab" role="tab" aria-selected="false">
                             Alerts
                         </a>
@@ -143,7 +143,7 @@
                     </div>
 
                     <div class="my-3 text-center view-all">
-                        <button type="button" class="btn btn-soft-success waves-effect waves-light">View
+                        <button type="button" class="btn btn-soft-success">View
                             All Notifications <i class="ri-arrow-right-line align-middle"></i></button>
                     </div>
                 </div>
@@ -247,7 +247,7 @@
                     </div>
 
                     <div class="my-3 text-center view-all">
-                        <button type="button" class="btn btn-soft-success waves-effect waves-light">View
+                        <button type="button" class="btn btn-soft-success">View
                             All Messages <i class="ri-arrow-right-line align-middle"></i></button>
                     </div>
                 </div>

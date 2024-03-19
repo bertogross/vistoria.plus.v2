@@ -115,6 +115,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <td style="word-break:break-word;font-family:Helvetica, Arial, sans-serif;font-size:16px;line-height:24px;">
+                                                                    <br>
                                                                     {!!$content!!}
                                                                 </td>
                                                             </tr>

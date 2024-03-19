@@ -81,7 +81,7 @@ class SettingsUserController extends Controller
 
         $hostUser = auth()->user();
         $hostUserName= $hostUser->name;
-        $hostUserId = $hostUser->id;
+        $hostId = $hostUser->id;
         $hostUserEmail = $hostUser->email;
 
         $guestUserEmail = $validatedData['email'];
@@ -97,11 +97,11 @@ class SettingsUserController extends Controller
             ->first();
 
         if ($guestExists){
-            $guestUserId = $guestExists->id;
+            $guestId = $guestExists->id;
             $guestUserName = $guestExists->name;
             $guestUserEmail = $guestExists->email;
 
-            $getGuestDataFromConnectedHostId = UserConnections::getGuestDataFromConnectedHostId($guestUserId, $hostUserId);
+            $getGuestDataFromConnectedHostId = UserConnections::getGuestDataFromConnectedHostId($guestId, $hostId);
             $getQuestUserStatus = isset($getGuestDataFromConnectedHostId->status) ? $getGuestDataFromConnectedHostId->status : null;
         }
 
@@ -120,9 +120,9 @@ class SettingsUserController extends Controller
         $paramsEncoded = json_encode($params);
         */
 
-        if ($guestExists && $getQuestUserStatus) {// check if user have a connection with hostUserId
+        if ($guestExists && $getQuestUserStatus) {// check if quest user have a connection with hostId
             if( $getQuestUserStatus != 'active'){
-                $message = 'O usuário de e-mail '.$guestUserEmail.' já possui uma conexão com seu ' . env('APP_NAME') . ' mas seu status não está ativo.<br><br>';
+                $message = 'O usuário de e-mail <strong>'.$guestUserEmail.'</strong> ('.$guestUserName.') já possui uma conexão com seu ' . env('APP_NAME') . ' mas seu status não está ativo.<br><br>';
 
                 switch ($getQuestUserStatus) {
                     case 'inactive':
@@ -137,18 +137,17 @@ class SettingsUserController extends Controller
                 }
 
             }else{
-                $message = 'O usuário de e-mail '.$guestUserEmail.' já possui uma conexão com seu ' . env('APP_NAME') . '.<br><br>';
-                //$message .= '&#x2022; Verifique se o Nível está definido como Vistoria ou Auditoria e se tal possui acesso a determinadas Unidades Corporativas';
+                $message = 'O usuário de e-mail '.$guestUserEmail.' (<strong>'.$guestUserName.'</strong>) já possui uma conexão com seu ' . env('APP_NAME') . '.<br><br>';
             }
 
             return response()->json(['success' => false, 'message' => $message], 200);
 
         } elseif ($guestExists) {
             // set connection and if origin == survey  surveyReloadUsersTab
-            UserConnections::setConnectionData($guestUserId, $hostUserId, 3, 'waiting', null);
+            UserConnections::setConnectionData($guestId, $hostId, 3, 'waiting', null);
 
-            //$connectionCode = Crypt::encryptString($hostUserId . '~~~' . $guestUserEmail . '~~~' . $paramsEncoded);
-            $connectionCode = Crypt::encryptString($hostUserId . '~~~' . $guestUserEmail);
+            //$connectionCode = Crypt::encryptString($hostId . '~~~' . $guestUserEmail . '~~~' . $paramsEncoded);
+            $connectionCode = Crypt::encryptString($hostId . '~~~' . $guestUserEmail);
 
             //Send mail invite notification message for this user
             $content = '
@@ -163,8 +162,8 @@ class SettingsUserController extends Controller
             return response()->json(['success' => true, 'message' => $message], 200);
 
         } else {
-            //$connectionCode = Crypt::encryptString($hostUserId . '~~~' . $guestUserEmail . '~~~' . $paramsEncoded);
-            $connectionCode = Crypt::encryptString($hostUserId . '~~~' . $guestUserEmail);
+            //$connectionCode = Crypt::encryptString($hostId . '~~~' . $guestUserEmail . '~~~' . $paramsEncoded);
+            $connectionCode = Crypt::encryptString($hostId . '~~~' . $guestUserEmail);
 
             //Send mail message for this user
             $content = '
@@ -183,7 +182,7 @@ class SettingsUserController extends Controller
     /**
      * Update the specified user in the database.
      */
-    public function update(Request $request, $guestUserId)
+    public function update(Request $request, $guestId)
     {
         $subscriptionData = getSubscriptionData();
         $subscriptionStatus = $subscriptionData['subscription_status'] ?? null;
@@ -203,9 +202,9 @@ class SettingsUserController extends Controller
         */
 
         $hostUser = auth()->user();
-        $hostUserId = $hostUser->id;
+        $hostId = $hostUser->id;
 
-        $guestUser = User::find($guestUserId);
+        $guestUser = User::find($guestId);
         if (!$guestUser) {
             return response()->json(['success' => false, 'message' => "Usuário não corresponde a nossa base de dados"], 200);
         }
@@ -215,7 +214,7 @@ class SettingsUserController extends Controller
             return response()->json(['success' => false, 'message' => "Usuário não conectado ao seu " . appName()], 200);
         }
 
-        $getGuestDataFromConnectedHostId = UserConnections::getGuestDataFromConnectedHostId($guestUser->id, $hostUserId);
+        $getGuestDataFromConnectedHostId = UserConnections::getGuestDataFromConnectedHostId($guestUser->id, $hostId);
         $getQuestUserStatus = isset($getGuestDataFromConnectedHostId->status) ? $getGuestDataFromConnectedHostId->status : null;
 
         if($getQuestUserStatus == 'revoked'){
@@ -233,7 +232,7 @@ class SettingsUserController extends Controller
             return response()->json(['success' => false, 'message' => "Selecione o Nível"], 200);
         }
 
-        $UserConnections = UserConnections::setConnectionData($guestUser->id, $hostUserId, $guestUserRole, $guestUserStatus, $guestUserCompanies);
+        $UserConnections = UserConnections::setConnectionData($guestUser->id, $hostId, $guestUserRole, $guestUserStatus, $guestUserCompanies);
         if($UserConnections){
             return response()->json(['success' => true, 'message' => "O status de usuário foi atualizado"], 200);
         }else{

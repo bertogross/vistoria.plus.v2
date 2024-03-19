@@ -4,13 +4,17 @@
     $countActive = 0;
     //appPrintR($users);
 @endphp
-<button id="btn-add-user" type="button" class="btn btn-sm btn-label right btn-outline-theme float-end waves-effect" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Adicionar Usuário">
+<button id="btn-add-user" type="button" class="btn btn-sm btn-label right btn-outline-theme float-end" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Adicionar Usuário">
     Adicionar<i class="ri-user-add-line label-icon align-middle fs-16 ms-2"></i>
 </button>
 
 <h4 class="mb-0">Usuários Conectados</h4>
 
-<p>Expanda sua equipe no {{ appName() }} adicionando novos membros para potencializar a colaboração e a produtividade</p>
+<p>Expanda sua equipe no {{ appName() }} adicionando novos membros para potencializar a colaboração e a produtividade.
+    @if ($users->isNotEmpty())
+        <br>Aqui estão os Usuários que você convidou para colaborar:
+    @endif()
+</p>
 
 <div class="row mt-4">
 
@@ -121,12 +125,12 @@
                             </td>
                             --}}
                             <td>
-                                <button type="button" class="btn btn-sm btn-soft-dark waves-effect btn-edit-user ri-edit-line" data-user-id="{{$userId ?? ''}}" data-user-title="{{$name ?? ''}}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Editar"></button>
-                                <a href="{{$profileUrl}}" class="btn btn-sm btn-soft-dark waves-effect ri-eye-line" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Visualizar Tarefas"></a>
+                                <button type="button" class="btn btn-sm btn-soft-dark btn-edit-user ri-edit-line" data-user-id="{{$userId ?? ''}}" data-user-title="{{$name ?? ''}}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Editar"></button>
+                                <a href="{{$profileUrl}}" class="btn btn-sm btn-soft-dark ri-eye-line" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Visualizar Tarefas"></a>
                                 {{--
                                 <div class="row">
                                     <div class="col-auto">
-                                        <a href="{{$profileUrl}}" class="btn btn-sm btn-soft-dark waves-effect ri-eye-line" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Visualizar Tarefas"></a>
+                                        <a href="{{$profileUrl}}" class="btn btn-sm btn-soft-dark ri-eye-line" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Visualizar Tarefas"></a>
                                     </div>
                                     <div class="col">
                                         <div class="form-check form-switch form-switch-success form-switch-lg" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Status"
@@ -163,7 +167,7 @@
         </div>
     @else
         @component('components.nothing')
-            @slot('text', 'Ainda não há membros na equipe de '.getCurrentConnectionName().'')
+            @slot('text', 'Ainda não há membros na equipe de '.getCurrentConnectionName().'<br><br>Se estiver procurando por <strong class="text-body">Contas Conectadas</strong>, <a class="text-decoration-underline init-loader" href="'.route('settingsConnectionsIndexURL').'">clique aqui</a>.')
         @endcomponent
     @endif
 

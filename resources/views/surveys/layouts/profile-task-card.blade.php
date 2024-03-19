@@ -203,7 +203,7 @@
                             <button type="button"
                                 data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
                                 title="{{$status['reverse']}}"
-                                class="btn btn-sm btn-label right waves-effect btn-{{$status['color']}} {{ $designated == 'surveyor' ? 'btn-assignment-surveyor-action' : 'btn-assignment-auditor-action' }}"
+                                class="btn btn-sm btn-label right btn-{{$status['color']}} {{ $designated == 'surveyor' ? 'btn-assignment-surveyor-action' : 'btn-assignment-auditor-action' }}"
                                 data-survey-id="{{$surveyId}}"
                                 data-assignment-id="{{$assignmentId}}"
                                 data-current-status="{{$statusKey}}">
@@ -214,14 +214,14 @@
                                 <a href="{{ route('assignmentShowURL', $assignmentId) }}"
                                     data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
                                     title="Visualizar"
-                                    class="btn btn-sm waves-effect btn-dark ri-eye-line">
+                                    class="btn btn-sm btn-dark ri-eye-line">
                                 </a>
                             @endif
                         @elseif( ( ( $currentUserId === $surveyorId || $currentUserId === $auditorId ) && in_array($statusKey, ['completed']) ) || ( in_array(getUserRoleById($currentUserId, $currentConnectionId), [1,2]) && in_array($statusKey, ['completed']) ) )
                             <a href="{{ route('assignmentShowURL', $assignmentId) }}"
                                 data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
                                 title="Visualizar"
-                                class="btn btn-sm btn-label right waves-effect btn-dark">
+                                class="btn btn-sm btn-label right btn-dark">
                                     <i class="ri-eye-line label-icon align-middle"></i> Visualizar
                             </a>
                         @endif
@@ -231,7 +231,7 @@
                             <a href="{{ route('assignmentShowURL', $assignmentId) }}"
                                 data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
                                 title="Visualizar"
-                                class="btn btn-sm btn-label right waves-effect btn-dark">
+                                class="btn btn-sm btn-label right btn-dark">
                                     <i class="ri-eye-line label-icon align-middle fs-16"></i> Visualizar
                             </a>
                         @endif

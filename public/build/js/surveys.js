@@ -1,5 +1,6 @@
 import {
     toastAlert,
+    sweetAlert,
     sweetWizardAlert,
     initFlatpickr,
     maxLengthTextarea,
@@ -107,7 +108,13 @@ document.addEventListener('DOMContentLoaded', function() {
                             location.reload(true);
                         } else {
                             // Handle error
-                            console.error('Error start/stop survey:', data.message);
+                            //console.error('Error start/stop survey:', data.message);
+
+                            if(data.action = 'userStatusAlert'){
+                                sweetAlert(data.message)
+
+                                return;
+                            }
 
                             toastAlert(data.message, 'danger', 5000);
                         }
@@ -186,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     var modalElement = document.getElementById('surveysModal');
                     var modal = new bootstrap.Modal(modalElement, {
-                        backdrop: false,// 'static'
+                        backdrop: 'static',// 'static'
                         keyboard: false
                     });
                     modal.show();

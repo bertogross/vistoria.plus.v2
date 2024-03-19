@@ -16,7 +16,8 @@
             Visualização
             @if ($data)
                 <i class="ri-arrow-drop-right-line text-theme ms-2 me-2 align-bottom"></i>
-                <small>#<span class="text-theme me-2">{{$data->id}}</span> {{ limitChars($data->title ?? '', 20) }}
+                <small>
+                    #<span class="text-theme me-2">{{$data->id}}</span> {{ limitChars($data->title ?? '', 20) }}
                 </small>
             @endif
         @endslot
@@ -48,7 +49,7 @@
                 @endif
 
                 @if(!$preview && !$edition)
-                    <a href="{{ route('surveysTemplateEditURL', ['id' => $data->id]) }}" class="btn btn-sm btn-light btn-icon waves-effect ms-2 float-end m-3" title="Editar registro: {{ limitChars($data->title ?? '', 20) }}"><i class="ri-edit-line"></i></a>
+                    <a href="{{ route('surveysTemplateEditURL', ['id' => $data->id]) }}" class="btn btn-sm btn-light btn-icon ms-2 float-end m-3" title="Editar registro: {{ limitChars($data->title ?? '', 20) }}"><i class="ri-edit-line"></i></a>
                 @endif
 
                 <div class="card-body p-5 text-center">

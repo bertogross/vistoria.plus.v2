@@ -142,11 +142,11 @@ class SurveyAssignments extends Model
 
         // Populate/repopulate = depends on are or not completed indivisual user tasks
         if($distributedData && $distributedData['surveyor']){
-            // Get the most recent date of assignment for the specific survey and remove
+            // Prevent duplications. Get the most recent date of assignment for the specific survey and remove.
             self::removeDistributingAssignments($surveyId);
 
             foreach ($distributedData['surveyor'] as $value) {
-                // If quest revoke connection or host turn user connection off, change chacklit to stoped and send mail notification to host
+                // Check if any quest revoke connection or host turn user connection off and change checklit to stopped and send mail notification to host
                 $connectedAccountData = UserConnections::connectedAccountData($value['user_id']);
                 if( isset($connectedAccountData->status) && in_array($connectedAccountData->status, ['revoked', 'inactive']) ){
 
@@ -158,8 +158,8 @@ class SurveyAssignments extends Model
                     $survey->update($columns);
 
                     // Send notification message to host
-                    $message = 'A tarefa <strong>' . getSurveyNameById($surveyId) . '</strong> não foi inicializada e seus status foi modificado para <em>Interrompido</em> pois um dos membros foi desativado.<br><br>';
-                    $message .= 'Para ajustar, acesse seu Painel em <a href="' . route('settingsAccountShowURL') . '/tab=users">' . route('settingsAccountShowURL') . '/tab=users</a> e verifique se será possível reativar a conexão. <br>Se não for possível restabelecer a conexão, edite o Checklist intitulado <u>' . getSurveyNameById($surveyId) . '</u> alterando as Atribuições.';
+                    $message = 'A tarefa <strong>' . getSurveyNameById($surveyId) . '</strong> não foi inicializada e o status foi modificado para <strong>Interrompido</strong> pois membros colaboradores podem ter sido desativados.<br><br>';
+                    $message .= 'Para ajustar, acesse seu Painel em <a href="' . route('settingsAccountShowURL') . '/tab=users">' . route('settingsAccountShowURL') . '/tab=users</a> e verifique se será possível reativar a conexão. <br>Se não for possível restabelecer, edite o Checklist intitulado <u>' . getSurveyNameById($surveyId) . '</u> e altere as Atribuições.';
 
                     $getUserData = getUserData($connectedAccountData->host_id);
                     $hostEmail = $getUserData->email;
@@ -582,10 +582,6 @@ class SurveyAssignments extends Model
 
         $keys = is_array($keys) ? $keys : ['new', 'pending', 'in_progress', 'auditing', 'completed', 'losted'];
 
-        /*return DB::connection('vpAppTemplate')->table('survey_assignments')->where('surveyor_id', $userId)
-            ->whereIn('surveyor_status', $keys)
-            ->count();*/
-
         $assignments = DB::connection('vpAppTemplate')->table('survey_assignments')
             ->where('surveyor_id', $userId)
             ->whereIn('surveyor_status', $keys)
@@ -602,11 +598,6 @@ class SurveyAssignments extends Model
         }
 
         $keys = is_array($keys) ? $keys : ['new', 'pending', 'in_progress', 'completed', 'losted'];
-
-        /*$dbConnection = DB::connection('vpAppTemplate');
-        return $dbConnection->table('survey_assignments')->where('auditor_id', $userId)
-            ->whereIn('auditor_status', $keys)
-            ->count();*/
 
         $assignments = DB::connection('vpAppTemplate')->table('survey_assignments')
             ->where('auditor_id', $userId)

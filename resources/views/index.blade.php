@@ -42,7 +42,7 @@
                                     </div>
                                     <!--end col-->
                                     <div class="col-auto">
-                                        <button type="button" class="btn btn-soft-info btn-icon waves-effect material-shadow-none waves-light layout-rightside-btn"><i class="ri-pulse-line"></i></button>
+                                        <button type="button" class="btn btn-soft-info btn-icon material-shadow-none layout-rightside-btn"><i class="ri-pulse-line"></i></button>
                                     </div>
                                     <!--end col-->
                                 </div>

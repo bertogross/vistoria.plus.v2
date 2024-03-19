@@ -1,6 +1,6 @@
 @if(session('success'))
     <!-- Success Alert -->
-    <div id="success-alert" class="alert alert-theme alert-dismissible alert-label-icon label-arrow fade show" role="alert">
+    <div id="success-alert" class="alert alert-theme alert-dismissible alert-label-icon label-arrow pe-3 fade show" role="alert">
         <i class="ri-check-double-line label-icon"></i>{!! session('success') !!}
         <button type="button" class="btn-close" data-bs-dismiss=" alert" aria-label="Close"></button>
     </div>

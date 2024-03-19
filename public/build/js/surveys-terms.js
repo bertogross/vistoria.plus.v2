@@ -135,7 +135,7 @@ export function addTerms(){
             var termName = termInput.value.trim();
             //console.log(JSON.stringify({ name: term }));
 
-            if (term) {
+            if (termName) {
                 // Assuming you have a route like 'surveysTermsStoreOrUpdateURL' to handle the POST request
                 fetch(surveysTermsStoreOrUpdateURL, {
                     method: 'POST',
@@ -161,6 +161,8 @@ export function addTerms(){
                     reloadTermsForm();
                 })
                 .catch(error => console.error('Error:', error));
+            }else{
+                toastAlert('Necessário preencher o campo', 'danger', 5000);
             }
         });
     }

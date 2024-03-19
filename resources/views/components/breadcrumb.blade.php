@@ -4,7 +4,7 @@
             <h4 class="mb-sm-0 font-size-18">{{ $title }}</h4>
             <div class="page-title-right">
                 @if(isset($li_1))
-                <ol class="breadcrumb m-0">
+                <ol class="breadcrumb m-0 d-none d-md-inline-flex d-lg-inline-flex d-xl-inline-flex">
                     <li class="breadcrumb-item">
                         <a href="@if(isset($url)){{ $url }}@else javascript: void(0);@endif">
                             {{ $li_1 }}

@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
-use App\Models\UserMeta;
 
 class DynamicDatabaseServiceProvider extends ServiceProvider
 {

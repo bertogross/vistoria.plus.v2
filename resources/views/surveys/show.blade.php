@@ -72,7 +72,7 @@
             Análise do Checklist
             <i class="ri-arrow-right-s-fill text-theme ms-2 me-2 align-bottom"></i>
             <span class="text-muted" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Dados originados desta conta">{!!getCurrentConnectionName()!!}</span>
-            <small>
+            <small class="d-none d-lg-block d-xl-block">
                 <i class="ri-arrow-drop-right-line text-theme ms-2 me-2 align-bottom"></i>
                 {{limitChars($title ?? '', 30) }} #<span class="text-theme me-2">{{$surveyId}}</span>
             </small>
@@ -112,7 +112,7 @@
                                     @endif
 
                                     <div class="col-sm-12 col-md-auto col-lg-auto wrap-form-btn">  {{-- d-none --}}
-                                        <button type="submit" name="filter" value="true" class="btn btn-theme waves-effect init-loader w-100">
+                                        <button type="submit" name="filter" value="true" class="btn btn-theme init-loader w-100">
                                             <i class="ri-equalizer-fill me-1 align-bottom"></i> Filtrar
                                         </button>
                                     </div>
@@ -128,10 +128,10 @@
                                 @else
                                     onclick="alert('Esta ação requer dados de duas ou mais Unidades')"
                                 @endif
-                                class="btn btn-{{!$swapData ? 'soft-' : ''}}theme waves-effect"
+                                class="btn btn-{{!$swapData ? 'soft-' : ''}}theme"
                                 data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="left" data-bs-title="Ativar/Desativar o Secionamento" data-bs-content="O <strong>Secionamento</strong> quando ativo permite visualizar os dados independentementes de cada das Unidades.
                                 <br><br>{{$swapData ? '<span class="text-success">Secionamento Ativo</span>' : '<span class="text-danger">Secionamento Inativo</span>'}}">
-                                <i class="ri-swap-box-line me-1 align-bottom"></i>
+                                    <i class="ri-swap-box-line me-1 align-bottom"></i>
                                 @if ($swapData)
                                     Secionamento
                                 @else
@@ -139,18 +139,18 @@
                                 @endif
                             </button>
 
-                            <button class="btn btn-soft-theme waves-effect ms-2" title="Listar Tarefas" data-bs-toggle="modal" data-bs-target="#assignmentsListingModal">
+                            <button class="btn btn-soft-theme ms-2" title="Listar Tarefas" data-bs-toggle="modal" data-bs-target="#assignmentsListingModal">
                                 <i class="ri-file-list-line"></i>
-                                <span class="ms-1 d-md-none">Listar Tarefas</span>
+                                <span class="ms-1 d-none d-lg-block d-xl-block">Listar Tarefas</span>
                             </button>
 
-                            <button class="btn btn-soft-theme waves-effect ms-2 {{ $swapData ? '' : 'btn-print-this' }}"
+                            <button class="btn btn-soft-theme ms-2 {{ $swapData ? '' : 'btn-print-this' }}"
                                 @if ($swapData)
                                     onclick="alert('Para gerar o PDF, desligue o Secionamento')"
                                 @endif
                                 data-target-id="print-this" data-pdf-name="Relatório Checklist {{$surveyId}}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="Gerar PDF">
                                 <i class="ri-printer-fill"></i>
-                                <span class="ms-1 d-md-none">Imprimir</span>
+                                <span class="ms-1 d-none d-lg-block d-xl-block">Imprimir</span>
                             </button>
                         </div>
                     </div>

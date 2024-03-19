@@ -117,7 +117,7 @@
             <!-- end auth page content -->
 
             <!-- footer -->
-            <footer class="footer">
+            <footer class="footer d-none d-lg-block d-xl-block">
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">

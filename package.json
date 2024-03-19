@@ -13,6 +13,7 @@
         "@popperjs/core": "^2.10.2",
         "axios": "^1.6.5",
         "browser-sync": "^3.0.2",
+        "laravel-mix": "^6.0.49",
         "laravel-vite-plugin": "^0.7.4",
         "lodash": "^4.17.19",
         "popper.js": "^1.12",

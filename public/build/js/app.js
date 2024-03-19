@@ -657,7 +657,7 @@ File: Main Js File
 	}
 
 	function windowResizeHover() {
-		feather.replace();
+		//feather.replace();
 		var windowSize = document.documentElement.clientWidth;
 		if (windowSize < 1025 && windowSize > 767) {
 			document.body.classList.remove("twocolumn-panel");
@@ -822,28 +822,30 @@ File: Main Js File
 		// Demo show code
 		document.addEventListener("DOMContentLoaded", function () {
 			var checkbox = document.getElementsByClassName("code-switcher");
-			Array.from(checkbox).forEach(function (check) {
-				check.addEventListener("change", function () {
-					var card = check.closest(".card");
-					var preview = card.querySelector(".live-preview");
-					var code = card.querySelector(".code-view");
+            if(checkbox.length){
+                Array.from(checkbox).forEach(function (check) {
+                    check.addEventListener("change", function () {
+                        var card = check.closest(".card");
+                        var preview = card.querySelector(".live-preview");
+                        var code = card.querySelector(".code-view");
 
-					if (check.checked) {
-						preview.classList.add("d-none");
-						code.classList.remove("d-none");
-					} else {
-						preview.classList.remove("d-none");
-						code.classList.add("d-none");
-					}
-				});
-			});
-			feather.replace();
+                        if (check.checked) {
+                            preview.classList.add("d-none");
+                            code.classList.remove("d-none");
+                        } else {
+                            preview.classList.remove("d-none");
+                            code.classList.add("d-none");
+                        }
+                    });
+                });
+                //feather.replace();
+            }
 		});
 
 		window.addEventListener("resize", windowResizeHover);
 		windowResizeHover();
 
-		Waves.init();
+		//Waves.init();
 
 		document.addEventListener("scroll", function () {
 			windowScroll();
@@ -885,7 +887,7 @@ File: Main Js File
 
 	// Two-column menu activation
 	function initTwoColumnActiveMenu() {
-		feather.replace();
+		//feather.replace();
 		// two column sidebar active js
 		var currentPath = location.pathname == "/" ? "index" : location.pathname.substring(1);
 		currentPath = currentPath.substring(currentPath.lastIndexOf("/") + 1);
@@ -1866,13 +1868,13 @@ File: Main Js File
 					if (x.value == "vertical") {
 						hideShowLayoutOptions("vertical");
 						isCollapseMenu();
-						feather.replace();
+						//feather.replace();
 					} else if (x.value == "horizontal") {
 						if (document.getElementById("sidebarimg-none")) {
 							document.getElementById("sidebarimg-none").click();
 						}
 						hideShowLayoutOptions("horizontal");
-						feather.replace();
+						//feather.replace();
 					} else if (x.value == "twocolumn") {
 						hideShowLayoutOptions("twocolumn");
 						document.documentElement.setAttribute("data-layout-width", "fluid");
@@ -1880,7 +1882,7 @@ File: Main Js File
 						twoColumnMenuGenerate();
 						initTwoColumnActiveMenu();
 						isCollapseMenu();
-						feather.replace();
+						//feather.replace();
 					} else if (x.value == "semibox") {
 						hideShowLayoutOptions("semibox");
 						document.documentElement.setAttribute("data-layout-width", "fluid");
@@ -1888,7 +1890,7 @@ File: Main Js File
 						document.documentElement.setAttribute("data-layout-style", "default");
 						document.getElementById("sidebar-view-default").click();
 						isCollapseMenu();
-						feather.replace();
+						//feather.replace();
 					}
 				}
 

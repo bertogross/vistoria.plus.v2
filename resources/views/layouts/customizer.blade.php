@@ -888,7 +888,6 @@
                                             </span>
                                         </span>
                                     </span>
-                                    <!-- <div id="preloader"> -->
                                     <div id="status" class="d-flex align-items-center justify-content-center">
                                         <div class="spinner-border text-primary avatar-xxs m-auto" role="status">
                                             <span class="visually-hidden">Loading...</span>
@@ -932,7 +931,7 @@
                 <div id="body-img" style="display: none;">
                     <h6 class="mt-4 mb-0 fw-semibold text-uppercase">Background Image</h6>
                     <p class="text-muted">Choose a body background image.</p>
-                
+
                     <div class="row">
                         <div class="col-4">
                             <div class="form-check sidebar-setting card-radio">
@@ -968,7 +967,7 @@
                             <h5 class="fs-13 text-center mt-2">One</h5>
                         </div>
                         <!-- end col -->
-                
+
                         <div class="col-4">
                             <div class="form-check sidebar-setting card-radio">
                                 <input class="form-check-input" type="radio" name="data-body-image" id="body-img-two" value="img-2">
@@ -978,7 +977,7 @@
                             <h5 class="fs-13 text-center mt-2">Two</h5>
                         </div>
                         <!-- end col -->
-                
+
                         <div class="col-4">
                             <div class="form-check sidebar-setting card-radio">
                                 <input class="form-check-input" type="radio" name="data-body-image" id="body-img-three" value="img-3">

@@ -38,7 +38,7 @@
                                 <div class="mt-3">
                                     <h3 class="text-uppercase">😭</h3>
                                     <h5 class="text-muted mb-4">Você não possui autorização para acessar a conexão <strong>{{$currentConnectionName}}</strong></h5>
-                                    <a href="{{ url('/') }}" class="btn btn-success"><i class="mdi mdi-home me-1"></i>Voltar ao início</a>
+                                    <a href="{{ url('/') }}" class="init-loader btn btn-theme"><i class="mdi mdi-home me-1"></i>Voltar ao início</a>
                                 </div>
                             </div>
                         </div>
@@ -51,7 +51,7 @@
             <!-- end auth page content -->
 
             <!-- footer -->
-            <footer class="footer">
+            <footer class="footer d-none d-lg-block d-xl-block">
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">

@@ -24,7 +24,7 @@
                             <div>
                                 <h4>Erro interno do servidor!</h4>
                                 <p class="text-muted w-75 mx-auto">Não sabemos exatamente o que aconteceu, mas nossos servidores dizem que algo está errado.</p>
-                                <a href="{{ url('/') }}" class="btn btn-success"><i class="mdi mdi-home me-1"></i>Voltar ao início</a>
+                                <a href="{{ url('/') }}" class="init-loader btn btn-theme"><i class="mdi mdi-home me-1"></i>Voltar ao início</a>
                             </div>
                         </div><!-- end col-->
                     </div>

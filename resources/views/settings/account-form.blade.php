@@ -68,7 +68,7 @@
                         </div>
                     </div>
 
-                    <button class="btn btn-theme waves-effect waves-light" type="submit">Atualizar Conta</button>
+                    <button class="btn btn-theme" type="submit">Atualizar Conta</button>
                 </form>
             </div>
         </div>
@@ -110,7 +110,7 @@
                         @enderror
                         <div class="form-text">
                             Deixe o campo vazio para não modificar.<br>
-                            A nova senha deve connter entre 8 e 20 caracteres.
+                            A nova senha deve conter entre 8 e 20 caracteres.
                         </div>
                     </div>
 
@@ -138,7 +138,7 @@
                     </div>
 
                     <div class="text-end">
-                        <button class="btn btn-theme waves-effect waves-light" type="submit">Atualizar Usuário</button>
+                        <button class="btn btn-theme" type="submit">Atualizar Usuário</button>
                     </div>
                 </form>
 

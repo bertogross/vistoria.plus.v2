@@ -118,29 +118,29 @@
                                             data-bs-trigger="hover"
                                             data-bs-placement="left"
                                             title="{{ $responseId ? 'Atualizar' : 'Salvar'}}"
-                                            class="btn btn-outline-light waves-effect waves-light ps-1 pe-1 {{ isset($purpose) && $purpose == 'validForm' ? 'btn-response-update' : '' }} d-none">
+                                            class="btn btn-outline-light ps-1 pe-1 {{ isset($purpose) && $purpose == 'validForm' ? 'btn-response-update' : '' }} d-none">
                                                 <i class="{{ $responseId ? 'ri-refresh-line' : 'ri-save-3-line'}} text-theme fs-3 m-2"></i>
                                         </button>
                                     @endif
 
                                     <div class="btn-group">
                                         @if( $surveyorStatus != 'auditing' && $surveyorStatus != 'losted' )
-                                            <label for="input-attachment-{{$radioIndex}}" class="btn btn-light waves-effect waves-light d-flex align-content-center flex-wrap me-1 mb-0 rounded-2 btn-add-photo" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Anexar Fotografia" data-step-id="{{$stepId}}" data-topic-id="{{$topicId}}">
+                                            <label for="input-attachment-{{$radioIndex}}" class="btn btn-light d-flex align-content-center flex-wrap me-1 mb-0 rounded-2 btn-add-photo" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Anexar Fotografia" data-step-id="{{$stepId}}" data-topic-id="{{$topicId}}">
                                                 <i class="ri-image-add-fill text-body fs-1 m-auto"></i>
                                             </label>
                                             <input type="file" id="input-attachment-{{$radioIndex}}" class="input-upload-photo d-none" accept="image/jpeg" {{ isset($purpose) && $purpose == 'validForm' ? '' : 'disabled' }}>
                                         @endif
 
-                                        <label class="btn btn-light waves-effect waves-light d-flex align-content-center flex-wrap text-center ms-1 me-1 mb-0 btn-toggle-element rounded-2" data-toggle-target="textarea-{{ $topicIndex.$radioIndex }}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Adicionar Observações"><i class="ri-feedback-line text-body fs-1 m-auto"></i></label>
+                                        <label class="btn btn-light d-flex align-content-center flex-wrap text-center ms-1 me-1 mb-0 btn-toggle-element rounded-2" data-toggle-target="textarea-{{ $topicIndex.$radioIndex }}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Adicionar Observações"><i class="ri-feedback-line text-body fs-1 m-auto"></i></label>
 
                                         <input tabindex="-1" class="d-none" type="radio" name="compliance_survey" role="switch" id="NoSwitchCheck{{ $topicIndex.$radioIndex }}" {{$surveyorStatus == 'auditing' || $surveyorStatus == 'losted' ? 'disabled' : ''}} value="no" {{$complianceSurvey && $complianceSurvey == 'no' ? 'checked' : ''}}>
-                                        <label for="NoSwitchCheck{{ $topicIndex.$radioIndex }}" class="btn btn-{{$complianceSurvey && $complianceSurvey == 'no' ? '' : 'outline-'}}danger waves-effect waves-light d-flex align-content-center flex-wrap ms-1 me-1 mb-0 rounded-2 border-1 border-danger border-opacity-10 btn-compliance" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="bottom" title="Não Conforme">
+                                        <label for="NoSwitchCheck{{ $topicIndex.$radioIndex }}" class="btn btn-{{$complianceSurvey && $complianceSurvey == 'no' ? '' : 'outline-'}}danger d-flex align-content-center flex-wrap ms-1 me-1 mb-0 rounded-2 border-1 border-danger border-opacity-10 btn-compliance" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="bottom" title="Não Conforme">
                                             <i class="ri-thumb-down-line label-icon align-middle rounded-pill fs-1 m-auto text-body"></i>
                                             {{--ri-emotion-unhappy-line--}}
                                         </label>
 
                                         <input tabindex="-1" class="d-none" type="radio" name="compliance_survey" role="switch" id="YesSwitchCheck{{ $topicIndex.$radioIndex }}" {{$surveyorStatus == 'auditing' || $surveyorStatus == 'losted' ? 'disabled' : ''}} value="yes" {{$complianceSurvey && $complianceSurvey == 'yes' ? 'checked' : ''}}>
-                                        <label for="YesSwitchCheck{{ $topicIndex.$radioIndex }}" class="btn btn-{{$complianceSurvey && $complianceSurvey == 'yes' ? '' : 'outline-'}}success waves-effect waves-light d-flex align-content-center flex-wrap ms-1 me-0 mb-0 rounded-2 border-1 border-success border-opacity-10 btn-compliance" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Conforme">
+                                        <label for="YesSwitchCheck{{ $topicIndex.$radioIndex }}" class="btn btn-{{$complianceSurvey && $complianceSurvey == 'yes' ? '' : 'outline-'}}success d-flex align-content-center flex-wrap ms-1 me-0 mb-0 rounded-2 border-1 border-success border-opacity-10 btn-compliance" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Conforme">
                                             <i class="ri-thumb-up-line label-icon align-middle rounded-pill fs-1 m-auto text-body"></i>
                                             {{--ri-emotion-happy-line--}}
                                         </label>
@@ -202,7 +202,7 @@
     @if ( isset($purpose) && $purpose == 'validForm' && $surveyorStatus != 'auditing' && $surveyorStatus != 'losted' )
         <button tabindex="-1"
             type="button"
-            class="btn btn-lg btn-theme waves-effect w-100 {{ $countResponses < $countTopics ? 'd-none' : '' }} mb-3"
+            class="btn btn-lg btn-theme w-100 {{ $countResponses < $countTopics ? 'd-none' : '' }} mb-3"
             id="btn-response-finalize"
             data-assignment-id="{{$assignmentId}}"
             title="Finalizar e disponibilizar para eventual Auditoria">

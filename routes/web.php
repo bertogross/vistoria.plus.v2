@@ -49,7 +49,7 @@ Auth::routes();
 Route::get('index/{locale}', [App\Http\Controllers\HomeController::class, 'lang']);
 
 // Auth group
-Route::middleware(['auth', 'set-db-connection', 'check.authorization'])->group(function () {
+Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])->group(function () {
     Route::get('/', [SurveysController::class, 'index'])->name('root');
     //Route::get('/', [HomeController::class, 'root'])->name('root');
 
@@ -220,8 +220,12 @@ Route::get('/test-db', function () {
         return 'Error connecting to vpAppTemplate: ' . $e->getMessage();
     }
 });
-*/
 
+//To make testing on offline view layout
+Route::get('/offline', function () {
+    return view('vendor.laravelpwa.offline');
+});
+*/
 
 //Route::get('/send-email', [PostmarkappController::class, 'sendEmail']);
 

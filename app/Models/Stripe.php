@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Stripe\StripeClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class Stripe extends Model
 {
@@ -68,8 +69,14 @@ class Stripe extends Model
     }
 
     // Stripe routine to cancel/active user subscription item with metadata product_type == users
-    public static function subscriptionGuestUserAddonUpdate()
+    public static function subscriptionGuestUserAddonUpdate($hostId = null)
     {
+        $hostEmail = null;
+        if ($hostId) {
+            $user = User::find($hostId);
+            $hostEmail = $user->email;
+        }
+
         try {
             $stripe = Stripe::getStripeClient();
         } catch (\Exception $e) {
@@ -86,7 +93,7 @@ class Stripe extends Model
         $subscriptionData = getSubscriptionData();
         $subscriptionId = $subscriptionData && isset($subscriptionData['subscription_id']) ? $subscriptionData['subscription_id'] : null;
 
-        $customerId = self::getStripeCustomerId();
+        $customerId = self::getStripeCustomerId($hostEmail);
 
         // Example: Count active user connections from your database
         $activeUserConnectionsCount = UserConnections::where('connection_status', 'active')->count();
@@ -229,15 +236,21 @@ class Stripe extends Model
 
     public static function getStripeCustomerId($userEmail = null)
     {
-        if($userEmail){
-            $user = User::findUserByEmail($userEmail);
+        if(!$userEmail){
+            $user = auth()->user();
             if(!$user){
-                $user = auth()->user();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuário não autenticado'
+                ]);
             }
             $userEmail = $user->email;
             $userName = $user->name ?? explode('@', $userEmail)[0];
         }else{
-            $user = auth()->user();
+            $user = User::findUserByEmail($userEmail);
+            if(!$user){
+                $user = auth()->user();
+            }
             $userEmail = $user->email;
             $userName = $user->name ?? explode('@', $userEmail)[0];
         }

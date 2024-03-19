@@ -40,3 +40,39 @@ if(installButton){
 
     });
 }
+
+
+/*
+// DEPRECATED
+// "Refresh on swipe down" feature
+function refreshOnSwipeDown(){
+    let touchStartY = 0;
+    let touchEndY = 0;
+
+    // Threshold for swipe action
+    const threshold = 150;
+
+    function handleTouchStart(event) {
+        touchStartY = event.touches[0].clientY;
+    }
+
+    function handleTouchMove(event) {
+        touchEndY = event.touches[0].clientY;
+    }
+
+    function handleTouchEnd() {
+        if (touchStartY < touchEndY && (touchEndY - touchStartY) > threshold) {
+            // Swipe down action detected
+            //console.log('Swipe down detected. Refreshing page...');
+            showPreloader();
+            window.location.reload();
+        }
+    }
+
+    // Add event listeners
+    document.addEventListener('touchstart', handleTouchStart, false);
+    document.addEventListener('touchmove', handleTouchMove, false);
+    document.addEventListener('touchend', handleTouchEnd, false);
+}
+document.addEventListener('DOMContentLoaded', refreshOnSwipeDown);
+*/

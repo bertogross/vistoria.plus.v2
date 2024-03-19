@@ -174,7 +174,7 @@ export function showPreloader(show = true) {
 
     setTimeout(function () {
         preloader.style.visibility = "hidden";
-    }, 60000);
+    }, 5000);
 }
 
 export function printThis(){
@@ -1108,6 +1108,59 @@ export function uncheckRadiosAndUpdateLabels(radios) {
     });
 }
 
+export function copyThis() {
+    var copyButtons = document.querySelectorAll('.copy-btn');
+    if(copyButtons){
+        copyButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                // Find the closest parent copythis-wrapper to ensure we're copying from the right section
+                const parentRow = this.closest('.copythis-wrapper');
+                if (!parentRow) return; // If for some reason the row isn't found, do nothing
+
+                // Find the .copythis div within the same row
+                const contentDiv = parentRow.querySelector('.copythis');
+                if (!contentDiv) return; // If there's no content to copy, do nothing
+
+                // Convert HTML content to plain text, preserving line breaks
+                let textToCopy = contentDiv.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/<\/?[^>]+(>|$)/g, "");
+
+                // Use the Clipboard API if available
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(textToCopy).then(function() {
+                        console.log('Content copied to clipboard');
+                        toastAlert('Conteúdo copiado', 'success');
+                    }, function(err) {
+                        console.error('Could not copy text: ', err);
+                        toastAlert('Erro ao copiar conteúdo', 'danger');
+                    });
+                } else {
+                    // Fallback method for older browsers
+                    const textarea = document.createElement('textarea');
+                    textarea.value = textToCopy; // Use the processed text
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    try {
+                        const successful = document.execCommand('copy');
+                        const msg = successful ? 'successful' : 'unsuccessful';
+                        console.log('Fallback: Copying text command was ' + msg);
+
+                        if (msg == 'successful') {
+                            toastAlert('Conteúdo copiado', 'success');
+                        } else {
+                            toastAlert('Erro ao copiar conteúdo', 'danger');
+                        }
+                    } catch (err) {
+                        console.error('Fallback: Oops, unable to copy', err);
+                        toastAlert('Erro ao copiar conteúdo', 'danger');
+                    }
+                    document.body.removeChild(textarea);
+                }
+            });
+        });
+    }
+}
+
+
 // GLightbox Popup
 // https://github.com/biati-digital/glightbox
 export function lightbox(){
@@ -1130,8 +1183,11 @@ export function lightbox(){
 }
 
 
+
 export const monthsInPortuguese = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
 ];
+
+
 

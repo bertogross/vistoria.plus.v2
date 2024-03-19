@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.error) {
                     throw new Error(data.error);
                 }
-                console.log('Authorization check successful', data);
+                //console.log('Authorization check successful', data);
             })
             .catch(error => {
                 console.error('Authorization check failed', error.message);
@@ -357,6 +357,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+document.querySelectorAll('.init-loader').forEach(function(link) {
+    link.addEventListener("click", function () {
+        showPreloader();
+    });
+});
 
 
 

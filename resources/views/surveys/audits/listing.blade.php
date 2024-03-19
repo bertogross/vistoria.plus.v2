@@ -5,7 +5,7 @@
 
     $today = Carbon::now();
 @endphp
-<div id="surveysList" class="card h-100 mb-3">
+<div id="surveysList" class="card mb-3">
     <div class="card-header">
         <div class="d-flex align-items-center">
             <h5 class="card-title mb-0 flex-grow-1">
@@ -60,7 +60,7 @@
                             </div>
 
                             <div class="col-sm-12 col-md-auto col-lg-auto wrap-form-btn">{{-- d-none --}}
-                                <button type="submit" name="filter" value="true" class="btn btn-theme waves-effect w-100 init-loader">
+                                <button type="submit" name="filter" value="true" class="btn btn-theme w-100 init-loader">
                                     <i class="ri-equalizer-fill me-1 align-bottom"></i> Filtrar
                                 </button>
                             </div>
@@ -189,11 +189,11 @@
                                                 @else
                                                     onclick="alert('Necessário aguardar finalização da Vistoria')"
                                                 @endif
-                                                class="btn btn-sm btn-label right waves-effect btn-soft-secondary" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Abrir formulário">
+                                                class="btn btn-sm btn-label right btn-soft-secondary" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Abrir formulário">
                                                     <i class="ri-fingerprint-2-line label-icon align-middle fs-16"></i> Auditar
                                                 </a>
                                             @elseif (in_array($auditorStatus, ['completed', 'losted']))
-                                                <a href="{{ route('assignmentShowURL', $assignmentId) }}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Visualizar resultado" class="btn btn-sm waves-effect btn-soft-dark ri-eye-line"></a>
+                                                <a href="{{ route('assignmentShowURL', $assignmentId) }}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Visualizar resultado" class="btn btn-sm btn-soft-dark ri-eye-line"></a>
                                             @endif
                                         </td>
                                     </tr>

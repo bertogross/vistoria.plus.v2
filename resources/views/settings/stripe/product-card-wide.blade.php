@@ -53,7 +53,7 @@
                             @elseif($productMetadata->product_type  == 'storage')
                                 {{ isset($currentPriceId) && $currentPriceId == $PriceId ? ' btn-subscription-update btn-outline-light ' : ' btn-subscription btn-theme' }}
                             @endif
-                            waves-effect waves-light text-uppercase"
+                            text-uppercase"
                             data-product_id="{{ $productId }}"
                             data-price_id="{{ $PriceId }}"
                             data-product_type="{{ $productMetadata->product_type ?? '' }}"

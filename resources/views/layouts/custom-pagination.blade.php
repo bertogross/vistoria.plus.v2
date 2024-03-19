@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-end mt-2">
+<div class="d-flex justify-content-end mt-2 mb-2">
     <div class="pagination-wrap hstack gap-2">
         @if ($paginator->onFirstPage())
             <span class="page-item pagination-prev disabled">

@@ -42,6 +42,10 @@ return [
                 'purpose' => 'any'
             ],
             '512x512' => [
+                'path' => '/build/images/favicons/icon-384x384.png',
+                'purpose' => 'maskable'
+            ],
+            '512x512' => [
                 'path' => '/build/images/favicons/icon-512x512.png',
                 'purpose' => 'any'
             ],

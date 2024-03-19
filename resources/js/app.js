@@ -657,7 +657,7 @@ File: Main Js File
 	}
 
 	function windowResizeHover() {
-		feather.replace();
+		//feather.replace();
 		var windowSize = document.documentElement.clientWidth;
 		if (windowSize < 1025 && windowSize > 767) {
 			document.body.classList.remove("twocolumn-panel");
@@ -838,14 +838,14 @@ File: Main Js File
                         }
                     });
                 });
-                feather.replace();
+                //feather.replace();
             }
 		});
 
 		window.addEventListener("resize", windowResizeHover);
 		windowResizeHover();
 
-		Waves.init();
+		//Waves.init();
 
 		document.addEventListener("scroll", function () {
 			windowScroll();
@@ -887,7 +887,7 @@ File: Main Js File
 
 	// Two-column menu activation
 	function initTwoColumnActiveMenu() {
-		feather.replace();
+		//feather.replace();
 		// two column sidebar active js
 		var currentPath = location.pathname == "/" ? "index" : location.pathname.substring(1);
 		currentPath = currentPath.substring(currentPath.lastIndexOf("/") + 1);
@@ -1868,13 +1868,13 @@ File: Main Js File
 					if (x.value == "vertical") {
 						hideShowLayoutOptions("vertical");
 						isCollapseMenu();
-						feather.replace();
+						//feather.replace();
 					} else if (x.value == "horizontal") {
 						if (document.getElementById("sidebarimg-none")) {
 							document.getElementById("sidebarimg-none").click();
 						}
 						hideShowLayoutOptions("horizontal");
-						feather.replace();
+						//feather.replace();
 					} else if (x.value == "twocolumn") {
 						hideShowLayoutOptions("twocolumn");
 						document.documentElement.setAttribute("data-layout-width", "fluid");
@@ -1882,7 +1882,7 @@ File: Main Js File
 						twoColumnMenuGenerate();
 						initTwoColumnActiveMenu();
 						isCollapseMenu();
-						feather.replace();
+						//feather.replace();
 					} else if (x.value == "semibox") {
 						hideShowLayoutOptions("semibox");
 						document.documentElement.setAttribute("data-layout-width", "fluid");
@@ -1890,7 +1890,7 @@ File: Main Js File
 						document.documentElement.setAttribute("data-layout-style", "default");
 						document.getElementById("sidebar-view-default").click();
 						isCollapseMenu();
-						feather.replace();
+						//feather.replace();
 					}
 				}
 

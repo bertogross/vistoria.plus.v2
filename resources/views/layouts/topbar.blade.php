@@ -3,14 +3,15 @@
     $userId = $user->id ?? null;
     if($userId){
         $userName = $user->name;
-        $countSurveyAssignmentSurveyorTasks = \App\Models\SurveyAssignments::countSurveyAssignmentSurveyorTasks($userId, ['new', 'pending', 'in_progress']);
-        $countSurveyAssignmentAuditorTasks = \App\Models\SurveyAssignments::countSurveyAssignmentAuditorTasks($userId, ['new', 'pending', 'in_progress']);
 
         $hostConnections = getHostConnections();
 
         $currentConnectionId = getCurrentConnectionByUserId($userId);
         $currentConnectionName = getConnectionNameById($currentConnectionId);
         $currentConnectionRoleName = getCurrentConnectionUserRoleName();
+
+        $countSurveyAssignmentSurveyorTasks = \App\Models\SurveyAssignments::countSurveyAssignmentSurveyorTasks($userId, ['new', 'pending', 'in_progress']);
+        $countSurveyAssignmentAuditorTasks = \App\Models\SurveyAssignments::countSurveyAssignmentAuditorTasks($userId, ['new', 'pending', 'in_progress']);
 
         $profileUrl = $userId ? route('profileShowURL', ['id' => $userId]) . '?d=' . now()->timestamp : route('profileShowURL');
 
@@ -24,34 +25,34 @@
                 <div class="d-flex">
                     <!-- LOGO -->
                     <div class="navbar-brand-box horizontal-logo">
-                        <a href="{{ url('/') }}" class="logo logo-dark" title="Ir para inicial do {{appName()}}">
+                        <a href="{{ url('/') }}" class="init-loader logo logo-dark" title="Ir para inicial do {{appName()}}">
                             <span class="logo-sm">
                                 @if ($companyLogo)
-                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
+                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" height="31" loading="lazy">
                                 @else
-                                    <img src="{{ URL::asset('build/images/logo-sm.png') }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
+                                    <img src="{{ URL::asset('build/images/logo-sm.png') }}" alt="{{appName()}}" height="31" loading="lazy">
                                 @endif
                             </span>
                             <span class="logo-lg">
                                 @if ($companyLogo)
-                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
+                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" height="31" loading="lazy">
                                 @else
                                     <img src="{{ URL::asset('build/images/logo-dark.png') }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
                                 @endif
                             </span>
                         </a>
 
-                        <a href="{{ url('/') }}" class="logo logo-light" title="Ir para inicial do {{appName()}}">
+                        <a href="{{ url('/') }}" class="init-loader logo logo-light" title="Ir para inicial do {{appName()}}">
                             <span class="logo-sm">
                                 @if ($companyLogo)
-                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
+                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" height="31" loading="lazy">
                                 @else
-                                    <img src="{{ URL::asset('build/images/logo-sm.png') }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
+                                    <img src="{{ URL::asset('build/images/logo-sm.png') }}" alt="{{appName()}}" height="31" loading="lazy">
                                 @endif
                             </span>
                             <span class="logo-lg">
                                 @if ($companyLogo)
-                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
+                                    <img src="{{ $companyLogo }}" alt="{{appName()}}" height="31" loading="lazy">
                                 @else
                                     <img src="{{ URL::asset('build/images/logo-light.png') }}" alt="{{appName()}}" width="202" height="31" loading="lazy">
                                 @endif
@@ -111,7 +112,7 @@
                             <div class="p-2">
                                 <div class="row g-0">
                                     <div class="col">
-                                        <a class="dropdown-icon-item"
+                                        <a class="dropdown-icon-item {{$userId == $currentConnectionId ? ' init-loader' : ''}}"
                                         @if ($userId != $currentConnectionId)
                                             onclick="alert('Para acessar seus Checklists, alterne para conta Principal')"
                                         @else
@@ -124,7 +125,7 @@
                                     </div>
 
                                     <div class="col">
-                                        <a class="dropdown-icon-item" href="{{ route('teamIndexURL') }}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="bottom" title="Listar membros da Equipe <strong>{{$currentConnectionName}}</strong>">
+                                        <a class="dropdown-icon-item init-loader" href="{{ route('teamIndexURL') }}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="bottom" title="Listar membros da Equipe <strong>{{$currentConnectionName}}</strong>">
                                             <i class="ri-team-line text-theme fs-1"></i>
                                             <span>Equipe</span>
                                         </a>
@@ -132,7 +133,7 @@
 
                                     {{--
                                     <div class="col">
-                                        <a class="dropdown-icon-item" href="{{ $profileUrl }}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="bottom" title="Acessar minha lista de Tarefas">
+                                        <a class="dropdown-icon-item init-loader" href="{{ $profileUrl }}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="bottom" title="Acessar minha lista de Tarefas">
                                             <i class="ri-todo-fill text-theme fs-1"></i>
                                             <span>Tarefas</span>
                                         </a>
@@ -151,7 +152,7 @@
                     </div>
                     --}}
 
-                    <div class="ms-1 header-item d-none d-sm-flex">
+                    <div class="ms-1 header-item">
                         <button type="button" id="btn-light-dark-mode" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"  data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="bottom" title="Alternar Visual">
                             <i class="bx bx-moon fs-22"></i>
                         </button>
@@ -165,8 +166,8 @@
 
                     @if ($hostConnections->isNotEmpty())
                         <div class="dropdown ms-1 topbar-head-dropdown header-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" title="Conexão atual: <u>{{$currentConnectionName}}</u>">
-                            <button type="button" class="btn btn-sm btn-outline-{{$currentConnectionId != $userId ? 'theme' : 'light' }} btn-label waves-effect waves-light text-body-secondary bg-light-subtle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="ri-share-line label-icon align-middle fs-16 me-2"></i> {{$currentConnectionName}}
+                            <button type="button" class="btn btn-sm btn-outline-{{$currentConnectionId != $userId ? 'theme' : 'light' }} btn-label text-body-secondary bg-light-subtle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 27px; padding-left: 25px;">
+                                <i class="ri-share-line label-icon align-middle fs-16"></i><span class="ms-3 d-none d-lg-inline-block d-xl-inline-block">{{limitChars($currentConnectionName, 20)}}</span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <ul class="list-unstyled ps-3 pe-3 mb-0" style="min-width: 270px;">
@@ -184,8 +185,8 @@
 
                                     @foreach ($hostConnections as $key => $connection)
                                         @php
-                                            $hostUserId = $connection->user_id;
-                                            $hostUserName = getConnectionNameById($hostUserId);
+                                            $hostId = $connection->user_id;
+                                            $hostUserName = getConnectionNameById($hostId);
 
                                             $questStatus = $connection->status;
                                             $questRole = $connection->role;
@@ -194,15 +195,15 @@
                                         <li class="form-check form-switch form-switch-theme mt-4" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" title="Alternar para <strong>{{$hostUserName}}</strong>">
 
                                             <input
-                                            id="toggle-connection-{{$hostUserId}}"
-                                            class="form-check-input {{$hostUserId != $currentConnectionId ? 'toggle-connection' : ''}}"
+                                            id="toggle-connection-{{$hostId}}"
+                                            class="form-check-input {{$hostId != $currentConnectionId ? 'toggle-connection' : ''}}"
                                             type="radio"
                                             role="switch"
                                             name="connection"
                                             {{$questStatus != 'active' ? 'disabled' : ''}}
-                                            value="{{$hostUserId}}" {{ $hostUserId == $currentConnectionId ? 'checked' : '' }}>
+                                            value="{{$hostId}}" {{ $hostId == $currentConnectionId ? 'checked' : '' }}>
 
-                                            <label class="form-check-label w-100 text-uppercase" for="toggle-connection-{{$hostUserId}}">
+                                            <label class="form-check-label w-100 text-uppercase" for="toggle-connection-{{$hostId}}">
                                                 @php
                                                     $dataBs = 'data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="bottom"';
                                                 @endphp
@@ -211,7 +212,7 @@
                                                         <span class="position-absolute text-warning float-end me-0 end-0 ri-question-line align-middle mt-n1 fs-16 btn-accept-invitation cursor-pointer"
                                                         {!! $dataBs !!}
                                                         data-bs-title="Status da Conexão"
-                                                        data-bs-content="Aguardando seu consentimento para acesso ao <strong>{{$hostUserName}}</strong>.<br>Clique para aceitar." data-host-id="{{$hostUserId}}" data-host-name="{{$hostUserName}}"></span>
+                                                        data-bs-content="Aguardando seu consentimento para acesso ao <strong>{{$hostUserName}}</strong>.<br>Clique para aceitar." data-host-id="{{$hostId}}" data-host-name="{{$hostUserName}}"></span>
                                                         @break
                                                     @case('inactive')
                                                         <span class="position-absolute text-danger float-end me-0 end-0 ri-question-line align-middle mt-n1 fs-16"
@@ -247,6 +248,12 @@
                                     @endforeach
                                 </ul>
 
+                                <div class="dropdown-divider"></div>
+
+                                <div class="text-center">
+                                    <a href="{{route('settingsConnectionsIndexURL')}}" class="btn btn-sm btn-ghost-secondary init-loader" title="Listar minhas Conexões">Listar Conexões</a>
+                                </div>
+
                             </div>
                         </div>
                     @endif
@@ -276,7 +283,7 @@
                             <div class="dropdown-divider"></div>
                             -->
 
-                            <a class="dropdown-item" href="{{ route('profileShowURL') }}">
+                            <a class="dropdown-item init-loader" href="{{ route('profileShowURL') }}">
                                 <i class="ri-todo-fill text-muted fs-16 align-middle me-1"></i>
                                 <span class="align-bottom">
                                     Minhas Tarefas
@@ -287,7 +294,7 @@
                             </a>
 
                             @if(in_array(getUserRoleById($userId, $currentConnectionId), [1,2]))
-                                <a class="dropdown-item" href="{{ route('surveysAuditIndexURL', $userId) }}">
+                                <a class="dropdown-item init-loader" href="{{ route('surveysAuditIndexURL', $userId) }}">
                                     <i class="ri-fingerprint-2-line text-muted fs-16 align-middle me-1"></i>
                                     <span class="align-middle">
                                         Minhas Auditorias
@@ -303,7 +310,7 @@
                             <a class="dropdown-item" href="auth-lockscreen-basic"><i class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Lock screen</span></a>
                             -->
 
-                            <a class="dropdown-item"
+                            <a class="dropdown-item {{ $userId == $currentConnectionId ? ' init-loader' : ''}}"
                                 @if ($userId != $currentConnectionId)
                                     onclick="alert('Para acessar Configurações, alterne para conta Principal')"
                                 @else
@@ -321,7 +328,7 @@
 
                             <div class="dropdown-divider"></div>
 
-                            <a class="dropdown-item" href="javascript:void();" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <a class="dropdown-item init-loader" href="javascript:void();" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="bx bx-power-off font-size-16 align-middle me-1"></i> <span key="t-logout">Sair</span>
                             </a>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

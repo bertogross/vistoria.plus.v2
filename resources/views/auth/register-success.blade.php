@@ -13,7 +13,7 @@
                         <div class="text-center mt-sm-5 mb-4 text-white-50">
                             <div>
                                 <a href="index" class="d-inline-block auth-logo">
-                                    <img src="{{ URL::asset('build/images/logo-light.png') }}" alt="{{appName()}}" height="39">
+                                    <img src="{{ URL::asset('build/images/logo-light.png') }}" alt="{{appName()}}" height="39" loading="lazy">
                                 </a>
                             </div>
                         </div>
@@ -38,7 +38,7 @@
                             <!-- end card body -->
                         </div>
                         <!-- end card -->
-                        
+
                         <div class="mt-4 text-center">
                             <p class="mb-0">Copiou e salvou seus dados de acesso? <a href="{{ route('loginURL') }}" class="fw-semibold text-theme text-decoration-underline"> Entrar </a></p>
                         </div>
@@ -52,7 +52,7 @@
         <!-- end auth page content -->
 
         <!-- footer -->
-        <footer class="footer">
+        <footer class="footer d-none d-lg-block d-xl-block">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
@@ -68,4 +68,11 @@
     <!-- end auth-page-wrapper -->
 @endsection
 @section('script')
+    <script type="module">
+        import {
+            copyThis
+        } from '{{ URL::asset('build/js/helpers.js') }}';
+
+        document.addEventListener('DOMContentLoaded', copyThis);
+    </script>
 @endsection

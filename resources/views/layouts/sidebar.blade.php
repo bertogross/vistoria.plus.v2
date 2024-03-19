@@ -4,7 +4,7 @@
     {{--
     <div class="navbar-brand-box">
         <!-- Dark Logo-->
-        <a href="{{ url('/') }}" class="logo logo-dark" title="Ir para inicial do {{appName()}}">
+        <a href="{{ url('/') }}" class="init-loader logo logo-dark" title="Ir para inicial do {{appName()}}">
             <span class="logo-sm">
                 <img src="{{ URL::asset('build/images/logo-sm.png') }}" alt="{{appName()}}" height="22" loading="lazy">
             </span>
@@ -13,7 +13,7 @@
             </span>
         </a>
         <!-- Light Logo-->
-        <a href="{{ url('/') }}" class="logo logo-light" title="Ir para inicial do {{appName()}}">
+        <a href="{{ url('/') }}" class="init-loader logo logo-light" title="Ir para inicial do {{appName()}}">
             <span class="logo-sm">
                 <img src="{{ URL::asset('build/images/logo-sm.png') }}" alt="{{appName()}}" height="22" loading="lazy">
             </span>

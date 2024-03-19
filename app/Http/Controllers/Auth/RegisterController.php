@@ -90,12 +90,27 @@ class RegisterController extends Controller
             // Connect to another account
             UserConnections::acceptConnection($request, $user->id);
 
-            $content = '<br><strong style="font-weight:600;">E-mail de Login: </strong>' . $data['register_email'];
+            $content = '<strong style="font-weight:600;">E-mail de Login: </strong>' . $data['register_email'];
             $content .= '<br><strong style="font-weight:600;">Senha: </strong>' . $password;
 
             // Send e-mail with welcome tempalte message and login data
             if(appSendEmail($data['register_email'], $data['register_name'], 'Seu Registro no ' . appName(), $content, $template = 'welcome')){
-                return redirect()->route('registerSuccessURL')->with('success', 'Registro realizado com sucesso!<br>Uma mensagem contendo os dados de acesso foram enviados ao e-mail ' . $data['register_email'] . '<br><br>Você também poderá copiar as seguintes informações:' . $content);
+                $message = 'Registro realizado com sucesso!<br>Uma mensagem contendo os dados de acesso foi enviada ao e-mail <strong>' . $data['register_email'] . '</strong><br><br>Você também poderá copiar as seguintes informações:';
+                $message .= '<div class="card border-light bg-body text-body">
+                    <div class="card-body p-2">
+                        <div class="row copythis-wrapper">
+                            <div class="col copythis">
+                                ' . $content . '
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-sm btn-dark h-100 copy-btn" title="Clique para copiar as credenciais de acesso"><i class="ri-file-copy-line"></i></button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>';
+
+                return redirect()->route('registerSuccessURL')->with('success', $message);
             }else{
                 return redirect()->route('registerSuccessURL')->with('success', 'Registro realizado com sucesso!<br><br>Copie seus dados de acesso:' . $content);
             }
@@ -107,17 +122,17 @@ class RegisterController extends Controller
 
     public function invitationResponse(Request $request, $connectionCode = null)
     {
-        $hostUserId = $guestUserParams = $hostUserIdCookie = $guestUserParamsCookie = $guestExists = $guestUserEmail = null;
+        $hostId = $guestUserParams = $hostIdCookie = $guestUserParamsCookie = $guestExists = $guestUserEmail = null;
 
         if ($connectionCode) {
             $decryptedValue = Crypt::decryptString($connectionCode);
             $connectionCodeParts = $decryptedValue ? explode('~~~', $decryptedValue) : null;
 
-            $hostUserId = $connectionCodeParts[0] ? Crypt::encryptString($connectionCodeParts[0]) : null;
+            $hostId = $connectionCodeParts[0] ? Crypt::encryptString($connectionCodeParts[0]) : null;
             //$guestUserParams = $connectionCodeParts[2] ? Crypt::encryptString($connectionCodeParts[2]) : null;
 
             // Create cookies
-            //$hostUserIdCookie = cookie('vistoriaplus_hostUserId', $hostUserId, 60*24*30); // Expires in 30 days
+            //$hostIdCookie = cookie('vistoriaplus_hostUserId', $hostId, 60*24*30); // Expires in 30 days
             //$guestUserParamsCookie = cookie('vistoriaplus_questUserParams', $guestUserParams, 60*24*30); // Expires in 30 days
 
             $guestUserEmailFromInvitation = $connectionCodeParts[1] ?? null;
@@ -127,7 +142,8 @@ class RegisterController extends Controller
                     ->table('users')
                     ->where('email', $guestUserEmailFromInvitation)
                     ->first();
-                $guestUserEmail = $guestExists->email ?? null;
+
+                $guestUserEmail = $guestExists->email ?? $guestUserEmailFromInvitation;
             }
 
             $hostUser = User::find($connectionCodeParts[0]);
@@ -139,15 +155,15 @@ class RegisterController extends Controller
         return response()->view('auth.invitation', compact(
                     'connectionCode',
                     'connectionCodeParts',
-                    'hostUserId',
+                    'hostId',
                     'hostUserName',
                     //'questUserParams',
                     //'questUserEmailFromInvitation',
                     'guestExists',
-                    'questUserEmail'
+                    'guestUserEmail'
                 )
             );
-            //->cookie($hostUserIdCookie)
+            //->cookie($hostIdCookie)
             //->cookie($guestUserParamsCookie);
     }
 

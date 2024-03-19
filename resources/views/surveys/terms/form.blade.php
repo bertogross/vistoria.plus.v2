@@ -9,7 +9,7 @@
     </label>
     <div class="input-group">
         <input type="text" class="form-control" id="termiInput" maxlength="100" autocomplete="off">
-        <button id="btn-add-survey-term" type="button" class="btn btn-label btn-outline-theme waves-effect" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Adicionar Termo"><i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Termo</button>
+        <button id="btn-add-survey-term" type="button" class="btn btn-label btn-outline-theme" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Adicionar Termo"><i class="ri-add-line label-icon align-middle fs-16 me-2"></i> Termo</button>
     </div>
 </div>
 

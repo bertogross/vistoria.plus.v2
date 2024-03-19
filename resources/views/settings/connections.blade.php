@@ -18,7 +18,11 @@
         @endslot
     @endcomponent
 
-    <p>Aqui estão as Contas nas quais o seu {{ appName() }} possui uma conexão para colaboração</p>
+    <p>Aqui estão as Contas nas quais o seu {{ appName() }} possui uma conexão para colaboração.
+        @if($hostConnections->isNotEmpty())
+            <br>Aqui estão as Contas as quais você foi convidado:
+        @endif
+    </p>
 
     @include('components.alerts')
 
@@ -26,7 +30,7 @@
         <div class="card-body">
             @if($hostConnections->isEmpty())
                 @component('components.nothing')
-                    @slot('text', 'Você ainda não possui conexão entre contas.')
+                    @slot('text', 'Você ainda não possui conexão entre contas.<br><br>Se estiver procurando por <strong class="text-body">Usuários Conectados</strong>, <a class="text-decoration-underline init-loader" href="'.route('settingsAccountShowURL').'?tab=users">clique aqui</a>.')
                 @endcomponent
             @else
                 <div class="table-responsive">

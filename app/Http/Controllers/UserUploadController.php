@@ -49,7 +49,7 @@ class UserUploadController extends Controller
 
             $userID = $request->input('user_id');
             $userID = $userID ? intval($userID) : auth()->id();
-            $user = User::on($this->connection)->find($userID);
+            $user = User::find($userID);
 
             if (!$user) {
                 return response()->json(['success' => false, 'message' => 'User not found'], 404);
@@ -57,7 +57,7 @@ class UserUploadController extends Controller
 
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
-                $config = config("database.connections.{$this->connection}");
+                $config = config("database.connections.vpAppTemplate");
                 $dbName = $config['database'];
                 //$path = $folder;
                 $path = $folder . '/' . date('Y') . '/' . date('m');
@@ -127,7 +127,7 @@ class UserUploadController extends Controller
                 }
 
                 // Get the database name from the connection configuration
-                $config = config("database.connections.{$this->connection}");
+                $config = config("database.connections.vpAppTemplate");
                 $dbName = $config['database'];
 
                 $folder = 'logo';

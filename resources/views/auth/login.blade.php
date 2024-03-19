@@ -12,7 +12,7 @@
                     <div class="col-lg-12">
                         <div class="text-center mt-sm-5 mb-4 text-white-50">
                             <div>
-                                <a href="{{ url('/') }}" class="d-inline-block auth-logo">
+                                <a href="{{ url('/') }}" class="init-loader d-inline-block auth-logo">
                                     <img src="{{ URL::asset('build/images/logo-light.png')}}" alt="{{appName()}}" height="39" loading="lazy">
                                 </a>
                             </div>
@@ -40,7 +40,7 @@
         <!-- end auth page content -->
 
         <!-- footer -->
-        <footer class="footer">
+        <footer class="footer d-none d-lg-block d-xl-block">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">

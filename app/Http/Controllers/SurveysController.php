@@ -278,16 +278,17 @@ class SurveysController extends Controller
         $data->where('id', $id);
         $data->where('user_id', $currentUserId);
         */
-        $distributedData = $data->distributed_data ?? null;
-            $distributedData = $distributedData ? json_decode($distributedData, true) : '';
-
-        $selectedCompanies = $data->companies ?? '';
-            $selectedCompanies = $selectedCompanies ? json_decode($selectedCompanies, true) : [];
 
         // Check if the current user is the creator
         if ($currentUserId != $data->user_id) {
             return response()->json(['success' => false, 'message' => 'Você não possui autorização para editar um registro gerado por outra pessoa']);
         }
+
+        $distributedData = $data->distributed_data ?? null;
+            $distributedData = $distributedData ? json_decode($distributedData, true) : '';
+
+        $selectedCompanies = $data->companies ?? '';
+            $selectedCompanies = $selectedCompanies ? json_decode($selectedCompanies, true) : [];
 
         $users = getUsers();
 
@@ -521,7 +522,8 @@ class SurveysController extends Controller
                 // If quest revoke connection or host turn user connection off, exit
                 $connectedAccountData = UserConnections::connectedAccountData($value['user_id']);
                 if( isset($connectedAccountData->status) && in_array($connectedAccountData->status, ['revoked', 'inactive']) ){
-                    return response()->json(['success' => false, 'action' => 'userStatusAlert', 'message' => 'Verifique sua lista de Atribuições pois usuários podem estar desconectados']);
+
+                    return response()->json(['success' => false, 'action' => 'userStatusAlert', 'message' => 'Necessário editar este registro e verificar sua lista de Atribuições pois usuários podem estar desconectados/desativados']);
                 }
             }
         }
@@ -574,6 +576,7 @@ class SurveysController extends Controller
 
                 // Start the task by distributing to each party
                 SurveyAssignments::distributingAssignments($surveyId);
+
                 break;
             case 'stopped':
                 $newStatus = 'started';
@@ -586,6 +589,7 @@ class SurveysController extends Controller
 
                 // Restart the task by distributing to each party
                 SurveyAssignments::distributingAssignments($surveyId);
+
                 break;
             case 'started':
                 $newStatus = 'stopped';
@@ -593,6 +597,7 @@ class SurveysController extends Controller
                 SurveyAssignments::removeDistributingAssignments($surveyId);
 
                 $message = 'Rotina interrompida';
+
                 break;
         }
 
@@ -610,27 +615,42 @@ class SurveysController extends Controller
 
     public function surveyReloadUsersTab(Request $request, $id = null)
     {
-        if ($id) {
-            $data = Survey::findOrFail($id);
-        }else{
-            $data = null;
+        $currentUserId = auth()->id();
+
+        if (!$id) {
+            abort(404);
+        }
+
+        $data = Survey::findOrFail($id);
+
+        $surveyId = $data->id;
+
+        // Check if the current user is the creator
+        if ($currentUserId != $data->user_id) {
+            return response()->json(['success' => false, 'message' => 'Você não possui autorização para editar um registro gerado por outra pessoa']);
         }
 
         $distributedData = $data->distributed_data ?? null;
             $distributedData = $distributedData ? json_decode($distributedData, true) : '';
 
-        $getActiveCompanies = getActiveCompanies();
-        $users = getUsers();
-
         $selectedCompanies = $data->companies ?? '';
             $selectedCompanies = $selectedCompanies ? json_decode($selectedCompanies, true) : [];
 
+        $users = getUsers();
+
+        $getActiveCompanies = getActiveCompanies();
+
+        $countAllResponses = Survey::countSurveyAllResponses($id);
+        $countTodayResponses = Survey::countSurveyAllResponsesFromToday($id);
+
         return view('surveys.layouts.create-users-tab', compact(
                 'data',
+                'surveyId',
                 'distributedData',
                 'selectedCompanies',
                 'getActiveCompanies',
                 'users',
+                'countTodayResponses'
             )
         );
     }

@@ -56,7 +56,7 @@
 
             <div class="mt-4">
                 <button
-                    class="btn btn-outline-theme w-100 waves-effect waves-light text-uppercase {{ isset($currentPriceId) && $currentPriceId == $PriceId ? 'btn-subscription-update' : 'btn-subscription' }}"
+                    class="btn btn-outline-theme w-100 text-uppercase {{ isset($currentPriceId) && $currentPriceId == $PriceId ? 'btn-subscription-update' : 'btn-subscription' }}"
                     data-product_id="{{ $productId }}"
                     data-price_id="{{ $PriceId }}"
                     data-product_type="{{ $productMetadata->product_type ?? '' }}"
