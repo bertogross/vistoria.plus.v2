@@ -98,6 +98,7 @@
                             </div>
                         @endif
 
+                        {{--
                         <div class="col-12 border-end border-end-dashed mt-4">
                             <h6 class="mb-1 projects-num">Unidade{{ is_array($userCompanies) && count($userCompanies) > 1 ? 's' : '' }} Autorizada{{ is_array($userCompanies) && count($userCompanies) > 1 ? 's' : '' }}</h6>
                             @if (is_array($userCompanies))
@@ -108,6 +109,7 @@
                                 </ul>
                             @endif
                         </div>
+                        --}}
                     </div>
                 </div>
                 <div class="col-lg-2 col">

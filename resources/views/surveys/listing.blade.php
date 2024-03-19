@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="col-sm-12 col-md-auto col-lg-auto wrap-form-btn">{{-- d-none --}}
-                    <button type="submit" name="filter" value="true" class="btn btn-theme w-100 init-loader">
+                    <button type="submit" name="filter" value="true" class="btn btn-outline-theme w-100 init-loader">
                         <i class="ri-equalizer-fill me-1 align-bottom"></i> Filtrar
                     </button>
                 </div>
@@ -57,12 +57,11 @@
         @if (!$data || $data->isEmpty())
             @if ($templates->isEmpty())
                 <div class="text-center">
+                    <h2>Componha seu primeiro formulario</h2>
                     <p class="fs-5">
-                        Você deverá primeiramente compor um formulário <br>
-                        que servirá de modelo para posterior <br>
-                        configuração dos Checklists
+                        Este servirá de modelo para quando for montar seu Checklist
                     </p>
-                    <a class="btn btn-label right btn-outline-theme mt-3" href="{{ route('surveysTemplateCreateURL') }}" title="Compor Modelo">
+                    <a class="btn btn-label right btn-theme mt-3 mb-3" href="{{ route('surveysTemplateCreateURL') }}" title="Compor Modelo">
                         <i class="ri-add-line label-icon align-middle fs-16 ms-2"></i>Componha seu Primeiro Modelo
                     </a>
                 </div>

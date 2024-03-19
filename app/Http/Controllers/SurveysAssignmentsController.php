@@ -503,7 +503,7 @@ class SurveysAssignmentsController extends Controller
         $percentage = SurveyAssignments::calculateSurveyPercentage($surveyId, $companyId, $assignmentId, $surveyorId, $auditorId, $designated);
         $progressBarClass = getProgressBarClass($percentage);
 
-        $label = $designated == 'surveyor' ? '<span class="badge bg-dark-subtle text-body badge-border mb-2 ms-2">Vistoria</span>' : '<span class="badge bg-dark-subtle text-secondary badge-border mb-2 ms-2">Auditoria</span>';
+        $label = $designated == 'surveyor' ? '<span class="badge bg-dark-subtle text-body badge-border mb-2 ms-2" data-survey-id="'.$surveyId.'">Vistoria</span>' : '<span class="badge bg-dark-subtle text-secondary badge-border mb-2 ms-2" data-survey-id="'.$surveyId.'">Auditoria</span>';
 
         if($designated == 'auditor'){
             $designatedUserId = $auditorId;

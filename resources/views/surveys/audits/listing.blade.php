@@ -60,7 +60,7 @@
                             </div>
 
                             <div class="col-sm-12 col-md-auto col-lg-auto wrap-form-btn">{{-- d-none --}}
-                                <button type="submit" name="filter" value="true" class="btn btn-theme w-100 init-loader">
+                                <button type="submit" name="filter" value="true" class="btn btn-outline-theme w-100 init-loader">
                                     <i class="ri-equalizer-fill me-1 align-bottom"></i> Filtrar
                                 </button>
                             </div>
