@@ -27,6 +27,11 @@ class SettingsAccountController extends Controller
     {
         $settings = DB::connection('vpAppTemplate')->table('settings')->pluck('value', 'key')->toArray();
 
+        //$users = getUsers();
+        $users = UserConnections::getGuestConnections();
+
+        $user = auth()->user();
+
         try {
             $stripe = Stripe::getStripeClient();
         } catch (\Exception $e) {
@@ -38,24 +43,22 @@ class SettingsAccountController extends Controller
             ]);
         }
 
-        $getSubscriptionData = getSubscriptionData();
-        $customerId = isset($getSubscriptionData['customer_id']) ? $getSubscriptionData['customer_id'] : '';
-        $subscriptionId = isset($getSubscriptionData['subscription_id']) ? $getSubscriptionData['subscription_id'] : '';
+        $subscriptionData = getSubscriptionData($user->id);
+        $customerId = $subscriptionData['customer_id'] ?? '';
+        $subscriptionId = $subscriptionData['subscription_id'] ?? '';
+        $subscriptionType = $subscriptionData['subscription_type'] ?? 'free';
 
         $subscriptionItemId = '';
 
-        //$users = getUsers();
-        $users = UserConnections::getGuestConnections();
-
-        $user = auth()->user();
-
         return view('settings.account', compact(
-                'settings',
                 'user',
                 'users',
                 'stripe',
+                'settings',
                 'customerId',
                 'subscriptionId',
+                'subscriptionData',
+                'subscriptionType',
                 'subscriptionItemId'
             )
         );

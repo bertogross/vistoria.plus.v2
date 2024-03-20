@@ -57,17 +57,18 @@
         @if (!$data || $data->isEmpty())
             @if ($templates->isEmpty())
                 <div class="text-center">
-                    <h2>Componha seu primeiro formulario</h2>
+                    <h3 class="text-uppercase">Componha seu Primeiro Formulário</h3>
                     <p class="fs-5">
                         Este servirá de modelo para quando for montar seu Checklist
                     </p>
-                    <a class="btn btn-label right btn-theme mt-3 mb-3" href="{{ route('surveysTemplateCreateURL') }}" title="Compor Modelo">
-                        <i class="ri-add-line label-icon align-middle fs-16 ms-2"></i>Componha seu Primeiro Modelo
+                    <a class="btn btn-label right btn-theme mt-3 mb-3" href="{{ route('surveysTemplateCreateURL') }}" title="omponha seu Primeiro Modelo">
+                        <i class="ri-add-line label-icon align-middle fs-16 ms-2"></i>Compor Modelo
                     </a>
                 </div>
             @else
                 @if ($data->isEmpty())
-                     @component('components.nothing')
+                    @component('components.nothing')
+                        @slot('text', 'Agora resta você adicionar seu primeiro Checklist')
                     @endcomponent
                 @else
                     <div class="text-center">

@@ -61,8 +61,9 @@ class StripeWebhookController extends Controller
                 // Handle....
 
                 break;
+
             case 'checkout.session.completed':
-                Stripe::handleWebhookSubscriptionStatus($event->data->object);
+                Stripe::handleWebhookSubscriptionCheckoutSession($event->data->object);
 
                 break;
             default:

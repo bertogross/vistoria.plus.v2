@@ -59,7 +59,12 @@ class SettingsUserController extends Controller
      */
     public function store(Request $request)
     {
-        $subscriptionData = getSubscriptionData();
+        $hostUser = auth()->user();
+        $hostUserName= $hostUser->name;
+        $hostId = $hostUser->id;
+        $hostUserEmail = $hostUser->email;
+
+        $subscriptionData = getSubscriptionData($hostId);
         $subscriptionStatus = $subscriptionData['subscription_status'] ?? null;
         if($subscriptionStatus != 'active'){
             return response()->json(['success' => false, 'action' => 'subscriptionAlert', 'message' => "Para prosseguir você deverá primeiramente ativar sua assinatura"], 200);
@@ -78,11 +83,6 @@ class SettingsUserController extends Controller
             'email' => 'required|email|max:100',
             //'role' => 'required|in:2,3,4'
         ], $messages);
-
-        $hostUser = auth()->user();
-        $hostUserName= $hostUser->name;
-        $hostId = $hostUser->id;
-        $hostUserEmail = $hostUser->email;
 
         $guestUserEmail = $validatedData['email'];
 
@@ -184,7 +184,10 @@ class SettingsUserController extends Controller
      */
     public function update(Request $request, $guestId)
     {
-        $subscriptionData = getSubscriptionData();
+        $hostUser = auth()->user();
+        $hostId = $hostUser->id;
+
+        $subscriptionData = getSubscriptionData($hostId);
         $subscriptionStatus = $subscriptionData['subscription_status'] ?? null;
         if($subscriptionStatus != 'active'){
             return response()->json(['success' => false, 'message' => "Para prosseguir você deverá primeiramente ativar sua assinatura"], 200);
@@ -200,9 +203,6 @@ class SettingsUserController extends Controller
             'role' => 'required|in:2,3,4'
         ], $messages);
         */
-
-        $hostUser = auth()->user();
-        $hostId = $hostUser->id;
 
         $guestUser = User::find($guestId);
         if (!$guestUser) {

@@ -33,7 +33,7 @@
         </div>
 
         <div class="wrap-form-btn d-none mt-3">
-            <button type="button" id="btn-add-multiple-blocks" class="btn btn-sm btn-outline-theme btn-label right float-end"  data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Os Termos Selecionados serão adicionados a sua lista" title="Popular a Listagem"><i class="ri-folder-add-line label-icon align-middle fs-16 ms-2"></i>Popular Listagem</button>
+            <button type="button" id="btn-add-multiple-blocks" class="btn btn-sm btn-outline-theme float-end" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Os Termos Selecionados serão adicionados a sua lista" title="Popular a Listagem"><i class="ri-folder-add-line align-middle fs-16 me-2"></i>Popular Listagem</button>
         </div>
     </form>
 @else

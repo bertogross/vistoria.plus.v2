@@ -426,7 +426,12 @@ if (!function_exists('subscriptionLabel')) {
 
             print Auth::user()->hasRole(User::ROLE_ADMIN) && $label ? '<span class="badge bg-transparent border border-'.$color.' text-'.$color.' float-end text-decoration-none fw-normal small '.$class.'" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="'.$description.'" title="'.strtoupper($label).'">'.$label.'</span>' : '';
         }else{
-            //print '<span class="badge bg-transparent border border-warning text-warning float-end text-decoration-none fw-normal small " data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="" title="Conta Gratúita">Free</span>';
+            $userId = auth()->id();
+            $currentConnectionId = getCurrentConnectionByUserId($userId);
+            if($currentConnectionId == $userId){
+                print '<a href="'.route('settingsAccountShowURL').'" class="btn btn-sm btn-outline-theme init-loader" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Maximize seu '.appName().' com nosso plano de assinatura! " title="Conta Gratúita">Atualize para o PRO</a>';
+
+            }
         }
     }
 }
@@ -675,7 +680,12 @@ if (!function_exists('onlyNumber')) {
 // Format a number as Brazilian Real
 if (!function_exists('brazilianRealFormat')) {
     function brazilianRealFormat($number, $decimalPlaces = 2): string {
-        return !empty($number) && intval($number) > 0 ? 'R$ ' . numberFormat( $number, $decimalPlaces ) : 'R$ 0,00';
+        $result = 'R$ 0,00';
+        if(!empty($number)){
+            $result = 'R$ ' . numberFormat( $number, $decimalPlaces );
+        }
+        //return !empty($number) && intval($number) > 0 ? 'R$ ' . numberFormat( $number, $decimalPlaces ) : 'R$ 0,00';
+        return $result;
     }
 }
 

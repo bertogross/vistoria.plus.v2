@@ -130,6 +130,7 @@ class UserConnections extends Model
 
             //appSendEmail($hostEmail, $hostName, 'A Conexão foi Aceita :: [ ' . $guestName . ' ]', $message, 'default');
             // TODO dont send email: add post  notification message ans show in the topbar
+
         }
 
     }
@@ -369,7 +370,7 @@ class UserConnections extends Model
     }
 
     // Unset all users connected in current account connections
-    // Use status: inactive | revoked
+    // Usefull when user cancel your subscription
     public static function unsetGuestsConnectedOnHost()
     {
         $hostId = auth()->id();

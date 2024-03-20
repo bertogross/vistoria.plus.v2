@@ -195,7 +195,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-
                         if(origin == 'survey'){
                             sweetAlert(data.message, 'Ok!', 'success');
 
@@ -211,15 +210,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                 showPreloader();
                             }
 
-                            // reload page
-                            setTimeout(() => {
-                                //location.reload();
-                                window.location.href = settingsAccountShowURL + '?tab=users';
-                            }, 5000);
+                            window.location.href = settingsAccountShowURL + '?tab=users';
 
                             btnSaveUser.remove();
                         }
-
                     } else if( data.action == 'subscriptionAlert'){
                         sweetWizardAlert(data.message, settingsAccountShowURL + '?tab=subscription', 'warning', 'Voltar', 'Ativar Assinatura')
                     } else {

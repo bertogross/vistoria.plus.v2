@@ -202,30 +202,47 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             if ( clickedElementId === 'btn-select-another-template' ) {
-                const isConfirmed = confirm('Certeza que deseja escolher outro Modelo?');
-                if (!isConfirmed) {
-                    event.stopPropagation();
+                var titleText = 'Escolher outro Modelo?';
+                var htmlText = 'Os dados não salvos neste formulário serão perdidos';
 
-                    return;
-                }
-                document.getElementById('load-template-preview').innerHTML = '';
+                Swal.fire({
+                    title: titleText,
+                    html: htmlText,
+                    icon: 'question',
+                    buttonsStyling: false,
+                    confirmButtonText: 'Prosseguir',
+                        confirmButtonClass: 'btn btn-warning w-xs me-2',
+                    cancelButtonText: 'Ficar',
+                        cancelButtonClass: 'btn btn-sm btn-outline-info w-xs',
+                            showCancelButton: true,
+                    denyButtonText: 'Não',
+                        denyButtonClass: 'btn btn-sm btn-danger w-xs me-2',
+                            showDenyButton: false,
+                    showCloseButton: false,
+                    allowOutsideClick: false
+                }).then(async function (result) {
+                    if (result.isConfirmed) {
+                        toastAlert('Recarregando...', 'info', 2000, true);
 
-                document.getElementById('accordion-templates-label').style.display = 'block';
-                document.getElementById('accordion-templates').style.display = 'block';
+                        document.getElementById('load-template-preview').innerHTML = '';
 
-                document.getElementById('nested-compose-area').style.display = 'none';
+                        document.getElementById('accordion-templates-label').style.display = 'block';
+                        document.getElementById('accordion-templates').style.display = 'block';
+                        document.getElementById('nested-compose-area').style.display = 'none';
 
-                goTo('accordion-templates-label');
-            }
+                        goTo('accordion-templates-label');
+                    }
+                });
+
+             }
 
             if ( clickedElementId === 'btn-start-empty-template' ) {
-                toastAlert('Removendo modelo...', 'info', 2000, true);
+                toastAlert('Carregando...', 'info', 2000, true);
 
                 document.getElementById('load-selected-template-form').innerHTML = '';
 
                 document.getElementById('accordion-templates-label').style.display = 'none';
                 document.getElementById('accordion-templates').style.display = 'none';
-
                 document.getElementById('nested-compose-area').style.display = 'block';
 
                 goTo('accordion-templates-label');

@@ -25,10 +25,32 @@
     @include('components.alerts')
 
     @php
-        $subscriptionData = getSubscriptionData();
         //appPrintR($subscriptionData);
-        $subscriptionType = $subscriptionData['subscription_type'] ?? 'free';
-        //appPrintR($subscriptionType);
+
+        try {
+            //https://stripe.com/docs/api/invoices/list#list_invoices
+            $invoices = $stripe->invoices->all([
+                'customer' => $customerId
+            ]);
+            //appPrintR($invoices);
+
+        } catch (\Exception $e) {
+            $invoices = null;
+
+            \Log::error('Error to get invoices for listing: ' . $e->getMessage());
+        }
+
+        try {
+            //https://stripe.com/docs/api/invoices/upcoming
+            $upcoming = $stripe->invoices->upcoming([
+                'customer' => $customerId,
+                //'subscription' => $subscriptionId
+            ]);
+            //appPrintR($upcoming);
+        } catch (\Exception $e) {
+            $upcoming = null;
+            \Log::error('Error to get upcoming for modal: ' . $e->getMessage());
+        }
 
         $tab = request('tab', null);
         $tab = $tab && in_array($tab, ['invoices', 'subscription', 'users', 'addons', 'account']) ? $tab : null;

@@ -299,7 +299,7 @@
                                 <div class="d-flex align-items-start gap-3 mt-4">
                                     <button type="button" class="btn btn-light btn-label previestab" data-previous="steparrow-recurring-info-tab"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i> Voltar</button>
 
-                                    <button type="button" id="btn-surveys-store-or-update" class="btn btn-outline-theme btn-label right ms-auto"><i class="ri-save-3-line label-icon align-middle fs-16 ms-2"></i>Salvar</button>
+                                    <button type="button" id="btn-surveys-store-or-update" class="btn btn-outline-success btn-label right ms-auto"><i class="ri-save-3-line label-icon align-middle fs-16 ms-2"></i>Salvar</button>
                                 </div>
                             </div>
                         </div>

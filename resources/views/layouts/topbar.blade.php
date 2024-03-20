@@ -165,7 +165,7 @@
                     @endcomponent
 
                     @if ($hostConnections->isNotEmpty())
-                        <div class="dropdown ms-1 topbar-head-dropdown header-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" title="Conexão atual: <u>{{$currentConnectionName}}</u>">
+                        <div class="dropdown ms-1 topbar-head-dropdown header-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" title="Conexão atual: <strong>{{$currentConnectionName}}</strong>">
                             <button type="button" class="btn btn-sm btn-outline-{{$currentConnectionId != $userId ? 'theme' : 'light' }} btn-label text-body-secondary bg-light-subtle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 27px; padding-left: 25px;">
                                 <i class="ri-share-line label-icon align-middle fs-16"></i><span class="ms-3 d-none d-lg-inline-block d-xl-inline-block">{{limitChars($currentConnectionName, 20)}}</span>
                             </button>
@@ -218,7 +218,7 @@
                                                         <span class="position-absolute text-danger float-end me-0 end-0 ri-question-line align-middle mt-n1 fs-16"
                                                         {!! $dataBs !!}
                                                         data-bs-title="Status da Conexão"
-                                                        data-bs-content="<strong class='text-danger'>Inoperante</strong><br><br>Consulte <u>{{$hostUserName}}</u> quanto da viabilidade de reativação"></span>
+                                                        data-bs-content="<strong class='text-danger'>Inoperante</strong><br><br>Consulte <strong>{{$hostUserName}}</strong> quanto da viabilidade de reativação"></span>
                                                         @break
                                                     @case('revoked')
                                                         <span class="position-absolute text-warning float-end me-0 end-0 ri-question-line align-middle mt-n1 fs-16"
@@ -231,7 +231,7 @@
                                                         <span class="position-absolute text-success float-end me-0 end-0 ri-checkbox-circle-line align-middle mt-n1 fs-16"
                                                         {!! $dataBs !!}
                                                         data-bs-title="Status da Conexão"
-                                                        data-bs-content="Seu conexão a conta de <u>{{$hostUserName}}</u> está <span class='text-success'>Ativa</span>"></span>
+                                                        data-bs-content="Seu conexão com <strong>{{$hostUserName}}</strong> está <span class='text-success'>Ativa</span>"></span>
                                                 @endswitch
 
                                                 <span class="badge border border-dark text-body float-end ms-2 me-4"

@@ -71,8 +71,8 @@
                                     <div id="accordion-templates-label">
                                         <p class="text-body mb-4">Componha seu Modelo de Checklist.<br>Você poderá configurar seu próprio formulário cadastrando seus Termos e Tópicos inicializando com um dos Modelos pré-configurados.</p>
 
-                                        <div class="dropstart float-end mt-n2">
-                                            <button type="button" class="btn btn-sm fs-4 pe-0 me-n2" data-bs-toggle="dropdown" aria-expanded="true" data-bs-auto-close="outside" title="Opções"><i class="ri-more-2-line text-theme"></i></button>
+                                        <div class="dropstart float-end mt-n3">
+                                            <button type="button" class="btn btn-sm fs-3 pe-0 me-n2" data-bs-toggle="dropdown" aria-expanded="true" data-bs-auto-close="outside" title="Opções"><i class="ri-more-2-line text-theme"></i></button>
                                             <ul class="dropdown-menu">
                                                 <li>
                                                     <a class="dropdown-item cursor-pointer text-body" id="btn-start-empty-template" data-bs-toggle="tooltip" data-bs-placement="top" title="Nesta opção nenhum modelo será carregado e você terá a liberade de criar os Termos e Tópicos da forma que desejar.">Carregar Ambiente Limpo</a>
@@ -108,7 +108,7 @@
                                                                         {{$tracking->name}}
                                                                     </div>
                                                                     <div class="card-body bg-body">
-                                                                        <p style="min-height: 67px;">{{$tracking->description}}</p>
+                                                                        <p style="min-height: 78px;">{{$tracking->description}}</p>
                                                                     </div>
                                                                     <div class="card-footer bg-body">
                                                                         <div class="row">
@@ -158,7 +158,7 @@
                                                                                 {{$template->title}}
                                                                             </div>
                                                                             <div class="card-body bg-body">
-                                                                                <p style="min-height: 67px;">
+                                                                                <p style="min-height: 78px;">
                                                                                     {!! limitChars($template->description ?? '<span class="text-warning text-opacity-50">Não foi inserida a descrição</span>', 190) !!}
                                                                                 </p>
                                                                             </div>
@@ -226,7 +226,7 @@
 
                                         <a href="{{route('surveysIndexURL')}}" onclick="return confirm('Deseja sair sem {{ $data ? 'Atualizar' : 'Salvar' }} o Modelo?');" class="btn btn-sm btn-label left btn-dark mt-5 float-start" tabindex="-1" data-autosave="no"><i class="ri-logout-box-line label-icon align-middle fs-16 me-1"></i>Sair</a>
 
-                                        <button type="button" class="btn btn-label right btn-theme mt-5" id="btn-survey-template-store-or-update" tabindex="-1" data-autosave="no"><i class="ri-save-3-line label-icon align-middle fs-16 ms-1"></i>{{ $data ? 'Atualizar' : 'Salvar' }} Modelo</button>
+                                        <button type="button" class="btn btn-theme mt-5" id="btn-survey-template-store-or-update" tabindex="-1" data-autosave="no"><i class="ri-save-3-line align-middle fs-16 me-2"></i>{{ $data ? 'Atualizar' : 'Salvar' }} Modelo</button>
                                     </div>
                                 </div>
 

@@ -119,27 +119,50 @@ document.addEventListener('DOMContentLoaded', function() {
                         .then(data => {
                             if (!data.success) {
                                 toastAlert(data.message, 'danger', 10000);
+
+                                showPreloader(false);
+
                                 return;
                             }
 
                             toastAlert(data.message, 'success', 10000);
-
-                            setTimeout(function() {
-                                location.reload(true);
-                            }, 3000);
                         })
                         .catch(error => {
                             var message = error.message || 'Não foi possível proceder com a solicitação.<br>Tente novamente mais tarde.';
 
                             toastAlert(message, 'danger', 10000);
+
+                            showPreloader(false);
                         })
                         .finally(() => {
                             //APP_loading();
-                            showPreloader(false);
+
+                            showPreloader();
+
+                            location.reload(true);
                         });
 
                     }
                 })
+            }
+
+            if (clickedElement.classList.contains('btn-subscription-upcoming')) {
+                event.preventDefault();
+                clickedElement.blur();
+
+                showPreloader();
+
+                const modalElement = document.getElementById('stripeUpcomingModal');
+                if(modalElement){
+                    const modal = new bootstrap.Modal(modalElement, {
+                        backdrop: 'static',
+                        keyboard: false,
+                    });
+                    modal.show();
+                }
+
+
+                showPreloader(false);
             }
 
             // Update subscription (change subscription plan)

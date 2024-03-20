@@ -615,33 +615,33 @@ class SurveysController extends Controller
 
     public function surveyReloadUsersTab(Request $request, $id = null)
     {
+        $distributedData = $selectedCompanies = null;
+
         $currentUserId = auth()->id();
 
-        if (!$id) {
-            abort(404);
+        $data = Survey::find($id);
+
+        $surveyId = $data->id ?? null;
+
+        if($data){
+            // Check if the current user is the creator
+            if ($currentUserId != $data->user_id) {
+                return response()->json(['success' => false, 'message' => 'Você não possui autorização para editar um registro gerado por outra pessoa']);
+            }
+
+            $distributedData = $data->distributed_data ?? null;
+                $distributedData = $distributedData ? json_decode($distributedData, true) : '';
+
+            $selectedCompanies = $data->companies ?? '';
+                $selectedCompanies = $selectedCompanies ? json_decode($selectedCompanies, true) : [];
         }
-
-        $data = Survey::findOrFail($id);
-
-        $surveyId = $data->id;
-
-        // Check if the current user is the creator
-        if ($currentUserId != $data->user_id) {
-            return response()->json(['success' => false, 'message' => 'Você não possui autorização para editar um registro gerado por outra pessoa']);
-        }
-
-        $distributedData = $data->distributed_data ?? null;
-            $distributedData = $distributedData ? json_decode($distributedData, true) : '';
-
-        $selectedCompanies = $data->companies ?? '';
-            $selectedCompanies = $selectedCompanies ? json_decode($selectedCompanies, true) : [];
 
         $users = getUsers();
 
         $getActiveCompanies = getActiveCompanies();
 
-        $countAllResponses = Survey::countSurveyAllResponses($id);
-        $countTodayResponses = Survey::countSurveyAllResponsesFromToday($id);
+        $countAllResponses = $surveyId ? Survey::countSurveyAllResponses($id) : 0;
+        $countTodayResponses = $surveyId ? Survey::countSurveyAllResponsesFromToday($id) : 0;
 
         return view('surveys.layouts.create-users-tab', compact(
                 'data',

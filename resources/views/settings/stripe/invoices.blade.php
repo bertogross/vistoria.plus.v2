@@ -2,28 +2,9 @@
 <p>Acesse faturas, atualize pagamentos e monitore seu faturamento facilmente</p>
 
 @if($customerId)
-    @php
-        try {
-            //https://stripe.com/docs/api/invoices/list#list_invoices
-            $invoices = $stripe->invoices->all(['customer' => $customerId]);
-        } catch (\Exception $e) {
-            //echo $e->getError()->message;
-        }
-
-        try {
-            //https://stripe.com/docs/api/invoices/upcoming
-            $upcoming = $stripe->invoices->upcoming([
-                'customer' => $customerId,
-                //'subscription' => $subscriptionId
-            ]);
-        } catch (\Exception $e) {
-            $upcoming = '';
-            //echo $e->getError()->message;
-        }
-    @endphp
-
     @if(isset($invoices) && is_object($invoices) || is_object($upcoming))
         <div class="table-responsive">
+
             <table class="table table-hover table-bordered table-striped table-compact">
                 <thead class="table-light">
                     <th class="d-none text-uppercase">ID</th>
@@ -35,7 +16,7 @@
                     <th></th>
                 </thead>
                 <tbody>
-                    @if (!empty($upcoming) && isset($upcoming) && is_object($upcoming) && count($upcoming->lines->data) > 1)
+                    @if (!empty($upcoming) && isset($upcoming) && is_object($upcoming) && count($upcoming->lines->data) > 0)
 
                         @php
                             $next_payment_attempt = !empty($upcoming['next_payment_attempt']) ? date('d/m/Y', $upcoming['next_payment_attempt']) : '';
@@ -49,7 +30,7 @@
 
                             $status = !empty($upcoming['status']) ? $upcoming['status'] : '';
 
-                            $btn_result = '<button id="btn-modal-upcoming" class="btn btn-sm btn-outline-info text-uppercase" type="button" title="Visualizar Detalhes"><i class="ri-error-warning-line me-1 float-start"></i>Detalhes</button>';
+                            $btnAction = '<button class="btn btn-sm btn-outline-info text-uppercase btn-subscription-upcoming" type="button" title="Visualizar Detalhes"><i class="ri-error-warning-line me-1 float-start"></i>Detalhes</button>';
                         @endphp
 
                         @if( !empty($status) && $status == 'draft' )
@@ -58,6 +39,7 @@
                                     #{{isset($invoice['receipt_number']) ? $invoice['receipt_number'] : ''}}
                                 </td>
                                 <td class="align-middle" data-label="Descrição">
+                                    {{-- $upcoming->lines->data[0]->description ?? '-' --}}
                                     -
                                 </td>
                                 <td class="align-middle" data-label="Faturamento">
@@ -67,13 +49,16 @@
                                     <span class="badge text-uppercase fs-11px p-1 d-inline-flex align-items-center border small border-warning text-warning" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Faturamento agendado" data-stripe-case="paid"><i class="ri-checkbox-blank-circle-fill me-1"></i>Agendado</span>
                                 </td>
                                 <td class="align-middle" data-label="Período">
+                                    {{--
                                     {{$period_start}} <span class="text-theme">&#8646;</span> {{$period_end}}
+                                    --}}
+                                    -
                                 </td>
                                 <td class="align-middle text-end" data-label="Total">
                                     {{!empty($total) ? $total : '-'}}
                                 </td>
                                 <td class="align-middle text-end" data-label="Actions">
-                                    {!! $btn_result !!}
+                                    {!! $btnAction !!}
                                 </td>
                             </tr>
                         @endif
@@ -95,7 +80,7 @@
                             $adjusted_invoice_total = $post_payment_credit_notes_amount ? brazilianRealFormat(($invoice['total'] - $post_payment_credit_notes_amount)/100, 2) : '';
 
                             $status_label = '-';
-                            $btn_result = '-';
+                            $btnAction = '-';
                             $status = !empty($invoice['status']) ? $invoice['status'] : '';
 
                             /**
@@ -124,7 +109,7 @@
                                 case 'refunded':
                                     $status_label = '<span class="badge bg-transparent text-uppercase fs-11px p-1 d-inline-flex align-items-center border small border-primary text-primary" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Valor Reembolsado" data-stripe-case="'.$status.'"><i class="ri-checkbox-blank-circle-fill me-1"></i>Reembolsado</span>';
 
-                                    $btn_result = !empty($total) ? '<a class="btn btn-sm btn-outline-theme text-uppercase" href="'.$invoice['hosted_invoice_url'].'" target="_blank" title="Visualizar Recibo"><i class="ri-file-paper-line float-start me-1"></i>Recibo</a>' : '-';
+                                    $btnAction = !empty($total) ? '<a class="btn btn-sm btn-outline-theme text-uppercase" href="'.$invoice['hosted_invoice_url'].'" target="_blank" title="Visualizar Recibo"><i class="ri-file-paper-line float-start me-1"></i>Recibo</a>' : '-';
                                     break;
                                 case 'open':
                                     $status_label = '<span class="badge bg-transparent text-uppercase fs-11px p-1 d-inline-flex align-items-center border small border-warning text-warning" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Aguardando pagamento" data-stripe-case="'.$status.'"><i class="ri-checkbox-blank-circle-fill me-1"></i>Processando</span>';
@@ -133,12 +118,12 @@
                                 case 'unpaid':
                                     $status_label = '<span class="badge bg-transparent text-uppercase fs-11px p-1 d-inline-flex align-items-center border small border-warning text-warning" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Não foi possível debitar o valor. Por favor, atualize o método de pagamento." data-stripe-case="'.$status.'"><i class="ri-checkbox-blank-circle-fill align-middle blink"></i>Requer Atenção</span>';
 
-                                    $btn_result = !empty($total) ? '<a class="btn btn-sm btn-outline-warning btn-invoice-regularize" href="'.$invoice['hosted_invoice_url'].'" title="Pagar">Pagar</a>' : '-';
+                                    $btnAction = !empty($total) ? '<a class="btn btn-sm btn-outline-warning btn-invoice-regularize" href="'.$invoice['hosted_invoice_url'].'" title="Pagar">Pagar</a>' : '-';
                                     break;
                                 case 'paid':
                                     $status_label = '<span class="badge bg-transparent text-uppercase fs-11px p-1 d-inline-flex align-items-center border small border-theme text-theme" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Esta fatura foi paga" data-stripe-case="'.$status.'"><i class="ri-checkbox-blank-circle-fill me-1"></i>Pago</span>';
 
-                                    $btn_result = !empty($total) ? '<a class="btn btn-sm btn-outline-theme text-uppercase" href="'.$invoice['hosted_invoice_url'].'" target="_blank" title="Visualizar Recibo"><i class="ri-file-paper-line float-start me-1"></i>Recibo</a>' : '-';
+                                    $btnAction = !empty($total) ? '<a class="btn btn-sm btn-outline-theme text-uppercase" href="'.$invoice['hosted_invoice_url'].'" target="_blank" title="Visualizar Recibo"><i class="ri-file-paper-line float-start me-1"></i>Recibo</a>' : '-';
                                     break;
                                 case 'void':
                                     $status_label = '<span class="badge bg-transparent text-uppercase fs-11px p-1 d-inline-flex align-items-center border small border-danger text-danger" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Este erro será corrigido" data-stripe-case="'.$status.'"><i class="ri-checkbox-blank-circle-fill me-1"></i>Erro</span>';
@@ -148,7 +133,7 @@
                                     break;
                                 default:
                                     $status_label = '-';
-                                    $btn_result = '-';
+                                    $btnAction = '-';
                             }
                         @endphp
 
@@ -179,7 +164,7 @@
                                     @endif
                                 </td>
                                 <td class="align-middle text-end" data-label="Actions">
-                                    {!! $btn_result !!}
+                                    {!! $btnAction !!}
                                 </td>
                             </tr>
                         @endif

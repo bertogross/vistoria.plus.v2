@@ -29,7 +29,7 @@ class Stripe extends Model
         try {
             $stripe = Stripe::getStripeClient();
         } catch (\Exception $e) {
-            \Log::error('cancelStripeSubscription: ' . $e->getMessage());
+            \Log::error('getStripeClient on cancelStripeSubscription: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -71,16 +71,18 @@ class Stripe extends Model
     // Stripe routine to cancel/active user subscription item with metadata product_type == users
     public static function subscriptionGuestUserAddonUpdate($hostId = null)
     {
-        $hostEmail = null;
-        if ($hostId) {
-            $user = User::find($hostId);
-            $hostEmail = $user->email;
+        if (!$hostId) {
+            \Log::error('hostId is null');
+
+            return false;
         }
+        $user = User::find($hostId);
+        $hostEmail = $user->email;
 
         try {
             $stripe = Stripe::getStripeClient();
         } catch (\Exception $e) {
-            \Log::error('cancelStripeSubscription: ' . $e->getMessage());
+            \Log::error('getStripeClient on subscriptionGuestUserAddonUpdate: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -90,7 +92,7 @@ class Stripe extends Model
 
         $subscriptionItemId = $subscriptionItemPriceId = null;
 
-        $subscriptionData = getSubscriptionData();
+        $subscriptionData = getSubscriptionData($hostId);
         $subscriptionId = $subscriptionData && isset($subscriptionData['subscription_id']) ? $subscriptionData['subscription_id'] : null;
 
         $customerId = self::getStripeCustomerId($hostEmail);
@@ -122,7 +124,7 @@ class Stripe extends Model
             }
         } catch (\Exception $e) {
             // Handle any errors that occur during the API call
-            \Log::error('Failed to get all subscriptions: ' . $e->getMessage());
+            \Log::error('Failed to get all subscriptions from hostId: '.$hostId.' and subscriptionData: '.json_encode($subscriptionData).': ' . $e->getMessage());
             //return response()->json(['success' => false, 'error' => $e->getMessage()]);
             return false;
         }
@@ -131,10 +133,9 @@ class Stripe extends Model
         if($subscriptionItemId){
             try {
                 // Update the quantity of the subscription item
-                $stripe->subscriptionItems->update($subscriptionItemId,[
-                        'quantity' => $activeUserConnectionsCount
-                    ]
-                );
+                $stripe->subscriptionItems->update($subscriptionItemId, [
+                    'quantity' => $activeUserConnectionsCount
+                ]);
 
                 //return response()->json(['success' => true, 'message' => 'Subscription add-on quantity updated successfully.']);
                 return true;
@@ -204,7 +205,7 @@ class Stripe extends Model
         try {
             $stripe = Stripe::getStripeClient();
         } catch (\Exception $e) {
-            \Log::error('cancelStripeSubscription: ' . $e->getMessage());
+            \Log::error('getStripeClient on getOrCreateStripeCustomer: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -258,7 +259,7 @@ class Stripe extends Model
         try {
             $stripe = Stripe::getStripeClient();
         } catch (\Exception $e) {
-            \Log::error('cancelStripeSubscription: ' . $e->getMessage());
+            \Log::error('getStripeClient on getStripeCustomerId: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -300,7 +301,7 @@ class Stripe extends Model
         try {
             $stripe = Stripe::getStripeClient();
         } catch (\Exception $e) {
-            \Log::error('cancelStripeSubscription: ' . $e->getMessage());
+            \Log::error('getStripeClient on createStripeCustomer: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -330,15 +331,14 @@ class Stripe extends Model
         return $customerId;
     }
 
-    public static function handleWebhookSubscriptionStatus($checkout)
+    public static function handleWebhookSubscriptionCheckoutSession($checkout)
     {
-        $stripe = Stripe::getStripeClient();
+        try {
+            $stripe = Stripe::getStripeClient();
+        } catch (\Exception $e) {
+            \Log::error('getStripeClient on handleWebhookSubscriptionCheckoutSession: ' . $e->getMessage());
 
-        if (!$stripe) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Falha na conexão com a Stripe'
-            ], 500); // 500 Internal Server Error
+            http_response_code(302);
         }
 
         $customerId = $checkout->customer;
@@ -350,7 +350,14 @@ class Stripe extends Model
                     $subscriptionId,
                     []
                 );
+            } catch (\Exception $e) {
+                // Log error and return response
+                \Log::error('Retrieve subscription failure handleWebhookSubscriptionCheckoutSession: ' . $e->getMessage());
 
+                http_response_code(302);
+            }
+
+            try {
                 $subscriptionStatus = !empty($retrieveSubscription->status) ? $retrieveSubscription->status : 'trialing';
                 $quantity = isset($retrieveSubscription->quantity) ? intval($retrieveSubscription->quantity) : 0;
 
@@ -362,36 +369,17 @@ class Stripe extends Model
                     'subscription_type' => 'pro'
                 ];
                 // Update the database
-                $result = DB::connection('vpOnboard')->table('users')
+                DB::connection('vpOnboard')->table('users')
                     ->where('stripe_customer_id', $customerId)
                     ->update([
                         'subscription_data' => $data
                     ]);
 
-                if (!$result) {
-                    // Log error and return response
-                    \Log::error('Falha na atualização do banco de dados', [
-                        'method' => __METHOD__,
-                        'path' => __FILE__
-                    ]);
-
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Falha na atualização do banco de dados'
-                    ], 500); // 500 Internal Server Error
-                }
             } catch (\Exception $e) {
                 // Log error and return response
-                \Log::error($e->getMessage(), [
-                    'method' => __METHOD__,
-                    'path' => __FILE__,
-                    'stripeCode' => $e->getCode()
-                ]);
+                \Log::error('Database failure handleWebhookSubscriptionCheckoutSession: ' . $e->getMessage());
 
-                return response()->json([
-                    'success' => false,
-                    'message' => $e->getMessage()
-                ], 500); // 500 Internal Server Error
+                http_response_code(302);
             }
         }
 
@@ -400,13 +388,12 @@ class Stripe extends Model
 
     public static function handleWebhookSubscriptionUpdated($subscription)
     {
-        $stripe = Stripe::getStripeClient();
+        try {
+            $stripe = Stripe::getStripeClient();
+        } catch (\Exception $e) {
+            \Log::error('getStripeClient on handleWebhookSubscriptionUpdated: ' . $e->getMessage());
 
-        if (!$stripe) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Falha na conexão com a Stripe'
-            ], 500); // 500 Internal Server Error
+            http_response_code(302);
         }
 
         $productIds = array();
@@ -434,7 +421,7 @@ class Stripe extends Model
 
         if( !empty($subscriptionsItems) && is_array($subscriptionsItems) && count($subscriptionsItems) > 0 ){
             foreach($subscriptionsItems as $key => $item){
-                $productIds[] = array(
+                $products[] = array(
                     'item' => isset($item->id) ? $item->id : '',
                     'price' => isset($item->price->id) ? $item->price->id : '',
                     'product' => isset($item->price->product) ? $item->price->product : '',
@@ -442,7 +429,7 @@ class Stripe extends Model
             }
         }
 
-        $productIds = array_filter($productIds);
+        $products = array_filter($products);
         /**************************
          * End Extract Product IDs
          *************************/
@@ -455,18 +442,20 @@ class Stripe extends Model
                 'subscription_status' => $subscriptionStatus,
                 'subscription_quantity' => $quantity,
                 'subscription_type' => $subscriptionStatus == 'active' ? 'pro' : 'free',
-                'products' => $productIds
+                'products' => $products
             ];
-            $result = DB::connection('vpOnboard')->table('users')
-                ->where('stripe_customer_id', $customerId)
-                ->update([
-                    'subscription_data' => $data
-                ]);
+            try{
+                $result = DB::connection('vpOnboard')->table('users')
+                    ->where('stripe_customer_id', $customerId)
+                    ->update([
+                        'subscription_data' => $data
+                    ]);
 
-            if(!$result){
+            } catch (\Exception $e) {
+                // Log error and return response
+                \Log::error('handleWebhookSubscriptionUpdated: ' . $e->getMessage());
+
                 http_response_code(302);
-
-                exit();
             }
         }
     }
@@ -486,16 +475,18 @@ class Stripe extends Model
                 'subscription_quantity' => 0,
                 'subscription_type' => 'free'
             ];
-            $result = DB::connection('vpOnboard')->table('users')
-                ->where('stripe_customer_id', $customerId)
-                ->update([
-                    'subscription_data' => $data,
-                ]);
+            try{
+                $result = DB::connection('vpOnboard')->table('users')
+                    ->where('stripe_customer_id', $customerId)
+                    ->update([
+                        'subscription_data' => $data,
+                    ]);
 
-            if(!$result){
+            } catch (\Exception $e) {
+                // Log error and return response
+                \Log::error('handleWebhookSubscriptionDeleted: ' . $e->getMessage());
+
                 http_response_code(302);
-
-                exit();
             }
         }
     }
