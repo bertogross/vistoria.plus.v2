@@ -115,6 +115,7 @@ class SurveysController extends Controller
         ));
     }
 
+    // Single
     public function show(Request $request, $id = null)
     {
         Cache::flush();
@@ -201,6 +202,8 @@ class SurveysController extends Controller
             'swapData'
         ) );
     }
+
+
 
     // Add
     public function create()

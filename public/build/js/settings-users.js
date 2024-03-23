@@ -219,6 +219,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if( data.action == 'subscriptionAlert'){
                         sweetWizardAlert(data.message, settingsAccountShowURL + '?tab=subscription', 'warning', 'Voltar', 'Ativar Assinatura')
                     } else {
+                        if(origin == 'survey'){
+                            // Access surveyReloadUsersTab directly from surveys.js
+                            if (window.surveyReloadUsersTab) {
+                                window.surveyReloadUsersTab(origin);
+
+                                //Close user modal
+                                document.querySelector('#userModal .btn-close').click();
+                            }
+                        }
                         sweetAlert(data.message);
                     }
                 })

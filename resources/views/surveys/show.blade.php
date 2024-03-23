@@ -10,8 +10,8 @@
 
     $getSurveyRecurringTranslations = Survey::getSurveyRecurringTranslations();
 
-    $title = $data->title;
     $surveyId = $data->id;
+    $surveyTitle = $data->title;
     $companies = $data->companies ? json_decode($data->companies, true) : [];
 
     $recurring = $data->recurring;
@@ -77,20 +77,20 @@
             <span class="text-muted" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Dados originados desta conta">{!!getCurrentConnectionName()!!}</span>
             <small class="d-none d-lg-inline-block d-xl-inline-block">
                 <i class="ri-arrow-drop-right-line text-theme ms-2 me-2 align-bottom"></i>
-                {{limitChars($title ?? '', 30) }} #<span class="text-theme me-2">{{$surveyId}}</span>
+                {{limitChars($surveyTitle ?? '', 30) }} #<span class="text-theme me-2">{{$surveyId}}</span>
             </small>
         @endslot
     @endcomponent
 
     @if( auth()->user()->hasAnyRole(User::ROLE_ADMIN) )
         {{--
-        <h6 class="text-uppercase mb-3">{{$title}}</h6>
+        <h6 class="text-uppercase mb-3">{{$surveyTitle}}</h6>
 
         <h5>Modelo: '.$templateName.'</h5>
         --}}
         <div id="print-this">
             @if ($templateDescription)
-                {!! !empty($templateDescription) ? '<div class="blockquote custom-blockquote blockquote-outline blockquote-dark rounded mt-2 mb-3"><h5 class="text-uppercase">'.$title.'</h5><p class="text-body mb-2">'.$templateDescription.'</p><footer class="blockquote-footer mt-0">'.$getUserData->name.' <cite title="'.$authorRoleName.'">'.$authorRoleName.'</cite></footer></div>' : '' !!}
+                {!! !empty($templateDescription) ? '<div class="blockquote custom-blockquote blockquote-outline blockquote-dark rounded mt-2 mb-3"><h5 class="text-uppercase">'.$surveyTitle.'</h5><p class="text-body mb-2">'.$templateDescription.'</p><footer class="blockquote-footer mt-0">'.$getUserData->name.' <cite title="'.$authorRoleName.'">'.$authorRoleName.'</cite></footer></div>' : '' !!}
             @endif
 
             @if ( $analyticTermsData || isset($_REQUEST['filter']) )
@@ -142,7 +142,12 @@
                                 @endif
                             </button>
 
-                            <button class="btn btn-soft-theme ms-2" title="Listar Tarefas" data-bs-toggle="modal" data-bs-target="#assignmentsListingModal">
+                            <button type="button"
+                                class="btn btn-soft-theme ms-2 btn-assignment-listing"
+                                data-survey-id="{{$surveyId}}"
+                                data-survey-title="{{ $surveyTitle }}"
+                                data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top"
+                                title="Listar Tarefas">
                                 <i class="ri-file-list-line"></i>
                                 <span class="ms-1 d-none d-lg-inline-block d-xl-inline-block">Listar Tarefas</span>
                             </button>
@@ -304,6 +309,7 @@
     <script>
         var assignmentShowURL = "{{ route('assignmentShowURL') }}";
         var surveysChangeStatusURL = "{{ route('surveysChangeStatusURL') }}";
+        var assignmentListingURL = "{{ route('assignmentListingURL') }}";
     </script>
     <script src="{{ URL::asset('build/js/surveys.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 

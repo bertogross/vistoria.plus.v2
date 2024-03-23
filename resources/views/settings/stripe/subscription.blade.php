@@ -8,32 +8,32 @@
     $dataBs = 'data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top"';
 
     $contentBs = "
-        <h5>Assinatura PRO</h5>
+        <h6>PRO</h6>
         <ul class='list-unstyled'>
-            <li><i class='ri-check-fill text-success me-2'></i>Anexar arquivos</li>
-            <li><i class='ri-check-fill text-success me-2'></i>Registrar tarefas</li>
-            <li><i class='ri-check-fill text-success me-2'></i>Adicionar usuários</li>
+            <li><i class='ri-check-fill text-success me-2'></i>Registrar Checklists</li>
+            <li><i class='ri-check-fill text-success me-2'></i>Anexar Fotos</li>
+            <li><i class='ri-check-fill text-success me-2'></i>Convidar Usuários</li>
         </ul>
-        <hr>
-        <h5>Assinatura FREE</h5>
+
+        <hr class='w-50 start-50 position-relative translate-middle-x clearfix mt-4 mb-4'>
+
+        <h6>FREE</h6>
         <ul class='list-unstyled'>
-            <li><i class='ri-close-line text-danger me-2'></i>Anexar arquivos</li>
-            <li><i class='ri-close-line text-danger me-2'></i>Registrar tarefas</li>
-            <li><i class='ri-close-line text-danger me-2'></i>Adicionar usuários</li>
+            <li><i class='ri-check-fill text-success me-2'></i>Registrar Checklists</li>
+            <li><i class='ri-check-fill text-success me-2'></i>Anexar Fotos</li>
+            <li><i class='ri-close-line text-danger me-2'></i>Convidar Usuários</li>
         </ul>
     ";
 @endphp
 
 @switch($subscriptionStatus)
     @case('active')
-        <span class="badge bg-success-subtle text-success badge-border float-end" {!! $dataBs !!} data-bs-title="Sua Assinatura: Pro" data-bs-content="{!! $contentBs !!}">
+        <span class="badge bg-success-subtle text-success badge-border float-end text-uppercase" {!! $dataBs !!} data-bs-title="Sua Assinatura: PRO" data-bs-content="{!! $contentBs !!}">
             Pro
         </span>
         @break
     @default
-        @php
-        @endphp
-        <span class="badge bg-info-subtle text-info badge-border float-end" {!! $dataBs !!} data-bs-title="Sua Assinatura: Free" data-bs-content="{!! $contentBs !!}">
+        <span class="badge bg-info-subtle text-info badge-border float-end text-uppercase" {!! $dataBs !!} data-bs-title="Sua Assinatura: FREE" data-bs-content="{!! $contentBs !!}">
             Free
         </span>
 @endswitch

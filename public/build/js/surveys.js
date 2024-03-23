@@ -86,6 +86,8 @@ document.addEventListener('DOMContentLoaded', function() {
             button.addEventListener('click', async function(event) {
                 event.preventDefault;
 
+                showPreloader();
+
                 var currentStatus = this.getAttribute("data-current-status");
 
                 var surveyId = this.getAttribute("data-survey-id");
@@ -118,6 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                             toastAlert(data.message, 'danger', 5000);
                         }
+                        showPreloader(false);
                     })
                     .catch(error => console.error('Error:', error));
                 }
@@ -126,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
                         icon: 'warning',
                         title: "Tem certeza que deseja Interromper esta Tarefa?",
-                        html: 'Tarefas em andamento terão suas respectivas atividades não completadas removidas. <br><br><span class="text-warning">Não será possível reverter remoções.</span>',
+                        html: 'Interromper Tarefas em andamento terão suas respectivas atividades não completadas <strong>removidas</strong>. <br><br><strong class="text-warning">Não será possível reverter remoções.</strong>',
                         confirmButtonText: "Sim, interromper",
                             confirmButtonClass: 'btn btn-outline-danger w-xs me-2',
                                 showCloseButton: false,
@@ -745,11 +748,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }
 
-    var loadSurveyActivities = document.getElementById('load-surveys-activities');
-    if( loadSurveyActivities && getRecentActivitiesURL ){
-        function getRecentActivities() {
-            var subDays = loadSurveyActivities.getAttribute("data-subDays") ?? 1;
-            fetch(getRecentActivitiesURL + '/' + subDays, {
+    var loadAssignmentActivities = document.getElementById('load-assignment-activities');
+    if( loadAssignmentActivities && requestAssignmentActivitiesURL ){
+        function requestAssignmentActivities() {
+            var subDays = loadAssignmentActivities.getAttribute("data-subDays") ?? 1;
+            fetch(requestAssignmentActivitiesURL + '/' + subDays, {
                     method: 'GET',
                     headers: {
                         'Cache-Control': 'no-cache',
@@ -766,9 +769,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => {
                     //console.log(JSON.stringify(activities, null, 2));
 
-                    const container = loadSurveyActivities;
+                    const container = loadAssignmentActivities;
 
-                    container.innerHTML = '<h6 class="text-muted m-0 text-uppercase fw-semibold mb-1">Atividades Recentes</h6>';
+                    container.innerHTML = '';
 
                     if(data.success && data.activities){
                         data.activities.forEach(activity => {
@@ -809,7 +812,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         bsPopoverTooltip();
                     }else{
-                        container.innerHTML = '<h6 class="text-muted m-0 text-uppercase fw-semibold mb-4">Atividades Recentes</h6><div class="text-center text-muted">'+ data.message +'</div>';
+                        container.innerHTML = '<div class="text-center text-muted">'+ data.message +'</div>';
                     }
 
                     return;
@@ -818,11 +821,61 @@ document.addEventListener('DOMContentLoaded', function() {
             );
         }
 
-        getRecentActivities();
+        requestAssignmentActivities();
         setInterval(function () {
-            getRecentActivities();
+            requestAssignmentActivities();
         }, 60000);// 60000 = 1 minute
     }
+
+    var loadAssignmentListing = document.getElementById('load-assignment-listing');
+    if( loadAssignmentListing && assignmentListingURL ){
+        const buttonsAssignmentListing = document.querySelectorAll('.btn-assignment-listing');
+        if(buttonsAssignmentListing){
+            buttonsAssignmentListing.forEach(function(button) {
+                button.addEventListener('click', async function(event) {
+                    event.preventDefault();
+
+                    showPreloader();
+
+                    const surveyId = this.getAttribute('data-survey-id');
+                    const surveyTitle = this.getAttribute('data-survey-title');
+                    const url = assignmentListingURL + '/' + surveyId;
+
+                    try {
+                        const response = await fetch(url, {
+                            method: 'GET',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            }
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+
+                        const html = await response.text();
+
+                        // Assuming you have a modal with ID 'assignmentsListingModal'
+                        const modalElement = document.getElementById('assignmentsListingModal');
+                        const modalTitle = modalElement.querySelector('.modal-title');
+                        const modalBody = modalElement.querySelector('.modal-body');
+
+                        modalTitle.innerHTML = surveyTitle;
+                        modalBody.innerHTML = html;
+
+                        const modal = new bootstrap.Modal(modalElement);
+                        modal.show();
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+
+                    showPreloader(false);
+                });
+            });
+        }
+    }
+
 
     const swapButton = document.getElementById('btn-surveys-swap-toggle');
     if(swapButton){

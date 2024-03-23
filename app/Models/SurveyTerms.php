@@ -28,7 +28,7 @@ class SurveyTerms extends Model
             ->get(['id AS term_id', 'name AS term_name']);
 
         if($termsToArray){
-            // If needed to transform the results into an associative array with 'id' as keys and 'name' as values:
+            // Transform the results into an associative array with 'id' as keys and 'name' as values:
             $termsArray = $terms->mapWithKeys(function ($item) {
                 return [$item->term_id => $item->term_name];
             })->toArray();

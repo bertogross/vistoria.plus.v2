@@ -30,11 +30,16 @@ class UserUploadController extends Controller
     // Generic method to handle file uploads.
     private function uploadFile(Request $request, $type, $folder)
     {
-        $freeDiskSpace = checkFreeDiskSpace();
-        if($freeDiskSpace <= 0){
-            return response()->json(['success' => false, 'message' => 'Espaço em disco insuficiente'], 404);
+        $currentUserId = auth()->id();
+        $connectionId = getCurrentConnectionByUserId($currentUserId);
 
+        // check avaliable disk quota
+        $freeDiskSpace = checkFreeDiskSpace($connectionId);
+        if($freeDiskSpace <= 0){
+            $message = $currentUserId == $connectionId ? 'Espaço em disco insuficiente. Necessário contratar mais espaço.' : 'Falha ao armazenar arquivos. Verifique com seu anfitrião.';
+            return response()->json(['success' => false, 'message' => $message], 404);
         }
+
         try {
             // Validate the incoming request data
             $messages = [

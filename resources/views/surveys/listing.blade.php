@@ -122,7 +122,7 @@
 
                                 $surveyId = $survey->id;
 
-                                $title = $survey->title;
+                                $surveyTitle = $survey->title;
 
                                 $distributedData = $survey->distributed_data;
                                 $decodedData = json_decode($distributedData, true);
@@ -163,8 +163,8 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="text-body" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="{{ucfirst($title)}}">
-                                        {{ limitChars(ucfirst($title), 30) }}
+                                    <span class="text-body" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="{{ucfirst($surveyTitle)}}">
+                                        {{ limitChars(ucfirst($surveyTitle), 30) }}
                                     </span>
 
                                     {{--
@@ -275,6 +275,14 @@
                                             data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top"
                                             title="Editar"></button>
                                     @endif
+
+                                    <button type="button"
+                                        class="btn btn-sm btn-soft-dark ri-file-list-line btn-assignment-listing"
+                                        data-survey-id="{{ $surveyId }}"
+                                        data-survey-title="{{ $surveyTitle }}"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-trigger="hover" data-bs-placement="top"
+                                        title="Listar Tarefas"></button>
 
                                     @if ( !in_array($surveyStatus, ['scheduled', 'new']) )
                                         <a

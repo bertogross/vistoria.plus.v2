@@ -106,6 +106,43 @@ class SurveysAssignmentsController extends Controller
         ) );
     }
 
+    // Modal listing
+    public function listing(Request $request, $id = null)
+    {
+        if (!$id) {
+            abort(404);
+        }
+
+        $data = Survey::find($id);
+        if (!$data) {
+            abort(404);
+        }
+
+        $surveyId = $data->id;
+
+        $surveyAssignmentData = SurveyAssignments::getSurveyAssignmentBySurveyId($surveyId);
+
+        $getSurveyAssignmentStatusTranslations = SurveyAssignments::getSurveyAssignmentStatusTranslations();
+
+        $dateRange = SurveyAssignments::getAssignmentDateRange($surveyId);
+        $firstDate = $dateRange['first_date'] ?? null;
+        $lastDate = $dateRange['last_date'] ?? null;
+
+        return view('surveys.assignment.listing', compact(
+            'surveyAssignmentData',
+            'getSurveyAssignmentStatusTranslations',
+            'firstDate',
+            'lastDate'
+        ) );
+        /*return Response::json([
+            'surveyAssignmentData' => $surveyAssignmentData,
+            'getSurveyAssignmentStatusTranslations' => $getSurveyAssignmentStatusTranslations,
+            'firstDate' => $firstDate,
+            'lastDate' => $lastDate,
+        ]);*/
+
+    }
+
     public function formSurveyorAssignment(Request $request, $assignmentId)
     {
         if (!$assignmentId) {

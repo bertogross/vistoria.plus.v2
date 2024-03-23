@@ -537,8 +537,6 @@ class Stripe extends Model
                 $class = '';
         }
 
-        $description .= "<br><br><small>*Etiqueta exibida somente ao Administrativo</small>";
-
         return array('label' => $label, 'description' => $description, 'color' => $color, 'class' => $class);
     }
 

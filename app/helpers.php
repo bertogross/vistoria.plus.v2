@@ -179,8 +179,10 @@ if( !function_exists('getDiskQuota') ){
 
 if( !function_exists('checkFreeDiskSpace') ){
     function checkFreeDiskSpace($connectionId = null) {
+        $currentUserId = auth()->id();
+
         if(!$connectionId){
-            $connectionId = auth()->id();
+            $connectionId = getCurrentConnectionByUserId($currentUserId);
         }
 
         $directory = 'vpApp'.$connectionId.'/attachments'; // Base directory

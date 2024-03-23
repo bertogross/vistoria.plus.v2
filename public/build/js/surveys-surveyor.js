@@ -3,6 +3,7 @@ import {
     sweetWizardAlert,
     lightbox,
     debounce,
+    showPreloader,
     updateProgressBar,
     updateLabelClassesSurveyor,
     uncheckRadiosAndUpdateLabels
@@ -48,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 location.reload(true);
                             }, 1000);
                             */
+                            showPreloader();
                             toastAlert('Redirecionando ao formulário...', 'success');
 
                             setTimeout(function () {
@@ -62,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     })
                     .catch(error => console.error('Error:', error));
                  }else{
+                    showPreloader();
                     toastAlert('Redirecionando ao formulário...', 'success');
 
                     setTimeout(function () {

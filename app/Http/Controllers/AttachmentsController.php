@@ -15,14 +15,14 @@ class AttachmentsController extends Controller
     {
         $currentUserId = auth()->id();
 
+        /*
         $connectionId = getCurrentConnectionByUserId($currentUserId);
-
         $subscriptionData = getSubscriptionData($connectionId);
         $subscriptionStatus = $subscriptionData['subscription_status'] ?? null;
         if($subscriptionStatus != 'active'){
             return response()->json(['success' => false, 'action' => 'subscriptionAlert', 'message' => "Para prosseguir você deverá primeiramente ativar sua assinatura"], 200);
         }
-
+        */
 
         $folder = 'attachments';
 

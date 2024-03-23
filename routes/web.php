@@ -107,6 +107,8 @@ Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])-
                 Route::post('/auditor-revoke/{id?}', [SurveysAssignmentsController::class, 'revokeAssignmentAuditor'])->name('revokeAssignmentAuditorURL')->where('id', '[0-9]+');
 
             Route::get('/activities/{subDays?}', [SurveysAssignmentsController::class, 'requestAssignmentActivities'])->name('requestAssignmentActivitiesURL')->where('subDays', '[0-9]+');
+            Route::get('/listing/{id?}', [SurveysAssignmentsController::class, 'listing'])->name('assignmentListingURL')->where('id', '[0-9]+');
+
         });
 
         Route::prefix('responses')->group(function () {

@@ -827,6 +827,56 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 60000);// 60000 = 1 minute
     }
 
+    var loadAssignmentListing = document.getElementById('load-assignment-listing');
+    if( loadAssignmentListing && assignmentListingURL ){
+        const buttonsAssignmentListing = document.querySelectorAll('.btn-assignment-listing');
+        if(buttonsAssignmentListing){
+            buttonsAssignmentListing.forEach(function(button) {
+                button.addEventListener('click', async function(event) {
+                    event.preventDefault();
+
+                    showPreloader();
+
+                    const surveyId = this.getAttribute('data-survey-id');
+                    const surveyTitle = this.getAttribute('data-survey-title');
+                    const url = assignmentListingURL + '/' + surveyId;
+
+                    try {
+                        const response = await fetch(url, {
+                            method: 'GET',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            }
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+
+                        const html = await response.text();
+
+                        // Assuming you have a modal with ID 'assignmentsListingModal'
+                        const modalElement = document.getElementById('assignmentsListingModal');
+                        const modalTitle = modalElement.querySelector('.modal-title');
+                        const modalBody = modalElement.querySelector('.modal-body');
+
+                        modalTitle.innerHTML = surveyTitle;
+                        modalBody.innerHTML = html;
+
+                        const modal = new bootstrap.Modal(modalElement);
+                        modal.show();
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+
+                    showPreloader(false);
+                });
+            });
+        }
+    }
+
+
     const swapButton = document.getElementById('btn-surveys-swap-toggle');
     if(swapButton){
         swapButton.addEventListener('click', async function(event) {

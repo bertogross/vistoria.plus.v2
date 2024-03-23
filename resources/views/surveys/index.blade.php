@@ -121,6 +121,9 @@
             </div>
         @endif
     </div>
+
+    @include('surveys.layouts.modal-listing-assignments')
+
 @endsection
 @section('script')
     <script src="{{ URL::asset('build/libs/flatpickr/flatpickr.min.js') }}"></script>
@@ -137,6 +140,7 @@
         var surveysStoreOrUpdateURL = "{{ route('surveysStoreOrUpdateURL') }}";
         var surveyReloadUsersTabURL = "{{ route('surveyReloadUsersTabURL') }}";
         var requestAssignmentActivitiesURL = "{{ route('requestAssignmentActivitiesURL') }}";
+        var assignmentListingURL = "{{ route('assignmentListingURL') }}";
     </script>
     <script src="{{ URL::asset('build/js/surveys.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 
