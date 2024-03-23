@@ -442,7 +442,7 @@ class SurveyAssignments extends Model
     public static function calculateSurveyPercentage($surveyId, $companyId, $assignmentId, $surveyorId, $auditorId, $designated)
     {
         // Assuming you have a method to count the total number of topics/questions in a survey
-        $totalTopics = SurveyTopic::countSurveyTopics($surveyId);
+        $totalTopics = SurveyResponseTopic::countSurveyTopics($surveyId);
 
         $countSurveyAuditor = SurveyResponse::countSurveyAuditorResponses($auditorId, $surveyId, $assignmentId);
 

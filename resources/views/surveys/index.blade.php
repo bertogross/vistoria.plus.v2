@@ -1,3 +1,6 @@
+@php
+    use App\Models\User;
+@endphp
 @extends('layouts.master')
 @section('title')
     @lang('translation.surveys')
@@ -5,20 +8,7 @@
 @section('css')
 @endsection
 @section('content')
-    @php
-        use App\Models\User;
-    @endphp
-    {{--
-    @component('components.breadcrumb')
-        @slot('url')
-            {{ route('surveysIndexURL') }}
-        @endslot
 
-        @slot('title')
-            @lang('translation.surveys')
-        @endslot
-    @endcomponent
-    --}}
     <div class="row mb-3">
         <div class="col">
             <div class="row mb-3 pb-1">
@@ -107,17 +97,26 @@
             <div class="col-auto layout-rightside-col d-block">
                 <div class="overlay"></div>
                 <div class="layout-rightside pb-2">
+
                     <div class="card rounded-2 mb-0">
                         <div class="card-header">
                             <a href="#" class="btn btn-sm btn-soft-theme btn-icon init-loader float-end mt-n1 position-absolute ms-auto me-3 end-0" title="Ver todas"><i class="ri-file-list-line"></i></a>
                             <h6 class="text-muted m-0 text-uppercase fw-semibold">Atividades Recentes</h6>
                         </div>
                         <div class="card-body pt-0">
-                            <div class="tasks-wrapper-survey overflow-auto h-100" id="load-assignment-activities" data-subDays="1">
-                                <div class="text-center"><div class="spinner-border text-theme mt-5 mb-3" role="status"><span class="sr-only">Loading...</span></div></div>
+                            <div
+                            id="load-assignment-activities"
+                            class="tasks-wrapper-survey overflow-auto h-100"
+                            data-subDays="1">
+                                <div class="text-center">
+                                    <div class="spinner-border text-theme mt-5 mb-3" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         @endif

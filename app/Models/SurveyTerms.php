@@ -13,11 +13,11 @@ class SurveyTerms extends Model
     // Specifies the database connection for this model.
     protected $connection = 'vpAppTemplate';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $table = 'survey_terms';
 
-    protected $fillable = ['name', 'slug', 'status']; //'user_id',
+    protected $fillable = ['name', 'slug', 'status'];
 
     public static function preListing($termsToArray = false)
     {

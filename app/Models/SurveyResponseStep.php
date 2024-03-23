@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use App\Models\SurveyStep;
-use App\Models\SurveyTopic;
+use App\Models\SurveyResponseStep;
+use App\Models\SurveyResponseTopic;
 use App\Models\SurveyTemplates;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class SurveyStep extends Model
+class SurveyResponseStep extends Model
 {
     use HasFactory;
 
@@ -18,7 +18,6 @@ class SurveyStep extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        //'user_id',
         'survey_id',
         'term_id',
         'step_order'
@@ -32,7 +31,7 @@ class SurveyStep extends Model
 
     public function topics()
     {
-        return $this->hasMany(SurveyTopic::class, 'step_id');
+        return $this->hasMany(SurveyResponseTopic::class, 'step_id');
     }
 
     public static function populateSurveySteps($templateId, $surveyId)
@@ -56,15 +55,15 @@ class SurveyStep extends Model
 
         try {
             // Delete existing survey steps for the given surveyId
-            $surveyStepsExist = SurveyStep::where('survey_id', $surveyId)->exists();
+            $surveyStepsExist = SurveyResponseStep::where('survey_id', $surveyId)->exists();
             if($surveyStepsExist){
-                SurveyStep::where('survey_id', $surveyId)->delete();
+                SurveyResponseStep::where('survey_id', $surveyId)->delete();
             }
 
             // Delete existing survey topics for the given surveyId
-            $surveyTopicsExist = SurveyTopic::where('survey_id', $surveyId)->exists();
+            $surveyTopicsExist = SurveyResponseTopic::where('survey_id', $surveyId)->exists();
             if($surveyTopicsExist){
-                SurveyTopic::where('survey_id', $surveyId)->delete();
+                SurveyResponseTopic::where('survey_id', $surveyId)->delete();
             }
 
             $data = SurveyTemplates::findOrFail($templateId);
@@ -94,14 +93,14 @@ class SurveyStep extends Model
                     'step_order' => intval($newPosition),
                 ];
 
-                $SurveyStep = SurveyStep::create($fill);
+                $SurveyResponseStep = SurveyResponseStep::create($fill);
 
-                $stepId = $SurveyStep->id;
+                $stepId = $SurveyResponseStep->id;
 
                 if ($stepId) {
-                    SurveyTopic::populateSurveyTopics($topics, $stepId, $surveyId);
+                    SurveyResponseTopic::populateSurveyTopics($topics, $stepId, $surveyId);
                 } else {
-                    SurveyTopic::where('survey_id', $surveyId)->delete();
+                    SurveyResponseTopic::where('survey_id', $surveyId)->delete();
                 }
             }
         } catch (\Exception $e) {

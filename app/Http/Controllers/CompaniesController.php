@@ -9,6 +9,10 @@ use Illuminate\Validation\Rule;
 
 class CompaniesController extends Controller
 {
+    public $timestamps = true;
+
+    protected $fillable = ['name', 'status'];
+
     public function index()
     {
         $companies = DB::connection('vpAppTemplate')
@@ -64,11 +68,13 @@ class CompaniesController extends Controller
                     ->update([
                         'status' => $status,
                         'name' => $companyData['name'],
+                        'updated_at' => now()
                     ]);
             } else {
                 DB::connection('vpAppTemplate')->table('companies')->insert([
                     'status' => $status,
                     'name' => $companyData['name'],
+                    'created_at' => now()
                     // Add any other default values or fields you need
                 ]);
             }

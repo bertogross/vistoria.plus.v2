@@ -44,7 +44,7 @@ class Survey extends Model
     // Define relationships here
     public function steps()
     {
-        return $this->hasMany(SurveyStep::class);
+        return $this->hasMany(SurveyResponseStep::class);
     }
 
     /*
@@ -275,7 +275,8 @@ class Survey extends Model
         $transformedArray = [];
 
         foreach ($analyticsData as $item) {
-            $dateKey = Carbon::parse($item['created_at'])->format('d-m-Y');
+            //$dateKey = Carbon::parse($item['created_at'])->format('d-m-Y');
+            $dateKey = date('d-m-Y', strtotime($item['created_at']));
             $companyId = $item['company_id'];
 
             $transformedArray[$dateKey][$companyId][] = $item;
@@ -309,7 +310,7 @@ class Survey extends Model
         try{
             $analyticsData = SurveyAssignments::where('survey_assignments.survey_id', $surveyId)
                 ->join('survey_responses', 'survey_assignments.id', '=', 'survey_responses.assignment_id')
-                ->join('survey_steps', 'survey_responses.step_id', '=', 'survey_steps.id')
+                ->join('survey_response_steps', 'survey_responses.step_id', '=', 'survey_response_steps.id')
                 ->select(
                     //'survey_assignments.*',
                     'survey_assignments.id',
@@ -321,7 +322,7 @@ class Survey extends Model
                     'survey_assignments.auditor_status',
                     'survey_assignments.created_at',
                     'survey_responses.compliance_survey',
-                    'survey_steps.term_id'
+                    'survey_response_steps.term_id'
                 )
                 ->where('survey_assignments.surveyor_status', 'completed')
                 ->where('survey_responses.compliance_survey', '!=', null)
@@ -342,7 +343,8 @@ class Survey extends Model
 
             if($analyticsData){
                 foreach ($analyticsData as $item) {
-                    $dateKey = Carbon::parse($item['created_at'])->format('d-m-Y');
+                    //$dateKey = Carbon::parse($item['created_at'])->format('d-m-Y');
+                    $dateKey = date('d-m-Y', strtotime($item['created_at']));
                     $termId = $item['term_id'];
 
                     //$transformedArray[$dateKey][$termId][] = $item;

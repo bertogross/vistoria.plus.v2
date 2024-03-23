@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Survey;
-use App\Models\SurveyStep;
+use App\Models\SurveyResponseStep;
 use App\Models\SurveyTerms;
 use Illuminate\Http\Request;
 use App\Models\SurveyTemplates;

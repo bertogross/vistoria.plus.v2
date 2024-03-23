@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Survey;
-use App\Models\SurveyStep;
-use App\Models\SurveyTopic;
+use App\Models\SurveyResponseStep;
+use App\Models\SurveyResponseTopic;
 use Illuminate\Http\Request;
 use App\Models\SurveyResponse;
 use App\Models\SurveyTemplates;
@@ -33,7 +33,7 @@ class SurveysAssignmentsController extends Controller
         $reorderingData = SurveyTemplates::reorderingData($surveyData);
         $templateData = $reorderingData ?? null;
 
-        $stepsWithTopics = SurveyStep::with(['topics' => function($query) {
+        $stepsWithTopics = SurveyResponseStep::with(['topics' => function($query) {
                 $query->orderBy('topic_order');
             }])
             ->where('survey_id', $surveyId)
@@ -128,7 +128,7 @@ class SurveysAssignmentsController extends Controller
         $reorderingData = SurveyTemplates::reorderingData($surveyData);
         $templateData = $reorderingData;
 
-        $stepsWithTopics = SurveyStep::with(['topics' => function($query) {
+        $stepsWithTopics = SurveyResponseStep::with(['topics' => function($query) {
                 $query->orderBy('topic_order');
             }])
             ->where('survey_id', $surveyId)
@@ -151,7 +151,7 @@ class SurveysAssignmentsController extends Controller
             });
         $stepsWithTopics = $stepsWithTopics ? json_decode($stepsWithTopics, true) : null;
 
-        $countTopics = SurveyTopic::countSurveyTopics($surveyId);
+        $countTopics = SurveyResponseTopic::countSurveyTopics($surveyId);
 
         $countResponses = SurveyResponse::countSurveySurveyorResponses($surveyorId, $surveyId, $assignmentId);
 
@@ -188,7 +188,7 @@ class SurveysAssignmentsController extends Controller
         $reorderingData = SurveyTemplates::reorderingData($surveyData);
         $templateData = $reorderingData;
 
-        $stepsWithTopics = SurveyStep::with(['topics' => function($query) {
+        $stepsWithTopics = SurveyResponseStep::with(['topics' => function($query) {
                 $query->orderBy('topic_order');
             }])
             ->where('survey_id', $surveyId)
@@ -211,7 +211,7 @@ class SurveysAssignmentsController extends Controller
             });
         $stepsWithTopics = $stepsWithTopics ? json_decode($stepsWithTopics, true) : null;
 
-        $countTopics = SurveyTopic::countSurveyTopics($surveyId);
+        $countTopics = SurveyResponseTopic::countSurveyTopics($surveyId);
 
         $countResponses = SurveyResponse::countSurveyAuditorResponses($auditorId, $surveyId, $assignmentId);
 

@@ -1,7 +1,7 @@
 @php
     use Carbon\Carbon;
     use App\Models\Survey;
-    use App\Models\SurveyTopic;
+    use App\Models\SurveyResponseTopic;
     use App\Models\SurveyResponse;
     use App\Models\SurveyAssignments;
 
@@ -70,7 +70,7 @@
         }
     }
 
-    $countTopics = SurveyTopic::countSurveyTopics($surveyId);
+    $countTopics = SurveyResponseTopic::countSurveyTopics($surveyId);
 
     $countResponses = SurveyResponse::countSurveySurveyorResponses($surveyorId, $surveyId, $assignmentId);
 
@@ -548,278 +548,278 @@
         <script src="{{ URL::asset('build/libs/apexcharts/apexcharts.min.js') }}"></script>
 
         <script>
+        document.addEventListener('DOMContentLoaded', function() {
             const rawTermsData = @json($analyticTermsData);
             const terms = @json($terms);
 
-            document.addEventListener('DOMContentLoaded', function() {
-                // START #barTermsChart
-                var seriesData = [];
-                var categories = [];
+            // START #barTermsChart
+            var seriesData = [];
+            var categories = [];
 
-                /*for (var termId in rawTermsData) {
-                    var totalComplianceYes = 0;
-                    var totalComplianceNo = 0;
+            /*for (var termId in rawTermsData) {
+                var totalComplianceYes = 0;
+                var totalComplianceNo = 0;
 
-                    for (var date in rawTermsData[termId]) {
-                        var termData = rawTermsData[termId][date];
-                        totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
-                        totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
-                    }
-
-                    seriesData.push({
-                        x: terms[termId]['name'],
-                        y: totalComplianceYes - totalComplianceNo
-                    });
-
-                    categories.push(terms[termId]['name']);
-                }*/
-                for (var termId in rawTermsData) {
-                    var totalComplianceYes = 0;
-                    var totalComplianceNo = 0;
-
-                    for (var date in rawTermsData[termId]) {
-                        var termData = rawTermsData[termId][date];
-                        totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
-                        totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
-                    }
-
-                    var totalResponses = totalComplianceYes + totalComplianceNo;
-                    var complianceScore = totalResponses > 0 ? (totalComplianceYes / totalResponses) * 100 : 0;
-
-                    seriesData.push({
-                        x: terms[termId]['name'],
-                        y: parseFloat(complianceScore.toFixed(0))
-                    });
-
-                    categories.push(terms[termId]['name']);
+                for (var date in rawTermsData[termId]) {
+                    var termData = rawTermsData[termId][date];
+                    totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
+                    totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
                 }
 
-                var optionsTermsChart = {
-                    series: [{
-                        name: 'Score',
-                        data: seriesData
-                    }],
-                    title: {
-                        text: 'Dinâmica de Pontuação na Conformidade entre Termos'
-                    },
-                    chart: {
-                        type: 'bar',
-                        height: 402,
-                        toolbar: {
-                            show: false,
-                        }
-                    },
-                    plotOptions: {
-                        bar: {
-                            horizontal: false,
-                            columnWidth: '55%',
-                            colors: {
-                                ranges: [{
-                                    from: -1000,
-                                    to: 0,
-                                    color: '#DF5253'
-                                }, {
-                                    from: 1,
-                                    to: 1000,
-                                    color: '#13c56b'
-                                }],
-                            },
-                            dataLabels: {
-                                position: 'top',
-                            },
+                seriesData.push({
+                    x: terms[termId]['name'],
+                    y: totalComplianceYes - totalComplianceNo
+                });
+
+                categories.push(terms[termId]['name']);
+            }*/
+            for (var termId in rawTermsData) {
+                var totalComplianceYes = 0;
+                var totalComplianceNo = 0;
+
+                for (var date in rawTermsData[termId]) {
+                    var termData = rawTermsData[termId][date];
+                    totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
+                    totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
+                }
+
+                var totalResponses = totalComplianceYes + totalComplianceNo;
+                var complianceScore = totalResponses > 0 ? (totalComplianceYes / totalResponses) * 100 : 0;
+
+                seriesData.push({
+                    x: terms[termId]['name'],
+                    y: parseFloat(complianceScore.toFixed(0))
+                });
+
+                categories.push(terms[termId]['name']);
+            }
+
+            var optionsTermsChart = {
+                series: [{
+                    name: 'Score',
+                    data: seriesData
+                }],
+                title: {
+                    text: 'Dinâmica de Pontuação na Conformidade entre Termos'
+                },
+                chart: {
+                    type: 'bar',
+                    height: 402,
+                    toolbar: {
+                        show: false,
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        colors: {
+                            ranges: [{
+                                from: -1000,
+                                to: 0,
+                                color: '#DF5253'
+                            }, {
+                                from: 1,
+                                to: 1000,
+                                color: '#13c56b'
+                            }],
+                        },
+                        dataLabels: {
+                            position: 'top',
                         },
                     },
-                    xaxis: {
-                        categories: categories
-                    },
-                    fill: {
-                        opacity: 1
-                    },
-                };
+                },
+                xaxis: {
+                    categories: categories
+                },
+                fill: {
+                    opacity: 1
+                },
+            };
 
-                var barTermsChart = new ApexCharts(document.querySelector("#barTermsChart"), optionsTermsChart);
-                barTermsChart.render();
-                // END #barTermsChart
+            var barTermsChart = new ApexCharts(document.querySelector("#barTermsChart"), optionsTermsChart);
+            barTermsChart.render();
+            // END #barTermsChart
 
-                // START #mixedTermsChart
-                var columnSeriesData = [];
-                var lineSeriesData = [];
-                var categories = [];
+            // START #mixedTermsChart
+            var columnSeriesData = [];
+            var lineSeriesData = [];
+            var categories = [];
 
-                /*for (var termId in rawTermsData) {
-                    var totalComplianceYes = 0;
-                    var totalComplianceNo = 0;
+            /*for (var termId in rawTermsData) {
+                var totalComplianceYes = 0;
+                var totalComplianceNo = 0;
 
-                    for (var date in rawTermsData[termId]) {
-                        var termData = rawTermsData[termId][date];
-                        totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
-                        totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
-                    }
-
-                    columnSeriesData.push(totalComplianceYes);
-                    lineSeriesData.push(totalComplianceNo);
-                    categories.push(terms[termId]['name']);
-                }*/
-                for (var termId in rawTermsData) {
-                    var totalComplianceYes = 0;
-                    var totalComplianceNo = 0;
-
-                    for (var date in rawTermsData[termId]) {
-                        var termData = rawTermsData[termId][date];
-                        totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
-                        totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
-                    }
-
-                    var totalResponses = totalComplianceYes + totalComplianceNo;
-                    var complianceYesPercentage = totalResponses > 0 ? parseFloat(((totalComplianceYes / totalResponses) * 100).toFixed(0)) : 0;
-                    var complianceNoPercentage = totalResponses > 0 ? parseFloat(((totalComplianceNo / totalResponses) * 100).toFixed(0)) : 0;
-
-                    columnSeriesData.push(complianceYesPercentage);
-                    lineSeriesData.push(complianceNoPercentage);
-                    categories.push(terms[termId]['name']);
+                for (var date in rawTermsData[termId]) {
+                    var termData = rawTermsData[termId][date];
+                    totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
+                    totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
                 }
 
-                var optionsMixedTermsChart = {
-                    series: [{
-                        name: 'Conforme',
-                        type: 'column',
-                        data: columnSeriesData
-                    }, {
-                        name: 'Não Conforme',
-                        type: 'line',
-                        data: lineSeriesData
-                    }],
-                    chart: {
-                        height: 402,
-                        type: 'line',
-                        toolbar: {
-                            show: false,
-                        }
-                    },
-                    stroke: {
-                        width: [0, 4]
-                    },
+                columnSeriesData.push(totalComplianceYes);
+                lineSeriesData.push(totalComplianceNo);
+                categories.push(terms[termId]['name']);
+            }*/
+            for (var termId in rawTermsData) {
+                var totalComplianceYes = 0;
+                var totalComplianceNo = 0;
+
+                for (var date in rawTermsData[termId]) {
+                    var termData = rawTermsData[termId][date];
+                    totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
+                    totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
+                }
+
+                var totalResponses = totalComplianceYes + totalComplianceNo;
+                var complianceYesPercentage = totalResponses > 0 ? parseFloat(((totalComplianceYes / totalResponses) * 100).toFixed(0)) : 0;
+                var complianceNoPercentage = totalResponses > 0 ? parseFloat(((totalComplianceNo / totalResponses) * 100).toFixed(0)) : 0;
+
+                columnSeriesData.push(complianceYesPercentage);
+                lineSeriesData.push(complianceNoPercentage);
+                categories.push(terms[termId]['name']);
+            }
+
+            var optionsMixedTermsChart = {
+                series: [{
+                    name: 'Conforme',
+                    type: 'column',
+                    data: columnSeriesData
+                }, {
+                    name: 'Não Conforme',
+                    type: 'line',
+                    data: lineSeriesData
+                }],
+                chart: {
+                    height: 402,
+                    type: 'line',
+                    toolbar: {
+                        show: false,
+                    }
+                },
+                stroke: {
+                    width: [0, 4]
+                },
+                title: {
+                    text: 'Insights Comparativos de Conformidade'// Compliance Overview by Term
+                },
+                dataLabels: {
+                    enabled: true,
+                    enabledOnSeries: [1]
+                },
+                labels: categories,
+                xaxis: {
+                    type: 'category'
+                },
+                yaxis: [{
                     title: {
-                        text: 'Insights Comparativos de Conformidade'// Compliance Overview by Term
-                    },
-                    dataLabels: {
-                        enabled: true,
-                        enabledOnSeries: [1]
-                    },
-                    labels: categories,
-                    xaxis: {
-                        type: 'category'
-                    },
-                    yaxis: [{
-                        title: {
-                            text: 'Conforme'
-                        }
-                    }, {
-                        opposite: true,
-                        title: {
-                            text: 'Não Conforme'
-                        }
-                    }],
-                    colors: ['#13c56b', '#DF5253']  // Assign custom colors to Compliance Yes and No
-                };
-
-                var mixedTermsChart = new ApexCharts(document.querySelector("#mixedTermsChart"), optionsMixedTermsChart);
-                mixedTermsChart.render();
-                // END #mixedTermsChart
-
-
-                // START #polarTermsAreaChart
-                var seriesData = [];
-                var labels = [];
-
-                var termMetrics = {};
-
-                /*
-                // Aggregate data for each term
-                for (var termId in rawTermsData) {
-                    for (var date in rawTermsData[termId]) {
-                        var termData = rawTermsData[termId][date];
-                        var totalCompliance = termData.filter(item => item.compliance_survey === 'yes').length;
-
-                        if (!termMetrics[termId]) {
-                            termMetrics[termId] = 0;
-                        }
-                        termMetrics[termId] += totalCompliance;
+                        text: 'Conforme'
                     }
-                }
-
-                // Prepare data for the chart
-                for (var termId in termMetrics) {
-                    seriesData.push(termMetrics[termId]);
-                    // Assuming 'terms' is an object where keys are term IDs and values contain term details
-                    labels.push(terms[termId]['name']);
-                }
-                */
-
-                // Aggregate data for each term
-                for (var termId in rawTermsData) {
-                    var totalComplianceYes = 0;
-                    var totalComplianceNo = 0;
-
-                    for (var date in rawTermsData[termId]) {
-                        var termData = rawTermsData[termId][date];
-                        totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
-                        totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
-                    }
-
-                    var totalResponses = totalComplianceYes + totalComplianceNo;
-                    var compliancePercentage = totalResponses > 0 ? parseFloat(((totalComplianceYes / totalResponses) * 100).toFixed(0)) : 0;
-
-                    termMetrics[termId] = compliancePercentage;
-                }
-
-                // Prepare data for the chart
-                for (var termId in termMetrics) {
-                    seriesData.push(termMetrics[termId]);
-                    labels.push(terms[termId]['name']);
-                }
-
-
-                var optionsTermsAreaChart = {
-                    series: seriesData,
-                    chart: {
-                        height: 280,
-                        type: 'polarArea',
-                        toolbar: {
-                            show: false,
-                        }
-                    },
+                }, {
+                    opposite: true,
                     title: {
-                        text: 'Análise Polar de Conformidade'// Terms Compliance Polar Analysis
-                    },
-                    labels: labels,
-                    stroke: {
-                        colors: ['#fff']
-                    },
-                    fill: {
-                        opacity: 0.8
-                    },
-                    legend: {
-                        show: true,
-                        position: 'bottom'
-                    },
-                    yaxis: {
-                        show: false // Disable Y-axis labels
-                    },
-                    responsive: [{
-                        breakpoint: 480,
-                        options: {
-                            chart: {
-                                width: 200
-                            }
-                        }
-                    }]
-                };
+                        text: 'Não Conforme'
+                    }
+                }],
+                colors: ['#13c56b', '#DF5253']  // Assign custom colors to Compliance Yes and No
+            };
 
-                var polarTermsAreaChart = new ApexCharts(document.querySelector("#polarTermsAreaChart"), optionsTermsAreaChart);
-                polarTermsAreaChart.render();
-                // END #polarTermsAreaChart
-            });
+            var mixedTermsChart = new ApexCharts(document.querySelector("#mixedTermsChart"), optionsMixedTermsChart);
+            mixedTermsChart.render();
+            // END #mixedTermsChart
+
+
+            // START #polarTermsAreaChart
+            var seriesData = [];
+            var labels = [];
+
+            var termMetrics = {};
+
+            /*
+            // Aggregate data for each term
+            for (var termId in rawTermsData) {
+                for (var date in rawTermsData[termId]) {
+                    var termData = rawTermsData[termId][date];
+                    var totalCompliance = termData.filter(item => item.compliance_survey === 'yes').length;
+
+                    if (!termMetrics[termId]) {
+                        termMetrics[termId] = 0;
+                    }
+                    termMetrics[termId] += totalCompliance;
+                }
+            }
+
+            // Prepare data for the chart
+            for (var termId in termMetrics) {
+                seriesData.push(termMetrics[termId]);
+                // Assuming 'terms' is an object where keys are term IDs and values contain term details
+                labels.push(terms[termId]['name']);
+            }
+            */
+
+            // Aggregate data for each term
+            for (var termId in rawTermsData) {
+                var totalComplianceYes = 0;
+                var totalComplianceNo = 0;
+
+                for (var date in rawTermsData[termId]) {
+                    var termData = rawTermsData[termId][date];
+                    totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
+                    totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
+                }
+
+                var totalResponses = totalComplianceYes + totalComplianceNo;
+                var compliancePercentage = totalResponses > 0 ? parseFloat(((totalComplianceYes / totalResponses) * 100).toFixed(0)) : 0;
+
+                termMetrics[termId] = compliancePercentage;
+            }
+
+            // Prepare data for the chart
+            for (var termId in termMetrics) {
+                seriesData.push(termMetrics[termId]);
+                labels.push(terms[termId]['name']);
+            }
+
+
+            var optionsTermsAreaChart = {
+                series: seriesData,
+                chart: {
+                    height: 280,
+                    type: 'polarArea',
+                    toolbar: {
+                        show: false,
+                    }
+                },
+                title: {
+                    text: 'Análise Polar de Conformidade'// Terms Compliance Polar Analysis
+                },
+                labels: labels,
+                stroke: {
+                    colors: ['#fff']
+                },
+                fill: {
+                    opacity: 0.8
+                },
+                legend: {
+                    show: true,
+                    position: 'bottom'
+                },
+                yaxis: {
+                    show: false // Disable Y-axis labels
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        }
+                    }
+                }]
+            };
+
+            var polarTermsAreaChart = new ApexCharts(document.querySelector("#polarTermsAreaChart"), optionsTermsAreaChart);
+            polarTermsAreaChart.render();
+            // END #polarTermsAreaChart
+        });
         </script>
     @endif
 

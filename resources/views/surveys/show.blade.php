@@ -5,7 +5,7 @@
     use App\Models\SurveyAssignments;
     //appPrintR($data);
     //appPrintR($swapData);
-    appPrintR($analyticTermsData);
+    //appPrintR($analyticTermsData);
     //appPrintR($surveyAssignmentData);
 
     $getSurveyRecurringTranslations = Survey::getSurveyRecurringTranslations();

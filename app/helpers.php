@@ -6,7 +6,7 @@ use App\Models\UserMeta;
 use App\Models\UserConnections;
 use App\Models\Survey;
 use App\Models\SurveyTerms;
-use App\Models\SurveyTopic;
+use App\Models\SurveyResponseTopic;
 use App\Models\SurveyResponse;
 use App\Models\SurveyTemplates;
 use App\Models\SurveyAssignments;

@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
         // Usefull if crontab or Kernel schedule is losted
         // to test in linux server terminal: php artisan fetch:surveys
         $schedule->command('fetch:surveys')
-            ->dailyAt('01:00')
+            ->dailyAt('00:30')
             ->timezone('America/Sao_Paulo');
 
     }

@@ -70,7 +70,9 @@
                                         type="radio"
                                         name="surveyor[{{$company->id}}]"
                                         {{ $isDelegated ? 'checked' : '' }}
-                                        {{ in_array($userStatus, ['inactive', 'revoked']) ? 'readonly' : '' }}
+                                        @if (in_array($userStatus, ['inactive', 'revoked']))
+                                            disabled
+                                        @endif
                                         value="{{ $userId }}">
                                     <label class="form-check-label d-flex align-items-center"
                                         for="surveyor-user-{{ $company->id.$userId }}">

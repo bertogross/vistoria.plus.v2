@@ -134,8 +134,8 @@
                                         <label class="form-label mb-0">Atribuições para este Checklist:</label>
 
                                         @if (in_array(getUserRoleById($currentUserId, $currentConnectionId), [1]))
-                                            <button id="btn-add-user" type="button" class="btn btn-sm btn-label right btn-outline-light float-end" data-origin="survey" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Convidar Usuário" data-bs-content="Caso necessite convidar outro usuário para colaborar com esta atividade, clique em adicionar.">
-                                                Convidar<i class="ri-user-add-line label-icon align-middle fs-16 ms-2"></i>
+                                            <button id="btn-add-user" type="button" class="btn btn-sm btn-outline-light float-end" data-origin="survey" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Convidar Usuário" data-bs-content="Caso necessite convidar outro usuário para colaborar com esta atividade, clique em adicionar.">
+                                                Convidar
                                             </button>
                                         @endif
 

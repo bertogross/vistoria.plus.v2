@@ -26,7 +26,7 @@ class SurveyTemplates extends Model
     // Define relationships here
     /*public function steps()
     {
-        return $this->hasMany(SurveyStep::class);
+        return $this->hasMany(SurveyResponseStep::class);
     }*/
 
 

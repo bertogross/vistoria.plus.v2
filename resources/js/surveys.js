@@ -86,6 +86,8 @@ document.addEventListener('DOMContentLoaded', function() {
             button.addEventListener('click', async function(event) {
                 event.preventDefault;
 
+                showPreloader();
+
                 var currentStatus = this.getAttribute("data-current-status");
 
                 var surveyId = this.getAttribute("data-survey-id");
@@ -118,6 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                             toastAlert(data.message, 'danger', 5000);
                         }
+                        showPreloader(false);
                     })
                     .catch(error => console.error('Error:', error));
                 }
@@ -126,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
                         icon: 'warning',
                         title: "Tem certeza que deseja Interromper esta Tarefa?",
-                        html: 'Tarefas em andamento terão suas respectivas atividades não completadas removidas. <br><br><span class="text-warning">Não será possível reverter remoções.</span>',
+                        html: 'Interromper Tarefas em andamento terão suas respectivas atividades não completadas <strong>removidas</strong>. <br><br><strong class="text-warning">Não será possível reverter remoções.</strong>',
                         confirmButtonText: "Sim, interromper",
                             confirmButtonClass: 'btn btn-outline-danger w-xs me-2',
                                 showCloseButton: false,

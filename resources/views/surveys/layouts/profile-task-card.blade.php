@@ -1,7 +1,7 @@
 @php
     use Carbon\Carbon;
     use App\Models\Survey;
-    use App\Models\SurveyTopic;
+    use App\Models\SurveyResponseTopic;
     use App\Models\SurveyResponse;
     use App\Models\SurveyAssignments;
 
@@ -66,7 +66,7 @@
             $percentage = SurveyAssignments::calculateSurveyPercentage($surveyId, $companyId, $assignmentId, $surveyorId, $auditorId, $designated);
             $progressBarClass = getProgressBarClass($percentage);
 
-            $totalTopics = SurveyTopic::countSurveyTopics($surveyId);
+            $totalTopics = SurveyResponseTopic::countSurveyTopics($surveyId);
 
             $countResponsesYes = SurveyResponse::countSurveySurveyorResponsesByCompliance($surveyorId, $surveyId, $assignmentId, 'yes');
 

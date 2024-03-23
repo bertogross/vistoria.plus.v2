@@ -1,7 +1,7 @@
 @php
     use Carbon\Carbon;
     use App\Models\User;
-    use App\Models\SurveyTopic;
+    use App\Models\SurveyResponseTopic;
     use App\Models\SurveyResponse;
     use App\Models\SurveyTemplates;
 
@@ -35,7 +35,7 @@
     $surveyorName = $surveyorId ? getUserData($surveyorId)->name : '';
     $surveyorStatus = $assignmentData->surveyor_status ?? null;
 
-    $countTopics = SurveyTopic::countSurveyTopics($surveyId);
+    $countTopics = SurveyResponseTopic::countSurveyTopics($surveyId);
 
     // Count the number of steps that have been finished
     $countResponses = SurveyResponse::countSurveySurveyorResponses($surveyorId, $surveyId, $assignmentId);

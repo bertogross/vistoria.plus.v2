@@ -7,10 +7,10 @@ use App\Models\User;
 use App\Models\UserConnections;
 //use App\Models\SurveyCompose;
 use App\Models\Survey;
-use App\Models\SurveyStep;
+use App\Models\SurveyResponseStep;
 //use App\Models\SurveyMeta;
 use App\Models\SurveyTerms;
-use App\Models\SurveyTopic;
+use App\Models\SurveyResponseTopic;
 use Illuminate\Http\Request;
 use App\Models\SurveyResponse;
 use App\Models\SurveyTemplates;
@@ -448,7 +448,7 @@ class SurveysController extends Controller
 
             // Update from model if task is not started
             if(in_array($surveyStatus, ['new', 'scheduled', 'started'])){
-                SurveyStep::populateSurveySteps($templateId, $surveyId);
+                SurveyResponseStep::populateSurveySteps($templateId, $surveyId);
             }
 
             // Start the task by distributing to each party
@@ -478,7 +478,7 @@ class SurveysController extends Controller
 
             $surveyId = $survey->id;
 
-            SurveyStep::populateSurveySteps($templateId, $surveyId);
+            SurveyResponseStep::populateSurveySteps($templateId, $surveyId);
 
             return response()->json([
                 'success' => true,
@@ -521,7 +521,7 @@ class SurveysController extends Controller
         $templateId = $survey->template_id;
 
         if($currentStatus == 'new'){
-            SurveyStep::populateSurveySteps($templateId, $surveyId);
+            SurveyResponseStep::populateSurveySteps($templateId, $surveyId);
         }
 
         if ($currentUserId != $survey->user_id) {

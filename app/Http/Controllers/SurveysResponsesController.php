@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Survey;
-use App\Models\SurveyTopic;
+use App\Models\SurveyResponseTopic;
 use Illuminate\Http\Request;
 use App\Models\SurveyResponse;
 use App\Models\SurveyAssignments;
@@ -90,7 +90,7 @@ class SurveysResponsesController extends Controller
 
             $data['assignment_id'] = $assignmentId;
 
-            $countTopics = SurveyTopic::countSurveyTopics($surveyId);
+            $countTopics = SurveyResponseTopic::countSurveyTopics($surveyId);
 
             // Prevent error from JavaScript if input[name="response_id"] was cracked.
             // Check if exists the response. If exist get the Id and update.
@@ -336,7 +336,7 @@ class SurveysResponsesController extends Controller
 
             $data['assignment_id'] = $assignmentId;
 
-            $countTopics = SurveyTopic::countSurveyTopics($surveyId);
+            $countTopics = SurveyResponseTopic::countSurveyTopics($surveyId);
 
             // Prevent error from JavaScript if input[name="response_id"] was cracked.
             // Check if exists the response. If exist get the Id and update.

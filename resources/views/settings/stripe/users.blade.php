@@ -4,8 +4,8 @@
     $countActive = 0;
     //appPrintR($users);
 @endphp
-<button id="btn-add-user" type="button" class="btn btn-sm btn-label right btn-outline-theme float-end" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Adicionar Usuário">
-    Adicionar<i class="ri-user-add-line label-icon align-middle fs-16 ms-2"></i>
+<button id="btn-add-user" type="button" class="btn btn-sm btn-outline-theme float-end" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Adicionar Usuário">
+    Adicionar
 </button>
 
 <h4 class="mb-0">Usuários Conectados</h4>

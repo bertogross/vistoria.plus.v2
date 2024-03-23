@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SurveyTopic extends Model
+class SurveyResponseTopic extends Model
 {
     use HasFactory;
 
@@ -14,7 +14,6 @@ class SurveyTopic extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        //'user_id',
         'survey_id',
         'step_id',
         'question',
@@ -23,7 +22,7 @@ class SurveyTopic extends Model
 
     /*public function step()
     {
-        return $this->belongsTo(SurveyStep::class);
+        return $this->belongsTo(SurveyResponseStep::class);
     }*/
 
     public static function populateSurveyTopics($topics, $stepId, $surveyId){
@@ -42,11 +41,11 @@ class SurveyTopic extends Model
                     $fill['question'] = $question;
                     $fill['topic_order'] = intval($newPosition);
 
-                    $SurveyTopic = new SurveyTopic;
-                    $SurveyTopic->fill($fill);
-                    if (!$SurveyTopic->save()) {
+                    $SurveyResponseTopic = new SurveyResponseTopic;
+                    $SurveyResponseTopic->fill($fill);
+                    if (!$SurveyResponseTopic->save()) {
                         // Check for errors
-                        $errors = $SurveyTopic->getErrors();
+                        $errors = $SurveyResponseTopic->getErrors();
                         \Log::error('populateSurveyTopics: ' . $errors);
                     }
                 }
@@ -58,7 +57,7 @@ class SurveyTopic extends Model
     // Count the number of topics that have been finished
     public static function countSurveyTopics($surveyId)
     {
-        return $surveyId ? SurveyTopic::where('survey_id', $surveyId)->count() : 0;
+        return $surveyId ? SurveyResponseTopic::where('survey_id', $surveyId)->count() : 0;
     }
 
 
