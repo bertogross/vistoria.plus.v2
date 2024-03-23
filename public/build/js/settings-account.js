@@ -1,5 +1,6 @@
 import {
-    toastAlert
+    toastAlert,
+    formatPhoneNumber
 } from './helpers.js';
 
 import {
@@ -128,33 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    // Mask for input phone
-    function formatPhoneNumber() {
-        const phoneInputs = document.querySelectorAll('.phone-mask');
 
-        phoneInputs.forEach(input => {
-            input.addEventListener('input', function(event) {
-                if (event.inputType === "deleteContentBackward") {
-                    return; // If backspace was pressed, just return
-                }
-
-                var target = event.target,
-                    value = target.value;
-
-                value = onlyNumbers(value); // Remove non-numeric characters
-
-                // If value is empty after removing non-numeric characters, clear the field
-                if (!value) {
-                    target.value = '';
-                    return;
-                }
-
-                value = value.replace(/^(\d{0,2})(\d{0,1})(\d{0,4})(\d{0,4}).*/, '($1) $2 $3-$4'); // Format the input
-
-                target.value = value;
-            });
-        });
-    }
 
     // Call the functions when the DOM is fully loaded
     formatPhoneNumber();

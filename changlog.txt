@@ -10,8 +10,6 @@ https://laravel-news.com/openai-for-laravel
 # TODO
     # Find for "TODO dont send email": add post  notification message ans show in the topbar
 
-    # Stripe btn-modal-upcoming
-
 
 
 Version 1.0.49 - [2024/03/20]

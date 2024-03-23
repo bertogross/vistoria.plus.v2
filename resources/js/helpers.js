@@ -188,6 +188,8 @@ export function printThis(){
             button.addEventListener('click', function(event) {
                 event.preventDefault();
 
+                showPreloader();
+
                 const elementId = this.getAttribute("data-target-id");
                 const fileName = this.getAttribute("data-pdf-name");
 
@@ -315,6 +317,41 @@ export function formatNumberInput(selector = '.format-numbers', decimals = 0) {
 
         // Format value on page load
         input.value = formatValue(input.value, decimals);
+    });
+}
+
+// Mask for input phone
+export function formatPhoneNumber() {
+    const phoneInputs = document.querySelectorAll('.phone-mask');
+
+    phoneInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            let value = input.value;
+
+            // Remove all non-digit characters
+            value = value.replace(/\D/g, '');
+
+            // Apply formatting
+            // Formats to (99) 9 9999-9999
+            if (value.length > 11) {
+                // Adjust according to the maximum length of phone number you expect
+                value = value.substring(0, 11); // Limits to 11 digits for (99) 9 9999-9999 format
+            }
+            let formattedValue = value;
+
+            // Apply the mask based on the current length
+            if (value.length > 7) {
+                formattedValue = `(${value.slice(0, 2)}) ${value.slice(2, 3)} ${value.slice(3, 7)}-${value.slice(7)}`;
+            } else if (value.length > 3) {
+                formattedValue = `(${value.slice(0, 2)}) ${value.slice(2, 3)} ${value.slice(3)}`;
+            } else if (value.length > 2) {
+                formattedValue = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+            } else if (value.length > 0) {
+                formattedValue = `(${value}`;
+            }
+
+            input.value = formattedValue;
+        });
     });
 }
 

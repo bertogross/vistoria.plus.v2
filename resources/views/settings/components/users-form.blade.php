@@ -117,7 +117,7 @@
                                         @endforeach
                                     </div>
                                 @else
-                                    <div class="alert alert-warning">Empresas ainda não foram cadastradas/ativadas</div>
+                                    <div class="alert alert-warning">Unidades ainda não foram cadastradas/ativadas</div>
                                 @endif
                             </div>
                             --}}

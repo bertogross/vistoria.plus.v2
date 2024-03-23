@@ -131,7 +131,7 @@
 
             {!! !empty($description) ? '<div class="blockquote custom-blockquote blockquote-outline blockquote-dark rounded mt-2 mb-2"><p class="text-body mb-2">'.$description.'</p><footer class="blockquote-footer mt-0">'.$getUserData->name.' <cite title="'.$authorRoleName.'">'.$authorRoleName.'</cite></footer></div>' : '' !!}
 
-            <div id="assignment-container">
+            <div id="assignment-container-autitor">
                 @csrf
                 <input type="hidden" name="survey_id" value="{{$surveyId}}">
                 <input type="hidden" name="company_id" value="{{$companyId}}">

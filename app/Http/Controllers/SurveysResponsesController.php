@@ -13,10 +13,10 @@ use Illuminate\Validation\ValidationException;
 
 class SurveysResponsesController extends Controller
 {
-    public function responsesSurveyorStoreOrUpdate(Request $request, $id = null)
+    public function responsesSurveyorStoreOrUpdate(Request $request, $existingId = null)
     {
         $messages = [
-            'id.required' => 'O campo id é obrigatório',
+            'company_id.required' => 'O campo id é obrigatório',
             'survey_id.required' => 'O campo survey_id é obrigatório',
             'step_id.required' => 'O campo step_id é obrigatório',
             'topic_id.required' => 'O campo topic_id é obrigatório',
@@ -26,7 +26,7 @@ class SurveysResponsesController extends Controller
 
         try {
             $validatedData = Validator::make($request->all(), [
-                'id' => 'required',
+                'company_id' => 'required',
                 'survey_id' => 'required',
                 'step_id' => 'required',
                 'topic_id' => 'required',
@@ -34,6 +34,8 @@ class SurveysResponsesController extends Controller
                 //'comment_survey' => 'sometimes|string',
             ], $messages)->validate();
         } catch (ValidationException $e) {
+            \Log::error("validatedData Error in responsesAuditorStoreOrUpdate: " . $e->errors());
+
             $errors = $e->errors();
 
             $errorMessages = '';
@@ -92,13 +94,19 @@ class SurveysResponsesController extends Controller
 
             // Prevent error from JavaScript if input[name="response_id"] was cracked.
             // Check if exists the response. If exist get the Id and update.
-            $existingResponse = SurveyResponse::where('survey_id', $surveyId)
-                ->where('assignment_id', $assignmentId)
-                ->where('step_id', $data['step_id'])
-                ->where('topic_id', $data['topic_id'])
-                ->first();
-            if($existingResponse){
-                $id = $existingResponse->id;
+            try{
+                $existingResponse = SurveyResponse::where('survey_id', $surveyId)
+                    ->where('assignment_id', $assignmentId)
+                    ->where('step_id', $data['step_id'])
+                    ->where('topic_id', $data['topic_id'])
+                    ->first();
+                if($existingResponse){
+                    $existingId = $existingResponse->id;
+                }
+            } catch (\Exception $e) {
+                \Log::error("existingResponse Error in responsesSurveyorStoreOrUpdate: " . $e->getMessage());
+
+                return response()->json(['success' => false, 'message' => 'Erro ao processar esta solicitação']);
             }
 
             if ($currentUserId != $assignmentData->surveyor_id) {
@@ -125,9 +133,9 @@ class SurveysResponsesController extends Controller
 
             /*
             if( $complianceSurvey == 'no' && !$attachmentIds ){
-                if ($id) {
+                if ($existingId) {
                     // Update existing survey response
-                    $SurveyResponse = SurveyResponse::findOrFail($id);
+                    $SurveyResponse = SurveyResponse::findOrFail($existingId);
 
                     $columns['attachments_survey'] = null;
                     $columns['compliance_survey'] = null;
@@ -157,9 +165,9 @@ class SurveysResponsesController extends Controller
 
             /*
             if( $complianceSurvey == 'no' && empty($comment) ){
-                if ($id) {
+                if ($existingId) {
                     // Update existing survey response
-                    $SurveyResponse = SurveyResponse::findOrFail($id);
+                    $SurveyResponse = SurveyResponse::findOrFail($existingId);
 
                     $columns['compliance_survey'] = null;
                     $SurveyResponse->update($columns);
@@ -177,9 +185,9 @@ class SurveysResponsesController extends Controller
                     'countTopics' => $countTopics
                 ]);
             }elseif($complianceSurvey == 'yes'){
-                if ($id) {
+                if ($existingId) {
                     // Update existing survey response
-                    $SurveyResponse = SurveyResponse::findOrFail($id);
+                    $SurveyResponse = SurveyResponse::findOrFail($existingId);
 
                     $columns['compliance_survey'] = $complianceSurvey;
                     $SurveyResponse->update($columns);
@@ -206,9 +214,9 @@ class SurveysResponsesController extends Controller
 
             $data['compliance_survey'] = $complianceSurvey;
 
-            if ($id) {
+            if ($existingId) {
                 // Update existing survey response
-                $SurveyResponse = SurveyResponse::findOrFail($id);
+                $SurveyResponse = SurveyResponse::findOrFail($existingId);
                 $SurveyResponse->update($data);
             } else {
                 // Create new survey response
@@ -221,7 +229,7 @@ class SurveysResponsesController extends Controller
             // Return success response
             return response()->json([
                 'success' => true,
-                'message' => $id ? 'Dados deste tópico foram atualizados' : 'Dados deste tópico foram salvos',
+                'message' => $existingId ? 'Dados deste tópico foram atualizados' : 'Dados deste tópico foram salvos',
                 'id' => $SurveyResponse->id,
                 'countResponses' => $countResponses,
                 'countTopics' => $countTopics,
@@ -244,10 +252,10 @@ class SurveysResponsesController extends Controller
         }
     }
 
-    public function responsesAuditorStoreOrUpdate(Request $request, $id = null)
+    public function responsesAuditorStoreOrUpdate(Request $request, $existingId = null)
     {
         $messages = [
-            'id.required' => 'O campo id é obrigatório',
+            'company_id.required' => 'O campo id é obrigatório',
             'survey_id.required' => 'O campo survey_id é obrigatório',
             'step_id.required' => 'O campo step_id é obrigatório',
             'topic_id.required' => 'O campo topic_id é obrigatório',
@@ -257,7 +265,7 @@ class SurveysResponsesController extends Controller
 
         try {
             $validatedData = Validator::make($request->all(), [
-                'id' => 'required',
+                'company_id' => 'required',
                 'survey_id' => 'required',
                 'step_id' => 'required',
                 'topic_id' => 'required',
@@ -265,6 +273,8 @@ class SurveysResponsesController extends Controller
                 //'comment_audit' => 'sometimes|string',
             ], $messages)->validate();
         } catch (ValidationException $e) {
+            \Log::error("validatedData Error in responsesAuditorStoreOrUpdate: " . $e->errors());
+
             $errors = $e->errors();
 
             $errorMessages = '';
@@ -287,7 +297,14 @@ class SurveysResponsesController extends Controller
 
             $assignmentId = $request->input('assignment_id');
 
-            $assignmentData = SurveyAssignments::findOrFail($assignmentId);
+            try{
+                $assignmentData = SurveyAssignments::findOrFail($assignmentId);
+            }catch (\Exception $e) {
+                \Log::error("assignmentData Error in responsesAuditorStoreOrUpdate: " . $e->getMessage());
+
+                return response()->json(['success' => false, 'message' => 'Erro ao processar esta solicitação']);
+            }
+
             $assignmentCreatedAt = $assignmentData->created_at;
 
             $now = Carbon::now()->startOfDay();
@@ -323,13 +340,19 @@ class SurveysResponsesController extends Controller
 
             // Prevent error from JavaScript if input[name="response_id"] was cracked.
             // Check if exists the response. If exist get the Id and update.
-            $existingResponse = SurveyResponse::where('survey_id', $surveyId)
-                ->where('assignment_id', $assignmentId)
-                ->where('step_id', $data['step_id'])
-                ->where('topic_id', $data['topic_id'])
-                ->first();
-            if($existingResponse){
-                $id = $existingResponse->id;
+            try{
+                $existingResponse = SurveyResponse::where('survey_id', $surveyId)
+                    ->where('assignment_id', $assignmentId)
+                    ->where('step_id', $data['step_id'])
+                    ->where('topic_id', $data['topic_id'])
+                    ->first();
+                if($existingResponse){
+                    $existingId = $existingResponse->id;
+                }
+            } catch (\Exception $e) {
+                \Log::error("existingResponse Error in responsesAuditorStoreOrUpdate: " . $e->getMessage());
+
+                return response()->json(['success' => false, 'message' => 'Erro ao processar esta solicitação']);
             }
 
             if ($currentUserId != $assignmentData->auditor_id) {
@@ -356,9 +379,9 @@ class SurveysResponsesController extends Controller
 
             /*
             if( $complianceAudit == 'no' && !$attachmentIds ){
-                if ($id) {
+                if ($existingId) {
                     // Update existing survey response
-                    $SurveyResponse = SurveyResponse::findOrFail($id);
+                    $SurveyResponse = SurveyResponse::findOrFail($existingId);
 
                     $columns['attachments_audit'] = null;
                     $columns['compliance_audit'] = null;
@@ -377,9 +400,9 @@ class SurveysResponsesController extends Controller
                     'countTopics' => $countTopics
                 ]);
             }elseif($complianceAudit == 'yes'){
-                if ($id) {
+                if ($existingId) {
                     // Update existing survey response
-                    $SurveyResponse = SurveyResponse::findOrFail($id);
+                    $SurveyResponse = SurveyResponse::findOrFail($existingId);
 
                     $columns['compliance_audit'] = $complianceAudit;
                     $SurveyResponse->update($columns);
@@ -398,9 +421,9 @@ class SurveysResponsesController extends Controller
 
             /*
             if( $complianceAudit == 'no' && empty($comment) ){
-                if ($id) {
+                if ($existingId) {
                     // Update existing survey response
-                    $SurveyResponse = SurveyResponse::findOrFail($id);
+                    $SurveyResponse = SurveyResponse::findOrFail($existingId);
 
                     $columns['compliance_audit'] = null;
                     $SurveyResponse->update($columns);
@@ -418,9 +441,9 @@ class SurveysResponsesController extends Controller
                     'countTopics' => $countTopics
                 ]);
             }elseif($complianceAudit == 'yes'){
-                if ($id) {
+                if ($existingId) {
                     // Update existing survey response
-                    $SurveyResponse = SurveyResponse::findOrFail($id);
+                    $SurveyResponse = SurveyResponse::findOrFail($existingId);
 
                     $columns['compliance_audit'] = $complianceAudit ;
                     $SurveyResponse->update($columns);
@@ -446,9 +469,9 @@ class SurveysResponsesController extends Controller
 
             $data['compliance_audit'] = $complianceAudit;
 
-            if ($id) {
+            if ($existingId) {
                 // Update existing survey response
-                $SurveyResponse = SurveyResponse::findOrFail($id);
+                $SurveyResponse = SurveyResponse::findOrFail($existingId);
                 $SurveyResponse->update($data);
             } else {
                 // Create new survey response
@@ -461,7 +484,7 @@ class SurveysResponsesController extends Controller
             // Return success response
             return response()->json([
                 'success' => true,
-                'message' => $id ? 'Dados deste tópico foram atualizados' : 'Dados deste tópico foram salvos',
+                'message' => $existingId ? 'Dados deste tópico foram atualizados' : 'Dados deste tópico foram salvos',
                 'id' => $SurveyResponse->id,
                 'countResponses' => $countResponses,
                 'countTopics' => $countTopics,

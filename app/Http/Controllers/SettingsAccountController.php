@@ -70,8 +70,8 @@ class SettingsAccountController extends Controller
 
         // Custom error messages
         $messages = [
-            'name.required' => 'O nome da Instituição (empresa/organização) é obrigatório.',
-            'name.max' => 'O nome da Instituição (empresa/organização) não pode ter mais de 191 caracteres.',
+            'name.required' => 'O nome da Instituição (unidade/empresa/organização) é obrigatório.',
+            'name.max' => 'O nome da Instituição (unidade/empresa/organização) não pode ter mais de 191 caracteres.',
             //'user_name.required' => 'Seu nome é obrigatório.',
             //'user_name.max' => 'Seu nome não pode ter mais de 191 caracteres.',
             'phone.required' => 'O número de telefone é obrigatório.',

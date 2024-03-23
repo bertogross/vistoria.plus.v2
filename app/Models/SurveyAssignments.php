@@ -159,7 +159,7 @@ class SurveyAssignments extends Model
 
                     // Send notification message to host
                     $message = 'A tarefa <strong>' . getSurveyNameById($surveyId) . '</strong> não foi inicializada e o status foi modificado para <strong>Interrompido</strong> pois membros colaboradores podem ter sido desativados.<br><br>';
-                    $message .= 'Para ajustar, acesse seu Painel em <a href="' . route('settingsAccountShowURL') . '/tab=users">' . route('settingsAccountShowURL') . '/tab=users</a> e verifique se será possível reativar a conexão. <br>Se não for possível restabelecer, edite o Checklist intitulado <u>' . getSurveyNameById($surveyId) . '</u> e altere as Atribuições.';
+                    $message .= 'Para ajustar, acesse seu Painel em <a href="' . route('settingsAccountShowURL') . '/tab=users">' . route('settingsAccountShowURL') . '/tab=users</a> e verifique se será possível reativar a conexão. <br>Se não for possível restabelecer, edite o Checklist alterando as Atribuições.';
 
                     $getUserData = getUserData($connectedAccountData->host_id);
                     $hostEmail = $getUserData->email;
@@ -415,19 +415,29 @@ class SurveyAssignments extends Model
 
     }
 
-    public static function getAssignmentDateRange()
+    public static function getAssignmentDateRange($surveyId = false)
     {
-        $firstDate = self::select(DB::raw('DATE_FORMAT(MIN(created_at), "%Y-%m-%d") as first_date'))
-            ->first();
+        // Initialize the base query
+        $query = self::query();
 
-        $lastDate = self::select(DB::raw('DATE_FORMAT(MAX(created_at), "%Y-%m-%d") as last_date'))
-            ->first();
+        // If a specific survey ID is provided, add a where clause to the query
+        if ($surveyId) {
+            $query->where('survey_id', $surveyId);
+        }
 
+        // Execute a single query to get both the earliest and latest dates
+        $dateRange = $query->select([
+            DB::raw('DATE_FORMAT(MIN(created_at), "%Y-%m-%d") as first_date'),
+            DB::raw('DATE_FORMAT(MAX(created_at), "%Y-%m-%d") as last_date')
+        ])->first();
+
+        // Return the date range, using the current date as a fallback if no dates are found
         return [
-            'first_date' => $firstDate->first_date ?? date('Y-m-d'),
-            'last_date' => $lastDate->last_date ?? date('Y-m-d'),
+            'first_date' => $dateRange->first_date ?? date('Y-m-d'),
+            'last_date' => $dateRange->last_date ?? date('Y-m-d'),
         ];
     }
+
 
     public static function calculateSurveyPercentage($surveyId, $companyId, $assignmentId, $surveyorId, $auditorId, $designated)
     {

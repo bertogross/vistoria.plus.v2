@@ -8,11 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CompressHtmlOutput
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         $response = $next($request);
@@ -20,14 +15,16 @@ class CompressHtmlOutput
         if ($response instanceof \Illuminate\Http\Response) {
             $buffer = $response->getContent();
 
-            // Split the content by script tags to avoid compressing JavaScript
-            $scripts = preg_split('/(<script[^>]*?>.*?<\/script>)/is', $buffer, -1, PREG_SPLIT_DELIM_CAPTURE);
+            // Split the content by <script> and <pre> tags to avoid compressing their content
+            $patterns = '/(<script[^>]*?>.*?<\/script>)|(<pre.*?>.*?<\/pre>)/is';
+            $parts = preg_split($patterns, $buffer, -1, PREG_SPLIT_DELIM_CAPTURE);
+
             $compressedBuffer = '';
 
-            foreach ($scripts as $script) {
-                if (preg_match('/<script[^>]*?>.*?<\/script>/is', $script)) {
-                    // If it's a script tag, append without compressing
-                    $compressedBuffer .= $script;
+            foreach ($parts as $part) {
+                if (preg_match($patterns, $part)) {
+                    // If it's a <script> or <pre> tag, append without compressing
+                    $compressedBuffer .= $part;
                 } else {
                     // Otherwise, apply compression
                     $compressedBuffer .= preg_replace([
@@ -40,7 +37,7 @@ class CompressHtmlOutput
                         '<',
                         '\\1',
                         ''
-                    ], $script);
+                    ], $part);
                 }
             }
 

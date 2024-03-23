@@ -22,54 +22,56 @@
 
                     <div class="mb-3">
                         <label class="form-label" for="phone">Número do telefone móvel:</label>
-                        <input type="tel" name="phone" id="phone" class="form-control phone-mask" value="{{ isset($settings['phone']) ? old('phone', formatPhoneNumber($settings['phone']) ?? '') : '' }}" maxlength="16" required>
+                        <input type="text" name="phone" id="phone" class="form-control phone-mask" value="{{ isset($settings['phone']) ? old('phone', formatPhoneNumber($settings['phone']) ?? '') : '' }}" maxlength="16" required>
                     </div>
 
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <h4 class="card-title mb-0">Envie o logotipo de sua empresa</h4>
-                            <small class="form-text">Formato suportado: <strong class="text-theme">JPG/PNG</strong> | Recomendado PNG transparente na dimensão: <span class="text-theme">300</span> x <span class="text-theme">300</span> pixels</small>
-                        </div>
-                        <div class="card-body">
-                            <div class="text-center responses-data-container">
-                                <div class="position-relative d-inline-block">
-                                    <div class="position-absolute bottom-0 end-0">
-                                        <label for="logo-image-input" class="mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Clique aqui e envie o logotipo de sua empresa">
-                                            <div class="avatar-xs">
-                                                <div class="avatar-title bg-light border rounded-circle text-muted cursor-pointer">
-                                                    <i class="ri-image-fill text-theme"></i>
-                                                </div>
-                                            </div>
-                                        </label>
-                                        <input class="form-control d-none" name="logo" id="logo-image-input" type="file" accept="image/png, image/jpeg">
-                                    </div>
+                    <button type="submit" class="btn btn-theme">Atualizar Conta</button>
+                </form>
 
-                                    <div class="position-absolute bottom-0 start-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Clique aqui remover logotipo de sua empresa">
+                <hr class="w-50 start-50 position-relative translate-middle-x clearfix mt-4 mb-4">
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Envie o logotipo de sua unidade/empresa/organização</h4>
+                        <small class="form-text">Formato suportado: <strong class="text-theme">JPG/PNG</strong> | Recomendado PNG transparente na dimensão: <span class="text-theme">300</span> x <span class="text-theme">300</span> pixels</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center responses-data-container">
+                            <div class="position-relative d-inline-block">
+                                <div class="position-absolute bottom-0 end-0">
+                                    <label for="logo-image-input" class="mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Clique aqui e envie o logotipo de sua empresa">
                                         <div class="avatar-xs">
-                                            <div id="btn-delete-logo" class="avatar-title bg-light border rounded-circle text-muted cursor-pointer {{ isset($settings['logo']) && $settings['logo'] ? '' : 'd-none' }}">
-                                                <i class="ri-delete-bin-2-line text-danger"></i>
+                                            <div class="avatar-title bg-light border rounded-circle text-muted cursor-pointer">
+                                                <i class="ri-image-fill text-theme"></i>
                                             </div>
                                         </div>
-                                    </div>
+                                    </label>
+                                    <input class="form-control d-none" name="logo" id="logo-image-input" type="file" accept="image/png, image/jpeg">
+                                </div>
 
-                                    <div class="avatar-lg">
-                                        <div class="avatar-title bg-transparent">
-                                            <img
-                                            @if(isset($settings['logo']) && $settings['logo'])
-                                                src="{{ asset('storage/' . $settings['logo']) }}"
-                                            @else
-                                                src="{{URL::asset('build/images/no-logo.png')}}"
-                                            @endif
-                                            id="logo-img" alt="logo" data-user-id="1" style="max-height: 100px;" loading="lazy">
+                                <div class="position-absolute bottom-0 start-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Clique aqui remover logotipo de sua unidade/empresa/organização">
+                                    <div class="avatar-xs">
+                                        <div id="btn-delete-logo" class="avatar-title bg-light border rounded-circle text-muted cursor-pointer {{ isset($settings['logo']) && $settings['logo'] ? '' : 'd-none' }}">
+                                            <i class="ri-delete-bin-2-line text-danger"></i>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div class="avatar-lg">
+                                    <div class="avatar-title bg-transparent">
+                                        <img
+                                        @if(isset($settings['logo']) && $settings['logo'])
+                                            src="{{ asset('storage/' . $settings['logo']) }}"
+                                        @else
+                                            src="{{URL::asset('build/images/no-logo.png')}}"
+                                        @endif
+                                        id="logo-img" alt="logo" data-user-id="1" style="max-height: 100px;" loading="lazy">
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <button class="btn btn-theme" type="submit">Atualizar Conta</button>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -114,33 +116,35 @@
                         </div>
                     </div>
 
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <h4 class="card-title mb-0">Avatar</h4>
-                            <small class="form-text">Formato suportado: <strong class="text-theme">JPG</strong> com dimensão: <span class="text-theme">300</span> x <span class="text-theme">300</span> pixels</small>
-                        </div>
-                        <div class="card-body">
-                            <div class="team-profile-img text-center">
-                                <div class="avatar-lg profile-user position-relative d-inline-block">
-                                    <img src="{{ checkUserAvatar($user->avatar) }}" alt="{{$user->name}}" class="img-thumbnail rounded-circle avatar-img" loading="lazy">
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-theme">Atualizar Usuário</button>
+                    </div>
+                </form>
 
-                                    <div class="avatar-xs p-0 rounded-circle profile-photo-edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="right" title="Alterar Avatar">
-                                        <input class="d-none" name="avatar" id="member-image-input" type="file" accept="image/jpeg">
-                                        <label for="member-image-input" class="profile-photo-edit avatar-xs">
-                                            <span class="avatar-title rounded-circle bg-light text-body">
-                                                <i class="ri-camera-fill"></i>
-                                            </span>
-                                        </label>
-                                    </div>
+                <hr class="w-50 start-50 position-relative translate-middle-x clearfix mt-4 mb-4">
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Avatar</h4>
+                        <small class="form-text">Formato suportado: <strong class="text-theme">JPG</strong> com dimensão: <span class="text-theme">300</span> x <span class="text-theme">300</span> pixels</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="team-profile-img text-center">
+                            <div class="avatar-lg profile-user position-relative d-inline-block">
+                                <img src="{{ checkUserAvatar($user->avatar) }}" alt="{{$user->name}}" class="img-thumbnail rounded-circle avatar-img" loading="lazy">
+
+                                <div class="avatar-xs p-0 rounded-circle profile-photo-edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="right" title="Alterar Avatar">
+                                    <input class="d-none" name="avatar" id="member-image-input" type="file" accept="image/jpeg">
+                                    <label for="member-image-input" class="profile-photo-edit avatar-xs">
+                                        <span class="avatar-title rounded-circle bg-light text-body">
+                                            <i class="ri-camera-fill"></i>
+                                        </span>
+                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="text-end">
-                        <button class="btn btn-theme" type="submit">Atualizar Usuário</button>
-                    </div>
-                </form>
+                </div>
 
                 {{--
 

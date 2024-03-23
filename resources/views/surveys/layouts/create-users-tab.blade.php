@@ -4,8 +4,7 @@
 @foreach ($getActiveCompanies as $company)
     @php
         $colVisibility = 'style="display: block;"';
-        // TODO ??
-        if($surveyId && $data && $countTodayResponses > 0){
+        if($surveyId && $data && ( $countTodayResponses > 0 || $countAllResponses > 0 )){
             if(!in_array(intval($company->id), $selectedCompanies)){
                 $colVisibility = 'style="display: none;"';
             }

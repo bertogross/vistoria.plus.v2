@@ -8,14 +8,28 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     /**
+     * The Artisan commands provided by your application.
+     */
+    protected $commands = [
+        \App\Console\Commands\FetchSurveys::class,
+    ];
+
+
+    /**
      * Define the application's command schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
+     * Example: php artisan make:command FetchSurveys
+     * https://laravel.com/docs/10.x/scheduling
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // https://laravel.com/docs/10.x/scheduling
+        // Update surveys and tasks to each vpApp(ID) database
+        // Usefull if crontab or Kernel schedule is losted
+        // to test in linux server terminal: php artisan fetch:surveys
+        $schedule->command('fetch:surveys')
+            ->dailyAt('01:00')
+            ->timezone('America/Sao_Paulo');
+
     }
 
     /**

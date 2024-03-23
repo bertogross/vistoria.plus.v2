@@ -195,36 +195,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-
                         if(origin == 'survey'){
-                            sweetAlert(data.message, 'Ok!', 'success');
-
-                            // Access surveyReloadUsersTab directly from surveys.js
-                            if (window.surveyReloadUsersTab) {
-                                window.surveyReloadUsersTab(origin);
-                            }
-
-                        }else{
-                            toastAlert(data.message, 'success', 20000);
-
-                            if(form.dataset.id){
-                                showPreloader();
-                            }
-
-                            // reload page
-                            setTimeout(() => {
-                                //location.reload();
-                                window.location.href = settingsAccountShowURL + '?tab=users';
-                            }, 5000);
-
-                            btnSaveUser.remove();
-                        }
-
-                    } else if( data.action == 'subscriptionAlert'){
-                        sweetWizardAlert(data.message, settingsAccountShowURL + '?tab=subscription', 'warning', 'Voltar', 'Ativar Assinatura')
-                    } else {
-                        if(origin == 'survey'){
-                            sweetAlert(data.message, 'Ok!', 'success');
+                            sweetAlert(data.message, 'Enviado!', 'success');
 
                             // Access surveyReloadUsersTab directly from surveys.js
                             if (window.surveyReloadUsersTab) {
@@ -234,8 +206,20 @@ document.addEventListener('DOMContentLoaded', function() {
                                 document.querySelector('#userModal .btn-close').click();
                             }
                         }else{
-                            sweetAlert(data.message);
+                            toastAlert(data.message, 'success', 20000);
+
+                            if(form.dataset.id){
+                                showPreloader();
+                            }
+
+                            window.location.href = settingsAccountShowURL + '?tab=users';
+
+                            btnSaveUser.remove();
                         }
+                    } else if( data.action == 'subscriptionAlert'){
+                        sweetWizardAlert(data.message, settingsAccountShowURL + '?tab=subscription', 'warning', 'Voltar', 'Ativar Assinatura')
+                    } else {
+                        sweetAlert(data.message);
                     }
                 })
                 .catch(error => {

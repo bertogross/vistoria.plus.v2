@@ -745,11 +745,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }
 
-    var loadSurveyActivities = document.getElementById('load-surveys-activities');
-    if( loadSurveyActivities && getRecentActivitiesURL ){
-        function getRecentActivities() {
-            var subDays = loadSurveyActivities.getAttribute("data-subDays") ?? 1;
-            fetch(getRecentActivitiesURL + '/' + subDays, {
+    var loadAssignmentActivities = document.getElementById('load-assignment-activities');
+    if( loadAssignmentActivities && requestAssignmentActivitiesURL ){
+        function requestAssignmentActivities() {
+            var subDays = loadAssignmentActivities.getAttribute("data-subDays") ?? 1;
+            fetch(requestAssignmentActivitiesURL + '/' + subDays, {
                     method: 'GET',
                     headers: {
                         'Cache-Control': 'no-cache',
@@ -766,9 +766,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => {
                     //console.log(JSON.stringify(activities, null, 2));
 
-                    const container = loadSurveyActivities;
+                    const container = loadAssignmentActivities;
 
-                    container.innerHTML = '<h6 class="text-muted m-0 text-uppercase fw-semibold mb-1">Atividades Recentes</h6>';
+                    container.innerHTML = '';
 
                     if(data.success && data.activities){
                         data.activities.forEach(activity => {
@@ -809,7 +809,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         bsPopoverTooltip();
                     }else{
-                        container.innerHTML = '<h6 class="text-muted m-0 text-uppercase fw-semibold mb-4">Atividades Recentes</h6><div class="text-center text-muted">'+ data.message +'</div>';
+                        container.innerHTML = '<div class="text-center text-muted">'+ data.message +'</div>';
                     }
 
                     return;
@@ -818,9 +818,9 @@ document.addEventListener('DOMContentLoaded', function() {
             );
         }
 
-        getRecentActivities();
+        requestAssignmentActivities();
         setInterval(function () {
-            getRecentActivities();
+            requestAssignmentActivities();
         }, 60000);// 60000 = 1 minute
     }
 

@@ -125,7 +125,7 @@
 
 
         @if( $recurring != 'once' && $countSurveyAssignmentBySurveyId > 0 )
-            <a href="{{ route('surveysShowURL', $surveyId) }}" class="btn btn-lg btn-soft-theme float-end position-relative" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Visualização Analítica em Checklists Recorrentes">
+            <a href="{{ route('surveysShowURL', $surveyId) }}" class="btn btn-lg btn-soft-theme float-end position-relative init-loader" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Visualização Analítica em Checklists Recorrentes">
                 <i class="ri-line-chart-fill"></i> <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">{{$countSurveyAssignmentBySurveyId}} <span class="visually-hidden">registros</span></span>
             </a>
         @endif

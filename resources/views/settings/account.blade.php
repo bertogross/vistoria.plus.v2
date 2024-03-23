@@ -26,30 +26,32 @@
 
     @php
         //appPrintR($subscriptionData);
+        if($customerId){
+            try {
+                //https://stripe.com/docs/api/invoices/list#list_invoices
+                $invoices = $stripe->invoices->all([
+                    'customer' => $customerId
+                ]);
+                //appPrintR($invoices);
 
-        try {
-            //https://stripe.com/docs/api/invoices/list#list_invoices
-            $invoices = $stripe->invoices->all([
-                'customer' => $customerId
-            ]);
-            //appPrintR($invoices);
+            } catch (\Exception $e) {
+                $invoices = null;
 
-        } catch (\Exception $e) {
-            $invoices = null;
+                \Log::error('Error to get invoices for listing: ' . $e->getMessage());
+            }
 
-            \Log::error('Error to get invoices for listing: ' . $e->getMessage());
-        }
+            try {
+                //https://stripe.com/docs/api/invoices/upcoming
+                $upcoming = $stripe->invoices->upcoming([
+                    'customer' => $customerId,
+                    //'subscription' => $subscriptionId
+                ]);
+                //appPrintR($upcoming);
+            } catch (\Exception $e) {
+                $upcoming = null;
 
-        try {
-            //https://stripe.com/docs/api/invoices/upcoming
-            $upcoming = $stripe->invoices->upcoming([
-                'customer' => $customerId,
-                //'subscription' => $subscriptionId
-            ]);
-            //appPrintR($upcoming);
-        } catch (\Exception $e) {
-            $upcoming = null;
-            \Log::error('Error to get upcoming for modal: ' . $e->getMessage());
+                \Log::error('Error to get upcoming for modal: ' . $e->getMessage());
+            }
         }
 
         $tab = request('tab', null);

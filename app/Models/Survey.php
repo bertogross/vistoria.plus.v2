@@ -248,7 +248,7 @@ class Survey extends Model
         $analyticsData = SurveyAssignments::where('survey_assignments.survey_id', $surveyId)
             ->join('survey_responses', 'survey_assignments.id', '=', 'survey_responses.assignment_id')
             ->select(
-                //'survey_assignments.*', // You might want to select specific fields here
+                //'survey_assignments.*',
                 'survey_assignments.id',
                 'survey_assignments.survey_id',
                 'survey_assignments.company_id',
@@ -286,11 +286,11 @@ class Survey extends Model
 
     public static function fetchAndTransformSurveyDataByTerms($surveyId, $assignmentId = null)
     {
-        $filterCreatedAt = request('created_at', '');
+        $filterCreatedAt = request('created_at', null);
         $filterCompanies = request('companies', []);
 
         $createdAtRange = [];
-        if (!empty($filterCreatedAt)) {
+        if ($filterCreatedAt) {
             $dateRange = explode(' até ', $filterCreatedAt);
 
             if (count($dateRange) === 2) {
@@ -305,46 +305,55 @@ class Survey extends Model
             $createdAtRange = [$startDate, $endDate];
         }
 
-
-        $analyticsData = SurveyAssignments::where('survey_assignments.survey_id', $surveyId)
-            ->join('survey_responses', 'survey_assignments.id', '=', 'survey_responses.assignment_id')
-            ->join('survey_steps', 'survey_responses.step_id', '=', 'survey_steps.id')
-            ->select(
-                //'survey_assignments.*', // You might want to select specific fields here
-                'survey_assignments.id',
-                'survey_assignments.survey_id',
-                'survey_assignments.company_id',
-                'survey_assignments.surveyor_id',
-                'survey_assignments.auditor_id',
-                'survey_assignments.surveyor_status',
-                'survey_assignments.auditor_status',
-                'survey_assignments.created_at',
-                'survey_responses.compliance_survey',
-                'survey_steps.term_id'
-            )
-            ->where('survey_assignments.surveyor_status', 'completed')
-            ->where('survey_responses.compliance_survey', '!=', null)
-            ->when($assignmentId, function ($query) use ($assignmentId) {
-                $query->where('survey_assignments.id', $assignmentId);
-            })
-            ->when(!empty($filterCompanies), function ($query) use ($filterCompanies) {
-                $query->whereIn('survey_assignments.company_id', $filterCompanies);
-            })
-            ->when(!empty($createdAtRange), function ($query) use ($createdAtRange) {
-                $query->whereBetween('survey_assignments.created_at', $createdAtRange);
-            })
-            ->get()
-            ->toArray();
-
         $transformedArray = [];
+        try{
+            $analyticsData = SurveyAssignments::where('survey_assignments.survey_id', $surveyId)
+                ->join('survey_responses', 'survey_assignments.id', '=', 'survey_responses.assignment_id')
+                ->join('survey_steps', 'survey_responses.step_id', '=', 'survey_steps.id')
+                ->select(
+                    //'survey_assignments.*',
+                    'survey_assignments.id',
+                    'survey_assignments.survey_id',
+                    'survey_assignments.company_id',
+                    'survey_assignments.surveyor_id',
+                    'survey_assignments.auditor_id',
+                    'survey_assignments.surveyor_status',
+                    'survey_assignments.auditor_status',
+                    'survey_assignments.created_at',
+                    'survey_responses.compliance_survey',
+                    'survey_steps.term_id'
+                )
+                ->where('survey_assignments.surveyor_status', 'completed')
+                ->where('survey_responses.compliance_survey', '!=', null)
+                ->when($assignmentId, function ($query) use ($assignmentId) {
+                    $query->where('survey_assignments.id', $assignmentId);
+                })
+                ->when(!empty($filterCompanies), function ($query) use ($filterCompanies) {
+                    $query->whereIn('survey_assignments.company_id', $filterCompanies);
+                })
+                ->when(!empty($createdAtRange), function ($query) use ($createdAtRange) {
+                    $query->whereBetween('survey_assignments.created_at', $createdAtRange);
+                })
+                ->get()
+                ->toArray();
 
-        foreach ($analyticsData as $item) {
-            $dateKey = Carbon::parse($item['created_at'])->format('d-m-Y');
-            $termId = $item['term_id'];
+                //\Log::error('analyticsData: ' . json_encode($analyticsData));
 
-            //$transformedArray[$dateKey][$termId][] = $item;
-            $transformedArray[$termId][$dateKey][] = $item;
+
+            if($analyticsData){
+                foreach ($analyticsData as $item) {
+                    $dateKey = Carbon::parse($item['created_at'])->format('d-m-Y');
+                    $termId = $item['term_id'];
+
+                    //$transformedArray[$dateKey][$termId][] = $item;
+                    $transformedArray[$termId][$dateKey][] = $item;
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::error('fetchAndTransformSurveyDataByTerms: ' . $e->getMessage());
         }
+
+
 
         return $transformedArray;
     }
@@ -402,11 +411,15 @@ class Survey extends Model
 
         $databaseName = 'vpApp' . $databaseId;
 
-        if (!DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?", [$databaseName])) {
-            return;
-        }
+        try {
+            if (!DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?", [$databaseName])) {
+                return;
+            }
 
-        config(['database.connections.vpAppTemplate.database' => $databaseName]);
+            config(['database.connections.vpAppTemplate.database' => $databaseName]);
+        } catch (\Exception $e) {
+            \Log::error("setSurveyDatabaseConnection: " . $e->getMessage());
+        }
     }
 
     public static function processSurveysWithStatus($status, $callback)

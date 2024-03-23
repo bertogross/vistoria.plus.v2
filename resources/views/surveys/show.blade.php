@@ -1,10 +1,14 @@
 @php
     use App\Models\User;
+    use App\Models\Survey;
+    use App\Models\SurveyTemplates;
+    use App\Models\SurveyAssignments;
     //appPrintR($data);
-    //appPrintR($analyticTermsData);
+    //appPrintR($swapData);
+    appPrintR($analyticTermsData);
     //appPrintR($surveyAssignmentData);
 
-    $getSurveyRecurringTranslations = \App\Models\Survey::getSurveyRecurringTranslations();
+    $getSurveyRecurringTranslations = Survey::getSurveyRecurringTranslations();
 
     $title = $data->title;
     $surveyId = $data->id;
@@ -26,15 +30,15 @@
 
     $filterCompanies = request('companies') ?? $companies;
 
-    $templateData = \App\Models\SurveyTemplates::findOrFail($data->template_id);
+    $templateData = SurveyTemplates::findOrFail($data->template_id);
 
     $authorId = $templateData->user_id;
     $getUserData = getUserData($authorId);
-    $authorRoleName = \App\Models\User::getRoleName($getUserData->role);
+    $authorRoleName = User::getRoleName($getUserData->role);
     $templateName = trim($templateData->title) ? nl2br($templateData->title) : '';
     $templateDescription = trim($templateData->description) ? nl2br($templateData->description) : '';
 
-    $delegation = \App\Models\SurveyAssignments::getAssignmentDelegatedsBySurveyId($surveyId);
+    $delegation = SurveyAssignments::getAssignmentDelegatedsBySurveyId($surveyId);
     //appPrintR($delegation);
 
     //Reorganize the analyticTermsData to separate companies
@@ -52,7 +56,6 @@
     }
     asort($companiesAnalyticTermsData);
 
-    //appPrintR($swapData);
 @endphp
 @extends('layouts.master')
 @section('title')
@@ -72,7 +75,7 @@
             Análise do Checklist
             <i class="ri-arrow-right-s-fill text-theme ms-2 me-2 align-bottom"></i>
             <span class="text-muted" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Dados originados desta conta">{!!getCurrentConnectionName()!!}</span>
-            <small class="d-none d-lg-block d-xl-block">
+            <small class="d-none d-lg-inline-block d-xl-inline-block">
                 <i class="ri-arrow-drop-right-line text-theme ms-2 me-2 align-bottom"></i>
                 {{limitChars($title ?? '', 30) }} #<span class="text-theme me-2">{{$surveyId}}</span>
             </small>
@@ -102,8 +105,8 @@
                                     </div>
 
                                     @if (!empty($companies) && is_array($companies) && count($companies) > 1)
-                                        <div class="col-sm-12 col-md col-lg" title="Exibir somente Empresas selecionadas">
-                                            <select class="form-control filter-companies" name="companies[]" multiple data-placeholder="- Empresa -">
+                                        <div class="col-sm-12 col-md col-lg" title="Exibir somente Unidades selecionadas">
+                                            <select class="form-control filter-companies" name="companies[]" multiple data-placeholder="- Unidade -">
                                                 @foreach ($companies as $companyId)
                                                     <option {{ in_array($companyId, $filterCompanies) ? 'selected' : '' }} value="{{ $companyId }}">{{ getCompanyNameById($companyId) }}</option>
                                                 @endforeach
@@ -141,7 +144,7 @@
 
                             <button class="btn btn-soft-theme ms-2" title="Listar Tarefas" data-bs-toggle="modal" data-bs-target="#assignmentsListingModal">
                                 <i class="ri-file-list-line"></i>
-                                <span class="ms-1 d-none d-lg-block d-xl-block">Listar Tarefas</span>
+                                <span class="ms-1 d-none d-lg-inline-block d-xl-inline-block">Listar Tarefas</span>
                             </button>
 
                             <button class="btn btn-soft-theme ms-2 {{ $swapData ? '' : 'btn-print-this' }}"
@@ -150,7 +153,7 @@
                                 @endif
                                 data-target-id="print-this" data-pdf-name="Relatório Checklist {{$surveyId}}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="Gerar PDF">
                                 <i class="ri-printer-fill"></i>
-                                <span class="ms-1 d-none d-lg-block d-xl-block">Imprimir</span>
+                                <span class="ms-1 d-none d-lg-inline-block d-xl-inline-block">Imprimir</span>
                             </button>
                         </div>
                     </div>

@@ -219,7 +219,7 @@ return [
     "grid-view" => "Vista en cuadrícula",
     "application" => "Solicitud",
     "new-job" => "Nuevo trabajo",
-    "companies-list" => "Lista de empresas",
+    "companies-list" => "Lista de Unidades",
     "job-categories" => "Categorías de trabajo",
     "api-key" => "Clave API",
     "privacy-policy" => "Política de privacidad",

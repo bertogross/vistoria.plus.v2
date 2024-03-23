@@ -103,7 +103,7 @@ based on apps-crm-deals.blade.php
                     @endphp
                      Vistoriador{{ count($uniqued) > 1 ? 'es' : '' }}
                 </h5>
-                <p class="text-muted mb-0"><span class="fw-medium">{{ is_array($distributedData['surveyor']) ? count($distributedData['surveyor']) : ''}} empresas</span></p>
+                <p class="text-muted mb-0"><span class="fw-medium">{{ is_array($distributedData['surveyor']) ? count($distributedData['surveyor']) : ''}} Unidades</span></p>
             </a>
         </div>
         <!--end card-->
@@ -195,7 +195,7 @@ based on apps-crm-deals.blade.php
                     @endphp
                      Auditor{{ count($uniqued) > 1 ? 'es' : '' }}
                 </h5>
-                <p class="text-muted mb-0"><span class="fw-medium">{{ is_array($distributedData['auditor']) ? count($distributedData['auditor']) : ''}} empresas</span></p>
+                <p class="text-muted mb-0"><span class="fw-medium">{{ is_array($distributedData['auditor']) ? count($distributedData['auditor']) : ''}} Unidades</span></p>
             </a>
         </div>
         <!--end card-->

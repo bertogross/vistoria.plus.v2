@@ -36,8 +36,8 @@ class SurveysController extends Controller
             return redirect(route('profileShowURL', $currentUserId));
         }
 
-
         // Usefull if crontab or Kernel schedule is losted
+        // D:public_html\app\Console\Commands
         Survey::populateSurveys();
 
         $createdAt = $request->input('created_at');
@@ -125,7 +125,10 @@ class SurveysController extends Controller
             abort(404);
         }
 
-        $data = Survey::findOrFail($id);
+        $data = Survey::find($id);
+        if (!$data) {
+            abort(404);
+        }
 
         $surveyId = $data->id;
 
@@ -154,26 +157,8 @@ class SurveysController extends Controller
             ];
         }
 
-        /*$stepsQuery = DB::connection('vpAppTemplate')
-            ->table('survey_steps')
-            ->where('survey_id', $surveyId)
-            ->get()
-            ->toArray();
-        $steps = $stepsQuery ?? null;*/
-
-        /**
-         * START get terms
-         */
         $terms = [];
-        /*$departmentsQuery = DB::connection('vpAppTemplate')
-            ->table('wlsm_departments')
-            ->get()
-            ->toArray();
-        foreach ($departmentsQuery as $department) {
-            $terms[$department->department_id] = [
-                'name' => strtoupper($department->department_alias),
-            ];
-        }*/
+
         $wharehouseTermsQuery = DB::connection('vpWarehouse')
             ->table('survey_terms')
             ->get()
@@ -197,7 +182,7 @@ class SurveysController extends Controller
          * END get terms
          */
 
-        $dateRange = SurveyAssignments::getAssignmentDateRange();
+        $dateRange = SurveyAssignments::getAssignmentDateRange($surveyId);
         $firstDate = $dateRange['first_date'] ?? null;
         $lastDate = $dateRange['last_date'] ?? null;
 

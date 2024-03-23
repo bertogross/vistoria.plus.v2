@@ -4,7 +4,6 @@
 @if($customerId)
     @if(isset($invoices) && is_object($invoices) || is_object($upcoming))
         <div class="table-responsive">
-
             <table class="table table-hover table-bordered table-striped table-compact">
                 <thead class="table-light">
                     <th class="d-none text-uppercase">ID</th>

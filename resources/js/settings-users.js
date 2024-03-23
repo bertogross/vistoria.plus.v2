@@ -196,13 +196,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => {
                     if (data.success) {
                         if(origin == 'survey'){
-                            sweetAlert(data.message, 'Ok!', 'success');
+                            sweetAlert(data.message, 'Enviado!', 'success');
 
                             // Access surveyReloadUsersTab directly from surveys.js
                             if (window.surveyReloadUsersTab) {
                                 window.surveyReloadUsersTab(origin);
-                            }
 
+                                //Close user modal
+                                document.querySelector('#userModal .btn-close').click();
+                            }
                         }else{
                             toastAlert(data.message, 'success', 20000);
 
@@ -218,8 +220,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         sweetWizardAlert(data.message, settingsAccountShowURL + '?tab=subscription', 'warning', 'Voltar', 'Ativar Assinatura')
                     } else {
                         if(origin == 'survey'){
-                            sweetAlert(data.message, 'Ok!', 'success');
-
                             // Access surveyReloadUsersTab directly from surveys.js
                             if (window.surveyReloadUsersTab) {
                                 window.surveyReloadUsersTab(origin);
@@ -227,9 +227,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 //Close user modal
                                 document.querySelector('#userModal .btn-close').click();
                             }
-                        }else{
-                            sweetAlert(data.message);
                         }
+                        sweetAlert(data.message);
                     }
                 })
                 .catch(error => {

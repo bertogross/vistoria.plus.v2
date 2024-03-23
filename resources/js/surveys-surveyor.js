@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 button.blur();
 
-                const container = document.getElementById('assignment-container');
+                const container = document.getElementById('assignment-container-surveyor');
                 if (!container) {
                     console.error('Container not found');
                     return;
@@ -128,28 +128,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 var pendingIcon = responsesDataContainer.querySelector('.ri-time-line');
                 var completedIcon = responsesDataContainer.querySelector('.ri-check-double-fill');
 
-                /*
-                if ( compliance == 'no' && attachmentIds.length === 0 ) {
-
-                    btnPhoto.classList.add('blink', 'bg-warning');
-                    setTimeout(() => {
-                        btnPhoto.classList.remove('blink', 'bg-warning');
-                    }, 5000);
-
-                    // Uncheck each radio button
-                    uncheckRadiosAndUpdateLabels(radios);
-
-                    // If responseId is not set, show the pending icon and hide the completed icon
-                    if (pendingIcon) pendingIcon.classList.remove('d-none');
-                    if (completedIcon) completedIcon.classList.add('d-none');
-
-                    document.querySelector('#btn-response-finalize').classList.add('d-none');
-                }
-                */
-
                 const formData = {
                     assignment_id: assignmentId,
-                    id: companyId,
+                    company_id: companyId,
                     survey_id: surveyId,
                     step_id: stepId,
                     topic_id: topicId,
@@ -185,8 +166,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         //toastAlert(data.message, 'success', 5000);
 
                         const responseId = data.id;
-                        //const countFinishedTopics = parseInt(data.count || 0);
-                        //console.log('countFinishedTopics', countFinishedTopics);
 
                         if (responseId) {
                             // If responseId is set, show the completed icon and hide the pending icon
@@ -204,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
 
                     } else {
-                        //console.log('Erro:', data.message);
+                        console.log('Erro:', data.message);
 
                         button.querySelector('i').classList.remove('ri-refresh-line');
                         button.querySelector('i').classList.add('ri-save-3-line');
@@ -252,11 +231,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
 
                     if(data.showFinalizeButton){
-                        //setTimeout(() => {
-                            document.querySelector('#btn-response-finalize').classList.remove('d-none');
+                        document.querySelector('#btn-response-finalize').classList.remove('d-none');
 
-                            sweetWizardAlert('Tarefa Concluída', false, 'success', 'Continuar Editando', 'Finalizar', '#btn-response-finalize');
-                        //}, 1000);
+                        sweetWizardAlert('Tarefa Concluída', false, 'success', 'Continuar Editando', 'Finalizar', '#btn-response-finalize');
                     }
                 })
                 .catch(error => console.error('Error:', error));
@@ -305,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const assignmentId = parseInt(this.getAttribute('data-assignment-id'));
 
-            const container = document.getElementById('assignment-container');
+            const container = document.getElementById('assignment-container-surveyor');
             if (!container || !assignmentId) {
                 console.error('Container or assignmentId not found');
 

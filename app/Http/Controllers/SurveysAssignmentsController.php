@@ -415,7 +415,70 @@ class SurveysAssignmentsController extends Controller
         return response()->json(['success' => true, 'message' => 'Auditoria Revogada']);
     }
 
-    public function getRecentActivities(Request $request, $subDays = null)
+    public function requestAssignmentActivities(Request $request, $subDays = null)
+    {
+        $error = response()->json(['success' => false, 'message' => 'Ainda não há dados']);
+
+        $countSurvey = Survey::count();
+        $countSurveyAssignments = SurveyAssignments::count();
+        if(!$countSurvey || !$countSurveyAssignments){
+            return $error;
+        }
+
+        //$subDays = $request->subDays ? intval($request->subDays) : null;
+
+        if(!$subDays){
+            $days = Carbon::now()->subDays(7);
+        }else{
+            $days = Carbon::now()->subDays($subDays);
+        }
+
+        $surveyorArrStatus = ['new', 'pending', 'in_progress', 'auditing', 'completed'];
+
+        $auditorArrStatus = ['pending', 'in_progress', 'completed']; //'waiting',
+
+        // Fetching surveyor and auditor assignments
+        /*$assignments = SurveyAssignments::whereIn('surveyor_status', $surveyorArrStatus)
+            ->orWhereIn('auditor_status', $auditorArrStatus)
+            ->whereDate('created_at', '>=', $days)
+            ->orderBy('updated_at', 'desc')
+            ->limit(100)
+            ->get();*/
+        $assignments = SurveyAssignments::where(function ($query) use ($surveyorArrStatus, $auditorArrStatus) {
+                $query->whereIn('surveyor_status', $surveyorArrStatus)
+                      ->orWhereIn('auditor_status', $auditorArrStatus);
+            })
+            ->whereDate('created_at', '>=', $days)
+            ->orderBy('updated_at', 'desc')
+            ->limit(100)
+            ->get();
+
+        if ($assignments->isEmpty()) {
+            return $error;
+        }
+
+        $activities = [];
+
+        // Process assignments
+        foreach ($assignments as $assignment) {
+            if (in_array($assignment->surveyor_status, $surveyorArrStatus)) {
+                $activities[] = $this->processAssignment($assignment, 'surveyor');
+            }
+            if (in_array($assignment->auditor_status, $auditorArrStatus)) {
+                $activities[] = $this->processAssignment($assignment, 'auditor');
+            }
+        }
+
+        $activities = array_filter($activities);
+
+        if (!empty($activities)) {
+            return response()->json(['success' => true, 'activities' => $activities]);
+        } else {
+            return $error;
+        }
+    }
+
+    public function requestAssignments(Request $request, $subDays = null)
     {
         $error = response()->json(['success' => false, 'message' => 'Ainda não há dados']);
 

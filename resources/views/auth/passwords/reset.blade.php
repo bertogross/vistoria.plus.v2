@@ -61,7 +61,7 @@
                                         <div class="mb-3">
                                             <label for="password-input-2">Repita a Senha</label>
                                             <div class="position-relative auth-pass-inputgroup">
-                                                <input id="password-input-2" type="password" name="password_confirmation" class="form-control password-input" placeholder="Enter confirm password" minlength="8" maxlength="20" required>
+                                                <input id="password-input-2" type="password" name="password_confirmation" class="form-control password-input" minlength="8" maxlength="20" required>
                                                 <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button" id="password-addon-2"><i class="ri-eye-fill align-middle"></i></button>
                                             </div>
                                         </div>

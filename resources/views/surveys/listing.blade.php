@@ -96,7 +96,7 @@
                             <th class="text-left" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Unidades relacionadas">
                                 Unidades
                             </th>
-                            <th class="text-left" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Usários que foram designados para tarefas de Vistoria e Auditoria">
+                            <th class="text-left" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Usários que foram designados para tarefas">
                                 Atribuições
                             </th>
                             <th class="text-center" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="A Data de início da rotina">

@@ -16,6 +16,7 @@ class TeamController extends Controller
         //$users = User::all();
 
         // Usefull if crontab or Kernel schedule is losted
+        // D:public_html\app\Console\Commands
         Survey::populateSurveys();
 
         $users = getUsers();

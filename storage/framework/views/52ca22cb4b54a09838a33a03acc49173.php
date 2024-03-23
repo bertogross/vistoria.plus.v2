@@ -1,2 +1,0 @@
-<?php echo $__env->make('errors.auth-404-basic', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-<?php /**PATH /var/www/html/development.vistoria.plus/public_html/resources/views/errors/404.blade.php ENDPATH**/ ?>

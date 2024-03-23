@@ -9,7 +9,7 @@ if(installButton){
     window.addEventListener("beforeinstallprompt", event => {
         event.preventDefault(); // Prevent Chrome 76 and earlier from automatically showing a prompt
 
-        console.log("beforeinstallprompt fired");
+        //console.log("beforeinstallprompt fired");
 
         // Stash the event so it can be triggered later.
         deferredPrompt = event;
@@ -26,7 +26,7 @@ if(installButton){
           return;
         }
         const result = await installPrompt.prompt();
-        console.log(`Install prompt was: ${result.outcome}`);
+        //console.log(`Install prompt was: ${result.outcome}`);
 
         deferredPrompt = null;
 
@@ -36,11 +36,20 @@ if(installButton){
       });
 
     window.addEventListener("appinstalled", event => {
-        console.log("appinstalled fired", event);
+        //console.log("appinstalled fired", event);
 
+        // The app was installed successfully, hide the install button
+        installButton.setAttribute("hidden", true);
     });
 }
 
+// Additional heuristic to hide the install button for returning users or if the app is in standalone mode.
+if (window.matchMedia('(display-mode: standalone)').matches) {
+    //console.log("This is running as a PWA.");
+    if (installButton) {
+        installButton.setAttribute("hidden", true);
+    }
+}
 
 /*
 // DEPRECATED

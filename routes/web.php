@@ -71,7 +71,6 @@ Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])-
         Route::get('/{id?}', [ProfileController::class, 'index'])->name('profileShowURL');
 
         Route::post('/layout-mode', [ProfileController::class, 'changeLayoutMode'])->name('changeLayoutModeURL');
-
     });
 
     // Surveys Routes
@@ -85,40 +84,46 @@ Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])-
         Route::post('/store/{id?}', [SurveysController::class, 'storeOrUpdate'])->name('surveysStoreOrUpdateURL');
         Route::post('/status', [SurveysController::class, 'changeStatus'])->name('surveysChangeStatusURL');
 
-        //Route::get('/listing', [SurveysTemplatesController::class, 'index'])->name('surveyTemplateIndexURL');
-        Route::get('/template/create', [SurveysTemplatesController::class, 'create'])->name('surveysTemplateCreateURL');
-        Route::get('/template/edit/{id?}', [SurveysTemplatesController::class, 'edit'])->name('surveysTemplateEditURL')->where('id', '[0-9]+');
-        Route::get('/template/preview/{id?}', [SurveysTemplatesController::class, 'previewFromSurveyTemplates'])->name('surveysTemplatePreviewFromSurveyTemplatesURL')->where('id', '[0-9]+');
-        Route::get('/template/preview-from-warehouse/{id?}', [SurveysTemplatesController::class, 'previewFromWarehouse'])->name('surveysTemplatePreviewFromWarehouseURL')->where('id', '[0-9]+');
-        Route::get('/template/selected-From-Warehouse/{id?}', [SurveysTemplatesController::class, 'selectedFromWarehouse'])->name('surveysTemplateSelectedFromWarehouseURL')->where('id', '[0-9]+');
-        Route::get('/template/selected-From-SurveyTemplate/{id?}', [SurveysTemplatesController::class, 'selectedFromSurveyTemplates'])->name('surveysTemplateSelectedFromSurveyTemplateURL')->where('id', '[0-9]+');
-        Route::post('/template/status', [SurveysTemplatesController::class, 'changeStatus'])->name('surveysTemplateChangeStatusURL');
+        Route::prefix('template')->group(function () {
+            Route::get('/create', [SurveysTemplatesController::class, 'create'])->name('surveysTemplateCreateURL');
+            Route::get('/edit/{id?}', [SurveysTemplatesController::class, 'edit'])->name('surveysTemplateEditURL')->where('id', '[0-9]+');
+            Route::get('/preview/{id?}', [SurveysTemplatesController::class, 'previewFromSurveyTemplates'])->name('surveysTemplatePreviewFromSurveyTemplatesURL')->where('id', '[0-9]+');
+            Route::get('/preview-from-warehouse/{id?}', [SurveysTemplatesController::class, 'previewFromWarehouse'])->name('surveysTemplatePreviewFromWarehouseURL')->where('id', '[0-9]+');
+            Route::get('/selected-From-Warehouse/{id?}', [SurveysTemplatesController::class, 'selectedFromWarehouse'])->name('surveysTemplateSelectedFromWarehouseURL')->where('id', '[0-9]+');
+            Route::get('/selected-From-SurveyTemplate/{id?}', [SurveysTemplatesController::class, 'selectedFromSurveyTemplates'])->name('surveysTemplateSelectedFromSurveyTemplateURL')->where('id', '[0-9]+');
+            Route::post('/status', [SurveysTemplatesController::class, 'changeStatus'])->name('surveysTemplateChangeStatusURL');
+            Route::post('/store/{id?}', [SurveysTemplatesController::class, 'storeOrUpdate'])->name('surveysTemplateStoreOrUpdateURL');
+        });
 
-        Route::post('/template/store/{id?}', [SurveysTemplatesController::class, 'storeOrUpdate'])->name('surveysTemplateStoreOrUpdateURL');
+        Route::prefix('assignment')->group(function () {
+            Route::get('/show/{id?}', [SurveysAssignmentsController::class, 'show'])->name('assignmentShowURL')->where('id', '[0-9]+');
 
-        Route::get('/assignment/show/{id?}', [SurveysAssignmentsController::class, 'show'])->name('assignmentShowURL')->where('id', '[0-9]+');
+            Route::get('/surveyor-form/{id?}', [SurveysAssignmentsController::class, 'formSurveyorAssignment'])->name('formSurveyorAssignmentURL')->where('id', '[0-9]+');
+            Route::post('/surveyor-status', [SurveysAssignmentsController::class, 'changeAssignmentSurveyorStatus'])->name('changeAssignmentSurveyorStatusURL');
 
-        Route::get('/assignment/surveyor-form/{id?}', [SurveysAssignmentsController::class, 'formSurveyorAssignment'])->name('formSurveyorAssignmentURL')->where('id', '[0-9]+');
-        Route::post('/assignment/surveyor-status', [SurveysAssignmentsController::class, 'changeAssignmentSurveyorStatus'])->name('changeAssignmentSurveyorStatusURL');
+            Route::get('/auditor-form/{id?}', [SurveysAssignmentsController::class, 'formAuditorAssignment'])->name('formAuditorAssignmentURL')->where('id', '[0-9]+');
+            Route::post('/auditor-status', [SurveysAssignmentsController::class, 'changeAssignmentAuditorStatus'])->name('changeAssignmentAuditorStatusURL');
+            Route::post('/auditor-enter', [SurveysAssignmentsController::class, 'enterAssignmentAuditor'])->name('enterAssignmentAuditorURL');
+                Route::post('/auditor-revoke/{id?}', [SurveysAssignmentsController::class, 'revokeAssignmentAuditor'])->name('revokeAssignmentAuditorURL')->where('id', '[0-9]+');
 
-        Route::get('/assignment/auditor-form/{id?}', [SurveysAssignmentsController::class, 'formAuditorAssignment'])->name('formAuditorAssignmentURL')->where('id', '[0-9]+');
-        Route::post('/assignment/auditor-status', [SurveysAssignmentsController::class, 'changeAssignmentAuditorStatus'])->name('changeAssignmentAuditorStatusURL');
-        Route::post('/assignment/auditor-enter', [SurveysAssignmentsController::class, 'enterAssignmentAuditor'])->name('enterAssignmentAuditorURL');
-            Route::post('/assignment/auditor-revoke/{id?}', [SurveysAssignmentsController::class, 'revokeAssignmentAuditor'])->name('revokeAssignmentAuditorURL')->where('id', '[0-9]+');
+            Route::get('/activities/{subDays?}', [SurveysAssignmentsController::class, 'requestAssignmentActivities'])->name('requestAssignmentActivitiesURL')->where('subDays', '[0-9]+');
+        });
 
-        Route::get('/assignment/activities/{subDays?}', [SurveysAssignmentsController::class, 'getRecentActivities'])->name('getRecentActivitiesURL')->where('subDays', '[0-9]+');
+        Route::prefix('responses')->group(function () {
+            Route::post('/surveyor/update/{id?}', [SurveysResponsesController::class, 'responsesSurveyorStoreOrUpdate'])->name('responsesSurveyorStoreOrUpdateURL');
+            Route::post('/auditor/update/{id?}', [SurveysResponsesController::class, 'responsesAuditorStoreOrUpdate'])->name('responsesAuditorStoreOrUpdateURL');
+        });
 
-        Route::post('/responses/surveyor/store/{id?}', [SurveysResponsesController::class, 'responsesSurveyorStoreOrUpdate'])->name('responsesSurveyorStoreOrUpdateURL');
-        Route::post('/responses/auditor/store/{id?}', [SurveysResponsesController::class, 'responsesAuditorStoreOrUpdate'])->name('responsesAuditorStoreOrUpdateURL');
-
-        // Terms Routes
-        Route::get('/terms/listing', [SurveysTermsController::class, 'index'])->name('surveysTermsIndexURL');
-        Route::get('/terms/create', [SurveysTermsController::class, 'create'])->name('surveysTermsCreateURL');
-        Route::get('/terms/form', [SurveysTermsController::class, 'form'])->name('surveysTermsFormURL');
-        Route::get('/terms/edit/{id?}', [SurveysTermsController::class, 'edit'])->name('surveysTermsEditURL');
-        //Route::post('/terms/store/{id?}', [SurveysTermsController::class, 'storeOrUpdate'])->name('surveysTermsStoreOrUpdateURL');
-        Route::post('/terms/store', [SurveysTermsController::class, 'storeOrUpdate'])->name('surveysTermsStoreOrUpdateURL');
-        Route::get('/terms/search', [SurveysTermsController::class, 'search'])->name('surveysTermsSearchURL');
+        Route::prefix('terms')->group(function () {
+            // Terms Routes
+            Route::get('/listing', [SurveysTermsController::class, 'index'])->name('surveysTermsIndexURL');
+            Route::get('/create', [SurveysTermsController::class, 'create'])->name('surveysTermsCreateURL');
+            Route::get('/form', [SurveysTermsController::class, 'form'])->name('surveysTermsFormURL');
+            Route::get('/edit/{id?}', [SurveysTermsController::class, 'edit'])->name('surveysTermsEditURL');
+            //Route::post('/store/{id?}', [SurveysTermsController::class, 'storeOrUpdate'])->name('surveysTermsStoreOrUpdateURL');
+            Route::post('/store', [SurveysTermsController::class, 'storeOrUpdate'])->name('surveysTermsStoreOrUpdateURL');
+            Route::get('/search', [SurveysTermsController::class, 'search'])->name('surveysTermsSearchURL');
+        });
 
         // Audit Routes
         Route::get('/audits/{id?}', [SurveysAuditController::class, 'index'])->name('surveysAuditIndexURL');
@@ -181,15 +186,12 @@ Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])-
 
 });
 
-
 Route::get('/unauthorized', function () {
     return view('errors.unauthorized');
 })->name('unauthorized');
 Route::get('/check-authorization', [UserConnections::class, 'preventUnauthorizedConnection'])->name('checkAuthorizationURL');
 
-
 Route::post('/login', [LoginController::class, 'login'])->name('loginURL');
-
 
 Route::post('/register', [RegisterController::class, 'register'])->name('registerURL');
     Route::get('/register-success', [RegisterController::class, 'welcome'])->name('registerSuccessURL');

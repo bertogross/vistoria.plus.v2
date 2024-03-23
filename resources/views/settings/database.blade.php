@@ -35,7 +35,7 @@
                             Departamentos</a>
                         <a class="nav-link text-uppercase {{ session('active_tab') == 'companies' ? 'active show' : '' }}" id="v-pills-companies-tab" data-bs-toggle="pill" href="#v-pills-companies" role="tab" aria-controls="v-pills-companies"
                             aria-selected="false">
-                            Empresas</a>
+                            Unidades</a>
                         <a class="nav-link text-uppercase {{ session('active_tab') == 'synchronization' ? 'active show' : '' }}" id="v-pills-synchronization-tab" data-bs-toggle="pill" href="#v-pills-synchronization" role="tab" aria-controls="v-pills-synchronization"
                             aria-selected="false">
                             Sincronizacão</a>
@@ -115,17 +115,17 @@
                             <form action="{{ route('settingsCompaniesUpdateURL') }}" method="POST" autocomplete="off">
                                 @csrf
                                 @method('PUT')
-                                <button type="submit" class="btn btn-theme float-end">Atualizar Empresas</button>
+                                <button type="submit" class="btn btn-theme float-end">Atualizar Unidades</button>
 
-                                <h2 class="text-body mb-2 h4">Empresas</h2>
-                                <p>Renomeie cada das empresas caso entenda que será necessário para fins de exibição em relatórios </p>
+                                <h2 class="text-body mb-2 h4">Unidades</h2>
+                                <p>Renomeie cada das Unidades caso entenda que será necessário para fins de exibição em relatórios </p>
                                 <div class="table-responsive border border-1 border-light rounded rounded-2">
                                     <table class="table table-striped mb-0">
                                         <thead class="table-light text-uppercase">
                                             <tr>
                                                 <th width="65" class="text-center"></th>
                                                 <th width="130">ID</th>
-                                                <th>Empresa</th>
+                                                <th>Unidade</th>
                                                 <th>Alias</th>
                                             </tr>
                                         </thead>

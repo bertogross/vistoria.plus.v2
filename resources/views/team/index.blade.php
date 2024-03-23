@@ -54,10 +54,14 @@
         </div>
         <div class="col-auto mb-4">
             <div class="card rounded-2 mb-0">
-                <div class="card-body p-3">
-                    <div class="tasks-wrapper-survey overflow-auto h-100" id="load-surveys-activities" data-subDays="7" style="min-width: 250px;">
+                <div class="card-header">
+                    <a href="#" class="btn btn-sm btn-soft-theme btn-icon init-loader float-end mt-n1 position-absolute ms-auto me-3 end-0" title="Ver todas"><i class="ri-file-list-line"></i></a>
+                    <h6 class="text-muted m-0 text-uppercase fw-semibold">Atividades Recentes</h6>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="tasks-wrapper-survey overflow-auto h-100" id="load-assignment-activities" data-subDays="7" style="min-width: 250px;">
                         <div class="text-center">
-                            <div class="spinner-border text-theme mt-3 mb-3" role="status">
+                            <div class="spinner-border text-theme mt-5 mb-3" role="status">
                                 <span class="sr-only">Loading...</span>
                             </div>
                         </div>
@@ -86,7 +90,7 @@
         var surveysChangeStatusURL = "{{ route('surveysChangeStatusURL') }}";
         var surveysShowURL = "{{ route('surveysShowURL') }}";
         var surveysStoreOrUpdateURL = "{{ route('surveysStoreOrUpdateURL') }}";
-        var getRecentActivitiesURL = "{{ route('getRecentActivitiesURL') }}";
+        var requestAssignmentActivitiesURL = "{{ route('requestAssignmentActivitiesURL') }}";
     </script>
     <script src="{{ URL::asset('build/js/surveys.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 @endsection
