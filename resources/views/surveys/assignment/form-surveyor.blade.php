@@ -192,7 +192,7 @@
     <script>
         var assignmentShowURL = "{{ route('assignmentShowURL') }}";
         var profileShowURL = "{{ route('profileShowURL') }}";
-        var formSurveyorAssignmentURL = "{{ route('formSurveyorAssignmentURL') }}";
+        var formAssignmentSurveyorURL = "{{ route('formAssignmentSurveyorURL') }}";
         var changeAssignmentSurveyorStatusURL = "{{ route('changeAssignmentSurveyorStatusURL') }}";
         var responsesSurveyorStoreOrUpdateURL = "{{ route('responsesSurveyorStoreOrUpdateURL') }}";
     </script>

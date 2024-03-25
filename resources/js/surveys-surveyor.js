@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             toastAlert('Redirecionando ao formulário...', 'success');
 
                             setTimeout(function () {
-                                window.location.href = formSurveyorAssignmentURL + '/' +assignmentId;
+                                window.location.href = formAssignmentSurveyorURL + '/' +assignmentId;
                             }, 1000);
                         } else {
                             // Handle error
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     toastAlert('Redirecionando ao formulário...', 'success');
 
                     setTimeout(function () {
-                        window.location.href = formSurveyorAssignmentURL + '/' +assignmentId;
+                        window.location.href = formAssignmentSurveyorURL + '/' +assignmentId;
                     }, 1000);
                  }
             });
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if(data.showFinalizeButton){
                         document.querySelector('#btn-response-finalize').classList.remove('d-none');
 
-                        sweetWizardAlert('Tarefa Concluída', false, 'success', 'Continuar Editando', 'Finalizar', '#btn-response-finalize');
+                        sweetWizardAlert('O formulário foi completamente preenchido.<br><br><small>Ao clicar em Concluir não será mais possível retornar e alterar estes dados.', false, 'success', 'Continuar Editando', 'Concluir', '#btn-response-finalize');
                     }
                 })
                 .catch(error => console.error('Error:', error));
@@ -306,7 +306,8 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    toastAlert(data.message, 'success');
+                    //toastAlert(data.message, 'success');
+                    showPreloader();
 
                     window.location.href = assignmentShowURL + '/' + assignmentId;
                 } else {

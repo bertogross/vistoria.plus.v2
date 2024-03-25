@@ -691,6 +691,22 @@ if (!function_exists('brazilianRealFormat')) {
     }
 }
 
+if (!function_exists('dayOfTheWeek')) {
+    function dayOfTheWeek($date) {
+        if($date){
+            // Set the locale to Portuguese
+            Carbon::setLocale('pt_BR');
+
+            $date = Carbon::parse($date);
+
+            // Get the day of the week in Portuguese
+            return $date->isoFormat('dddd');
+        }else{
+            return null;
+        }
+    }
+}
+
 if (!function_exists('formatSize')) {
     function formatSize($size) {
         if($size){

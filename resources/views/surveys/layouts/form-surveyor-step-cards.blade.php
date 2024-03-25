@@ -27,7 +27,7 @@
         @endphp
 
         @if( $topics )
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-header text-theme text-uppercase fs-5">
                     {{ $termName }}
                 </div>
@@ -206,7 +206,7 @@
             id="btn-response-finalize"
             data-assignment-id="{{$assignmentId}}"
             title="Finalizar e disponibilizar para eventual Auditoria">
-            <i class="ri-send-plane-fill align-bottom m-2"></i> Finalizar
+            <i class="ri-save-3-line align-bottom m-2"></i> Finalizar
         </button>
     @endif
 @endif

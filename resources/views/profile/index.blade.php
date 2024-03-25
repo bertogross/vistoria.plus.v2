@@ -324,8 +324,8 @@
         var surveysChangeStatusURL = "{{ route('surveysChangeStatusURL') }}";
         var surveysShowURL = "{{ route('surveysShowURL') }}";
         var surveysStoreOrUpdateURL = "{{ route('surveysStoreOrUpdateURL') }}";
-        var formSurveyorAssignmentURL = "{{ route('formSurveyorAssignmentURL') }}";
-        var formAuditorAssignmentURL = "{{ route('formAuditorAssignmentURL') }}";
+        var formAssignmentSurveyorURL = "{{ route('formAssignmentSurveyorURL') }}";
+        var formAssignmentAuditorURL = "{{ route('formAssignmentAuditorURL') }}";
         var changeAssignmentSurveyorStatusURL = "{{ route('changeAssignmentSurveyorStatusURL') }}";
         var changeAssignmentAuditorStatusURL = "{{ route('changeAssignmentAuditorStatusURL') }}";
     </script>
@@ -333,7 +333,7 @@
 
     <script>
         var assignmentShowURL = "{{ route('assignmentShowURL') }}";
-        var formSurveyorAssignmentURL = "{{ route('formSurveyorAssignmentURL') }}";
+        var formAssignmentSurveyorURL = "{{ route('formAssignmentSurveyorURL') }}";
         var changeAssignmentSurveyorStatusURL = "{{ route('changeAssignmentSurveyorStatusURL') }}";
         var responsesSurveyorStoreOrUpdateURL = "{{ route('responsesSurveyorStoreOrUpdateURL') }}";
     </script>

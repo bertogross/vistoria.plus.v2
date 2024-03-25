@@ -231,7 +231,7 @@
                                                 <div class="col-6 ps-1">
                                                     <a
                                                     @if (in_array($surveyorStatus, ['completed', 'auditing']))
-                                                        href="{{route('formAuditorAssignmentURL', $assignmentId)}}"
+                                                        href="{{route('formAssignmentAuditorURL', $assignmentId)}}"
                                                     @else
                                                         onclick="alert('Necessário aguardar finalização da Vistoria')"
                                                     @endif
@@ -256,7 +256,7 @@
                                         @endif
                                     @elseif($auditorStatus == 'in_progress')
                                         @if(in_array(getUserRoleById($currentUserId, $currentConnectionId), [1,2]))
-                                            <a href="{{route('formAuditorAssignmentURL', $assignmentId)}}"
+                                            <a href="{{route('formAssignmentAuditorURL', $assignmentId)}}"
                                             class="btn btn-label right btn-soft-secondary mb-2" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Abrir formulário">
                                                 <i class="ri-fingerprint-2-line label-icon align-middle fs-16 blink"></i> Prosseguir com a Auditoria
                                             </a>
@@ -523,7 +523,7 @@
 
 @section('script')
     <script>
-        var formAuditorAssignmentURL = "{{ route('formAuditorAssignmentURL') }}";
+        var formAssignmentAuditorURL = "{{ route('formAssignmentAuditorURL') }}";
         var changeAssignmentAuditorStatusURL = "{{ route('changeAssignmentAuditorStatusURL') }}";
         var responsesAuditorStoreOrUpdateURL = "{{ route('responsesAuditorStoreOrUpdateURL') }}";
         var enterAssignmentAuditorURL = "{{ route('enterAssignmentAuditorURL') }}";
@@ -810,7 +810,7 @@
                     breakpoint: 480,
                     options: {
                         chart: {
-                            width: 200
+                            width: '100%'
                         }
                     }
                 }]

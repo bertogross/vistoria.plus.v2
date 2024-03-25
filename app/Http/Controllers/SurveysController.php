@@ -203,8 +203,6 @@ class SurveysController extends Controller
         ) );
     }
 
-
-
     // Add
     public function create()
     {
@@ -408,7 +406,6 @@ class SurveysController extends Controller
 
         if(!$startAt){
             $validatedData['start_at'] = null;
-            $validatedData['end_in'] = null;
             $validatedData['status'] = 'new';
         }
 
@@ -420,9 +417,14 @@ class SurveysController extends Controller
 
             // Prevent from cracker to change if Responses is populated
             $countResponses = Survey::countSurveyAllResponses($id);
+            $countTodayResponses = Survey::countSurveyAllResponsesFromToday($id);
+
             if($countResponses > 0){
+                //Prevent user disable active companies
                 $validatedData['companies'] = $survey->companies;
+
                 $validatedData['recurring'] = $survey->recurring;
+
             }else{
                 $validatedData['companies'] = $companies;
             }
@@ -435,8 +437,12 @@ class SurveysController extends Controller
             }
 
             if ( in_array($surveyStatus, ['started', 'stopped', 'completed', 'filed']) ){
-                // Prevent user change existent start_at date from form
-                $validatedData['start_at'] = $survey->start_at ?? $startAt;
+                //if is not tasks in progress, user can change the date
+                if(!$countResponses){
+                    $validatedData['start_at'] = $startAt ?? null;
+                }else{
+                    $validatedData['start_at'] = $survey->start_at ?? $startAt;
+                }
                 $validatedData['end_in'] = $endIn ?? null;
             }else{
                 $validatedData['start_at'] = $startAt ?? null;
@@ -449,13 +455,15 @@ class SurveysController extends Controller
 
             $survey->update($validatedData);
 
-            // Update from model if task is not started
-            if(in_array($surveyStatus, ['new', 'scheduled', 'started'])){
-                SurveyResponseStep::populateSurveySteps($templateId, $surveyId);
-            }
+            if(!$countTodayResponses){
+                // Update from model
+                if(in_array($surveyStatus, ['new', 'scheduled', 'started'])){
+                    SurveyResponseStep::populateSurveySteps($templateId, $surveyId);
+                }
 
-            // Start the task by distributing to each party
-            SurveyAssignments::distributingAssignments($surveyId);
+                // Start the task by distributing to each party
+                SurveyAssignments::distributingAssignments($surveyId);
+            }
 
             return response()->json([
                 'success' => true,
@@ -516,11 +524,9 @@ class SurveysController extends Controller
             }
         }
 
-        $currentStatus = $survey->status;
-
         $startAt = $survey->start_at;
         $endIn = $survey->end_in;
-
+        $currentStatus = $survey->status;
         $templateId = $survey->template_id;
 
         if($currentStatus == 'new'){
@@ -533,18 +539,13 @@ class SurveysController extends Controller
 
         $countResponses = Survey::countSurveyAllResponsesFromToday($surveyId);
 
-        if($countResponses > 0){
-            // TODO URGENT ??
-            // chek if it is necessary because when task is in progress I can stop
-            //return response()->json(['success' => false, 'message' => 'Não será possível interromper esta tarefa pois dados já estão sendo coletados.']);
-        }
 
         //$oldStatus = $survey->old_status ?? $currentStatus;
 
         //$message = 'Status da tarefa foi atualizado com sucesso';
         //$newStatus = $oldStatus;
 
-        if($currentStatus == 'stopped' && $now > $endIn){
+        if($currentStatus == 'stopped' && $endIn && $now > $endIn){
             $columns['status'] = 'completed';
 
             $survey->update($columns);
@@ -557,7 +558,7 @@ class SurveysController extends Controller
                 $newStatus = 'started';
 
                 if(!$startAt){
-                    $columns['start_at'] = $now ;
+                    $columns['start_at'] = $now;
                 }
 
                 $message = 'Rotina inicializada com sucesso';
@@ -590,12 +591,11 @@ class SurveysController extends Controller
         }
 
         $columns['status'] = $newStatus;
-        //$columns['old_status'] = $currentStatus;
 
         // Save the changes
         $survey->update($columns);
 
-        $message = $newStatus == 'stopped' ? 'Checklist interrompidO' : $message;
+        $message = $newStatus == 'stopped' ? 'Checklist interrompido' : $message;
 
         // Return a success response
         return response()->json(['success' => true, 'message' => $message]);
@@ -628,8 +628,8 @@ class SurveysController extends Controller
 
         $getActiveCompanies = getActiveCompanies();
 
-        $countAllResponses = $surveyId ? Survey::countSurveyAllResponses($id) : 0;
-        $countTodayResponses = $surveyId ? Survey::countSurveyAllResponsesFromToday($id) : 0;
+        $countAllResponses = $surveyId ? Survey::countSurveyAllResponses($surveyId) : 0;
+        $countTodayResponses = $surveyId ? Survey::countSurveyAllResponsesFromToday($surveyId) : 0;
 
         return view('surveys.layouts.create-users-tab', compact(
                 'data',

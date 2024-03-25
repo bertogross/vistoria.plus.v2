@@ -2,7 +2,7 @@
     <div class="card-header">
         <div class="d-flex align-items-center">
             <h5 class="card-title mb-0 flex-grow-1">
-                <i class="ri-checkbox-line fs-16 align-bottom text-theme me-2"></i>Listagem
+                <i class="ri-todo-line fs-16 align-bottom text-theme me-2"></i>Listagem
             </h5>
             <div class="flex-shrink-0">
                 <div class="d-flex flex-wrap gap-2">
@@ -137,8 +137,11 @@
 
                                 $surveyStatus = $survey->status;
 
+                                $surveyStartAt = $survey->start_at ?? null;
+
                                 $recurring = $survey->recurring;
                                 $recurringLabel = $getSurveyRecurringTranslations[$recurring]['label'];
+                                $recurringSubLabel = $surveyStartAt && $recurring == 'weekly' ? dayOfTheWeek($surveyStartAt) : '';
 
                                 $getSurveyTemplateNameById = getSurveyTemplateNameById($survey->template_id);
 
@@ -229,6 +232,7 @@
                                         title="{{ $getSurveyRecurringTranslations[$recurring]['description'] }}">
                                         {{ $recurringLabel }}
                                     </span>
+                                    {!! $recurringSubLabel ? '<br><small class="badge bg-dark-subtle text-body">' . $recurringSubLabel . '</small>' : '' !!}
                                 </td>
                                 <td class="text-center">
                                     <span
@@ -260,7 +264,7 @@
                                         <button type="button" onclick="alert('In development stage')"
                                         class="btn btn-sm btn-soft-dark ri-survey-line btn-survey-form-preview"
                                         data-survey-id="{{ $surveyId }}"
-                                        data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Pré-visualizar Formulário"></button>
+                                        data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Pré-visualizar Formulário"></button>
                                     @endif
 
                                     @if (!in_array($surveyStatus, ['completed', 'filed']))
@@ -272,7 +276,7 @@
                                                 class="btn btn-sm btn-soft-dark btn-surveys-edit ri-edit-line"
                                                 data-survey-id="{{ $surveyId }}"
                                             @endif
-                                            data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top"
+                                            data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left"
                                             title="Editar"></button>
                                     @endif
 
@@ -281,7 +285,7 @@
                                         data-survey-id="{{ $surveyId }}"
                                         data-survey-title="{{ $surveyTitle }}"
                                         data-bs-toggle="tooltip"
-                                        data-bs-trigger="hover" data-bs-placement="top"
+                                        data-bs-trigger="hover" data-bs-placement="left"
                                         title="Listar Tarefas"></button>
 
                                     @if ( !in_array($surveyStatus, ['scheduled', 'new']) )
@@ -292,7 +296,7 @@
                                                 onclick="alert('Não há dados para relatório pois nenhuma tarefa foi executada')"
                                             @endif
                                             class="btn btn-sm btn-soft-dark ri-line-chart-fill {{ $countSurveyAssignmentBySurveyId == 0 ? 'cursor-not-allowed' : '' }}"
-                                            data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top"
+                                            data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left"
                                             title="Visualização Analítica"></a>
                                     @endif
                                 </td>

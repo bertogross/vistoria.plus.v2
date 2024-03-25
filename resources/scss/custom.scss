@@ -92,6 +92,7 @@ html{
     opacity: .3
   }
 }
+.checked-blink:checked,
 .blink {
   text-decoration: blink;
   -webkit-animation-name: blinker;
@@ -187,6 +188,7 @@ button.text-dark:hover{
   display: block;
 }
 
+.btn-close-overlay,
 .load-preview-container:empty,
 .badge:empty,
 .gallery-wrapper:empty,
@@ -985,5 +987,13 @@ table.dataTable.fixedHeader-floating, table.dataTable.fixedHeader-locked {
 @media (max-width: 575.98px) {
     [data-layout="horizontal"] .profile-foreground {
         margin-top: -3rem !important;
+    }
+}
+
+.layout-rightside-col {
+    @media (max-width: 1699.98px) {
+        .btn-close-overlay{
+            display: block !important;
+        }
     }
 }

@@ -150,11 +150,13 @@ export function sweetWizardAlert(message, urlToRedirect = false, icon = 'success
                         btnTrigger.click();
                     }
 
-                    setTimeout(() => {
-                        if(urlToRedirect){
+                    if(urlToRedirect){
+                        showPreloader();
+
+                        setTimeout(() => {
                             window.location.href = urlToRedirect;
-                        }
-                    }, 100);
+                        }, 100);
+                    }
                 }
             });
         }
@@ -942,10 +944,16 @@ export function layouRightSide(){
         });
         var overlay = document.querySelector('.overlay');
         if (overlay) {
-            document.querySelector(".overlay").addEventListener("click", function () {
+            overlay.addEventListener("click", function () {
                 if (document.querySelector(".layout-rightside-col").classList.contains('d-block') == true) {
                     document.querySelector(".layout-rightside-col").classList.remove("d-block");
                 }
+            });
+        }
+        var btnClose = document.querySelector('.btn-close-overlay');
+        if (btnClose) {
+            btnClose.addEventListener("click", function () {
+                document.querySelector('.layout-rightside-btn').click();
             });
         }
     }

@@ -140,8 +140,11 @@ class SurveyAssignments extends Model
 
         $distributedData = $survey->distributed_data ? json_decode($survey->distributed_data, true) : null;
 
+        // Check if has today responses
+        $countTodayResponses = $surveyId ? Survey::countSurveyAllResponsesFromToday($surveyId) : 0;
+
         // Populate/repopulate = depends on are or not completed indivisual user tasks
-        if($distributedData && $distributedData['surveyor']){
+        if(!$countTodayResponses && $distributedData && $distributedData['surveyor']){
             // Prevent duplications. Get the most recent date of assignment for the specific survey and remove.
             self::removeDistributingAssignments($surveyId);
 

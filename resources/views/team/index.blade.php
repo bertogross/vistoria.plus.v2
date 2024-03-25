@@ -13,7 +13,7 @@
     </div>
 
     <div class="row">
-        <div class="col">
+        <div class="col-sm-12 col-md-8 col-lg-9">
             <div class="card">
                 <div class="card-body">
                     <div class="row g-2">
@@ -52,25 +52,27 @@
                 </div>
             </div>
         </div>
-        <div class="col-auto mb-4">
-            <div class="card rounded-2 mb-0">
+        <div class="col-sm-12 col-md-4 col-lg-3 mb-4">
+            <div class="card bg-body border-1 border-light rounded-2 h-100 mb-0">
 
                 <div class="card-header">
-                    <a href="#" class="btn btn-sm btn-soft-theme btn-icon init-loader float-end mt-n1 position-absolute ms-auto me-3 end-0" title="Ver todas"><i class="ri-file-list-line"></i></a>
                     <h6 class="text-muted m-0 text-uppercase fw-semibold">Atividades Recentes</h6>
                 </div>
                 <div class="card-body pt-0">
                     <div
                     id="load-assignment-activities"
-                    class="tasks-wrapper-survey overflow-auto h-100"
+                    class="tasks-wrapper-survey overflow-auto h-100 mb-3"
                     data-subDays="7"
-                    style="min-width: 250px;">
+                    style="width: 100%;">
                         <div class="text-center">
                             <div class="spinner-border text-theme mt-5 mb-3" role="status">
                                 <span class="sr-only">Loading...</span>
                             </div>
                         </div>
                     </div>
+                    {{--
+                    <a id="btn-show-all-assignments" href="{{route('listingAssignmentAllURL')}}" class="btn btn-sm btn-soft-theme btn-icon init-loader w-100" title="Ver todas">Ver todas</a>
+                    --}}
                 </div>
 
             </div>
@@ -96,7 +98,7 @@
         var surveysChangeStatusURL = "{{ route('surveysChangeStatusURL') }}";
         var surveysShowURL = "{{ route('surveysShowURL') }}";
         var surveysStoreOrUpdateURL = "{{ route('surveysStoreOrUpdateURL') }}";
-        var requestAssignmentActivitiesURL = "{{ route('requestAssignmentActivitiesURL') }}";
+        var listingAssignmentActivitiesURL = "{{ route('listingAssignmentActivitiesURL') }}";
     </script>
     <script src="{{ URL::asset('build/js/surveys.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 @endsection

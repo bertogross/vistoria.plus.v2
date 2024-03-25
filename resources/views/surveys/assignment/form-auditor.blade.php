@@ -181,7 +181,7 @@
     <script>
         var profileShowURL = "{{ route('profileShowURL') }}";
         var assignmentShowURL = "{{ route('assignmentShowURL') }}";
-        var formAuditorAssignmentURL = "{{ route('formAuditorAssignmentURL') }}";
+        var formAssignmentAuditorURL = "{{ route('formAssignmentAuditorURL') }}";
         var changeAssignmentAuditorStatusURL = "{{ route('changeAssignmentAuditorStatusURL') }}";
         var responsesAuditorStoreOrUpdateURL = "{{ route('responsesAuditorStoreOrUpdateURL') }}";
     </script>

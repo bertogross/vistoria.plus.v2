@@ -107,7 +107,7 @@ class SurveysAssignmentsController extends Controller
     }
 
     // Modal listing
-    public function listing(Request $request, $id = null)
+    public function listingById(Request $request, $id = null)
     {
         if (!$id) {
             abort(404);
@@ -143,7 +143,12 @@ class SurveysAssignmentsController extends Controller
 
     }
 
-    public function formSurveyorAssignment(Request $request, $assignmentId)
+    public function listingAll()
+    {
+        // TODO
+    }
+
+    public function formAssignmentSurveyor(Request $request, $assignmentId)
     {
         if (!$assignmentId) {
             abort(404);
@@ -204,7 +209,7 @@ class SurveysAssignmentsController extends Controller
         ));
     }
 
-    public function formAuditorAssignment(Request $request, $assignmentId)
+    public function formAssignmentAuditor(Request $request, $assignmentId)
     {
         if (!$assignmentId) {
             abort(404);
@@ -452,7 +457,7 @@ class SurveysAssignmentsController extends Controller
         return response()->json(['success' => true, 'message' => 'Auditoria Revogada']);
     }
 
-    public function requestAssignmentActivities(Request $request, $subDays = null)
+    public function listingAssignmentActivities(Request $request, $subDays = null)
     {
         $error = response()->json(['success' => false, 'message' => 'Ainda não há dados']);
 

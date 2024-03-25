@@ -96,17 +96,17 @@
         @if( auth()->user()->hasAnyRole(User::ROLE_ADMIN) )
             <div class="col-auto layout-rightside-col d-block">
                 <div class="overlay"></div>
-                <div class="layout-rightside pb-2">
+                <div class="layout-rightside pb-0">
 
-                    <div class="card rounded-2 mb-0">
+                    <div class="card bg-body border-1 border-light rounded-2 h-100 mb-0">
                         <div class="card-header">
-                            <a href="#" class="btn btn-sm btn-soft-theme btn-icon init-loader float-end mt-n1 position-absolute ms-auto me-3 end-0" title="Ver todas"><i class="ri-file-list-line"></i></a>
+                            <button type="button" class="btn-close btn-close-overlay float-end"></button>
                             <h6 class="text-muted m-0 text-uppercase fw-semibold">Atividades Recentes</h6>
                         </div>
                         <div class="card-body pt-0">
                             <div
                             id="load-assignment-activities"
-                            class="tasks-wrapper-survey overflow-auto h-100"
+                            class="tasks-wrapper-survey overflow-auto h-100 mb-3"
                             data-subDays="1">
                                 <div class="text-center">
                                     <div class="spinner-border text-theme mt-5 mb-3" role="status">
@@ -114,6 +114,9 @@
                                     </div>
                                 </div>
                             </div>
+                            {{--
+                            <a id="btn-show-all-assignments" href="{{route('listingAssignmentAllURL')}}" class="btn btn-sm btn-soft-theme btn-icon init-loader w-100" title="Ver todas">Ver todas</a>
+                            --}}
                         </div>
                     </div>
 
@@ -139,8 +142,8 @@
         var surveysShowURL = "{{ route('surveysShowURL') }}";
         var surveysStoreOrUpdateURL = "{{ route('surveysStoreOrUpdateURL') }}";
         var surveyReloadUsersTabURL = "{{ route('surveyReloadUsersTabURL') }}";
-        var requestAssignmentActivitiesURL = "{{ route('requestAssignmentActivitiesURL') }}";
-        var assignmentListingURL = "{{ route('assignmentListingURL') }}";
+        var listingAssignmentActivitiesURL = "{{ route('listingAssignmentActivitiesURL') }}";
+        var listingAssignmentByIdURL = "{{ route('listingAssignmentByIdURL') }}";
     </script>
     <script src="{{ URL::asset('build/js/surveys.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 

@@ -13,18 +13,30 @@
     <div class="col-sm-12 col-md-6 col-lg-4" id="distributed-tab-company-{{ $company->id }}" {!! $colVisibility !!}>
         <div class="card bg-body">
             <div class="card-header bg-body text-uppercase fw-bold text-theme">
-                <div class="form-check form-switch form-switch-success form-switch-md">
+
+                @if ($countTodayResponses > 0 || $countAllResponses > 0)
+                    {{ empty($company->name) ? e($company->name) : e($company->name) }}
                     <input
-                    class="form-check-input form-check-input-companies wizard-switch-control"
-                    type="checkbox"
-                    role="switch"
-                    {{ !empty($selectedCompanies) && is_array($selectedCompanies) && in_array(intval($company->id), $selectedCompanies) ? 'checked' : '' }}
-                    id="company-{{ $company->id }}"
-                    name="companies[]"
-                    value="{{ $company->id }}"
-                    required>
-                    <label class="form-check-label" for="company-{{ $company->id }}">{{ empty($company->name) ? e($company->name) : e($company->name) }}</label>
-                </div>
+                        class="form-check-input form-check-input-companies wizard-switch-control"
+                        type="checkbox"
+                        role="switch"
+                        {{ !empty($selectedCompanies) && is_array($selectedCompanies) && in_array(intval($company->id), $selectedCompanies) ? 'checked' : '' }}
+                        id="company-{{ $company->id }}"
+                        name="companies[]"
+                        value="{{ $company->id }}" hidden>
+                @else
+                    <div class="form-check form-switch form-switch-success form-switch-md">
+                        <input
+                            class="form-check-input form-check-input-companies wizard-switch-control"
+                            type="checkbox"
+                            role="switch"
+                            {{ !empty($selectedCompanies) && is_array($selectedCompanies) && in_array(intval($company->id), $selectedCompanies) ? 'checked' : '' }}
+                            id="company-{{ $company->id }}"
+                            name="companies[]"
+                            value="{{ $company->id }}">
+                        <label class="form-check-label" for="company-{{ $company->id }}">{{ empty($company->name) ? e($company->name) : e($company->name) }}</label>
+                    </div>
+                @endif
             </div>
             <div class="card-body">
                 <ul class="list-unstyled vstack gap-2 mb-0">
@@ -60,13 +72,18 @@
                         @if ( in_array($userRole, [1, 3]) )
                             <li
                             @if (in_array($userStatus, ['inactive', 'revoked']))
-                                data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="<span class='text-danger'>Usuário indisponível</span>"
+                                data-bs-html="true"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover focus"
+                                data-bs-placement="top"
+                                data-bs-title="<span class='text-danger'>Usuário indisponível</span>"
+                                data-bs-content="{{$isDelegated ? 'Para reativar a Vistoria será necessário delegar esta tarefa a outra pessoa.' : 'Necessário delegar esta tarefa a outra pessoa.'}}"
                             @endif
                             >
-                                <div class="form-check form-switch form-switch-success form-switch-md d-flex align-items-center">
+                                <div class="form-check form-switch form-switch-{{in_array($userStatus, ['inactive', 'revoked']) ? 'danger' : 'success'}} form-switch-md d-flex align-items-center">
                                     <input
                                         id="surveyor-user-{{ $company->id.$userId }}"
-                                        class="form-check-input form-check-input-users me-3 wizard-switch-control"
+                                        class="form-check-input form-check-input-users me-3 wizard-switch-control  {{$isDelegated && in_array($userStatus, ['inactive', 'revoked']) ? 'checked-blink' : ''}}"
                                         type="radio"
                                         name="surveyor[{{$company->id}}]"
                                         {{ $isDelegated ? 'checked' : '' }}

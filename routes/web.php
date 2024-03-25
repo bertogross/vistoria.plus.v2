@@ -98,16 +98,17 @@ Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])-
         Route::prefix('assignment')->group(function () {
             Route::get('/show/{id?}', [SurveysAssignmentsController::class, 'show'])->name('assignmentShowURL')->where('id', '[0-9]+');
 
-            Route::get('/surveyor-form/{id?}', [SurveysAssignmentsController::class, 'formSurveyorAssignment'])->name('formSurveyorAssignmentURL')->where('id', '[0-9]+');
+            Route::get('/surveyor-form/{id?}', [SurveysAssignmentsController::class, 'formAssignmentSurveyor'])->name('formAssignmentSurveyorURL')->where('id', '[0-9]+');
             Route::post('/surveyor-status', [SurveysAssignmentsController::class, 'changeAssignmentSurveyorStatus'])->name('changeAssignmentSurveyorStatusURL');
 
-            Route::get('/auditor-form/{id?}', [SurveysAssignmentsController::class, 'formAuditorAssignment'])->name('formAuditorAssignmentURL')->where('id', '[0-9]+');
+            Route::get('/auditor-form/{id?}', [SurveysAssignmentsController::class, 'formAssignmentAuditor'])->name('formAssignmentAuditorURL')->where('id', '[0-9]+');
             Route::post('/auditor-status', [SurveysAssignmentsController::class, 'changeAssignmentAuditorStatus'])->name('changeAssignmentAuditorStatusURL');
             Route::post('/auditor-enter', [SurveysAssignmentsController::class, 'enterAssignmentAuditor'])->name('enterAssignmentAuditorURL');
                 Route::post('/auditor-revoke/{id?}', [SurveysAssignmentsController::class, 'revokeAssignmentAuditor'])->name('revokeAssignmentAuditorURL')->where('id', '[0-9]+');
 
-            Route::get('/activities/{subDays?}', [SurveysAssignmentsController::class, 'requestAssignmentActivities'])->name('requestAssignmentActivitiesURL')->where('subDays', '[0-9]+');
-            Route::get('/listing/{id?}', [SurveysAssignmentsController::class, 'listing'])->name('assignmentListingURL')->where('id', '[0-9]+');
+            Route::get('/activities/{subDays?}', [SurveysAssignmentsController::class, 'listingAssignmentActivities'])->name('listingAssignmentActivitiesURL')->where('subDays', '[0-9]+');
+            Route::get('/listing/{id?}', [SurveysAssignmentsController::class, 'listingById'])->name('listingAssignmentByIdURL')->where('id', '[0-9]+');
+            Route::get('/listing/all', [SurveysAssignmentsController::class, 'listingAll'])->name('listingAssignmentAllURL');
 
         });
 

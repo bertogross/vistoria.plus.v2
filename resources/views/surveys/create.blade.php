@@ -15,11 +15,9 @@
 
     $recurring = $data->recurring ?? '';
 
-    $startAt = $data->start_at ?? '';
-    $startAt = !empty($startAt) ? date("d/m/Y", strtotime($startAt)) : '';
+    $startAt = !empty($data->start_at) ? date("d/m/Y", strtotime($data->start_at)) : '';
 
-    $endIn = $data->end_in ?? '';
-    $endIn = !empty($endIn) ? date("d/m/Y", strtotime($endIn)) : '';
+    $endIn = !empty($data->end_in) ? date("d/m/Y", strtotime($data->end_in)) : '';
 
     $surveyStatus = $data->status ?? '';
 
@@ -83,14 +81,20 @@
                                     id="steparrow-users-info-tab"
                                     data-bs-target="#steparrow-users-info"
                                     aria-controls="steparrow-users-info"
-                                    aria-selected="false" disabled>Atribuições</button>
+                                    aria-selected="false" disabled>
+                                        <i class="ri-team-line"></i>
+                                        <span class="d-none d-lg-inline-block ms-1">Atribuições</span>
+                                    </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button type="button" class="nav-link" data-bs-toggle="pill" role="tab"
                                     id="steparrow-template-info-tab"
                                     data-bs-target="#steparrow-template-info"
                                     aria-controls="steparrow-template-info"
-                                    aria-selected="true" disabled>Modelo</button>
+                                    aria-selected="true" disabled>
+                                        <i class="ri-todo-line"></i>
+                                        <span class="d-none d-lg-inline-block ms-1">Modelo</span>
+                                    </button>
                                 </li>
                                 {{--
                                 <li class="nav-item" role="presentation">
@@ -98,7 +102,10 @@
                                     id="steparrow-companies-info-tab"
                                     data-bs-target="#steparrow-companies-info"
                                     aria-controls="steparrow-companies-info"
-                                    aria-selected="true" disabled>Unidades</button>
+                                    aria-selected="true" disabled>
+                                        <i class="ri-store-2-line"></i>
+                                        <span class="d-none d-lg-inline-block ms-1">Unidades</span>
+                                    </button>
                                 </li>
                                 --}}
                                 <li class="nav-item" role="presentation">
@@ -106,14 +113,20 @@
                                     id="steparrow-recurring-info-tab"
                                     data-bs-target="#steparrow-recurring-info"
                                     aria-controls="steparrow-recurring-info"
-                                    aria-selected="false" disabled>Recorrencia</button>
+                                    aria-selected="false" disabled>
+                                        <i class="ri-calendar-2-line"></i>
+                                        <span class="d-none d-lg-inline-block ms-1">Recorrencia</span>
+                                    </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button type="button" class="nav-link" role="tab" data-bs-toggle="pill"
                                     id="steparrow-success-tab"
                                     data-bs-target="#steparrow-success"
                                     aria-controls="steparrow-success"
-                                    aria-selected="false" disabled>Finalizado</button>
+                                    aria-selected="false" disabled>
+                                        <i class="ri-checkbox-circle-line"></i>
+                                        <span class="d-none d-lg-inline-block ms-1">Finalizado</span>
+                                    </button>
                                 </li>
                             </ul>
                         </div>
@@ -134,7 +147,7 @@
                                         <label class="form-label mb-0">Atribuições para este Checklist:</label>
 
                                         @if (in_array(getUserRoleById($currentUserId, $currentConnectionId), [1]))
-                                            <button id="btn-add-user" type="button" class="btn btn-sm btn-outline-light float-end" data-origin="survey" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Convidar Usuário" data-bs-content="Caso necessite convidar outro usuário para colaborar com esta atividade, clique em adicionar.">
+                                            <button id="btn-add-user" type="button" class="btn btn-sm btn-outline-info float-end" data-origin="survey" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="Convidar Usuário" data-bs-content="Caso necessite convidar outro usuário para colaborar com esta atividade, clique em adicionar.">
                                                 Convidar
                                             </button>
                                         @endif
@@ -146,7 +159,7 @@
                                             <div class="form-text mt-0 mb-3">Selecione o(a) colaborador(a) que irá desempenhar esta tarefa</div>
                                         @endif
                                         --}}
-                                        <div class="form-text mt-0 mb-3">Selecione quem irá desempenhar esta tarefa. 1 colaborador(a) por Unidade</div>
+                                        <div class="form-text mt-0 mb-3">Ative as unidades que irá vistoriar e selecione para cada quem irá desempenhar as tarefas. 1 colaborador(a) por Unidade</div>
 
                                         {!! $alertMessage3 !!}
 

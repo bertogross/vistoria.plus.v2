@@ -119,7 +119,7 @@
                                             href="{{ route('surveysIndexURL') }}"
                                         @endif
                                         data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="bottom" title="Acessar a sessão Checklists da conta <strong>{{$currentConnectionName}}</strong>">
-                                            <i class="ri-checkbox-line text-theme fs-1"></i>
+                                            <i class="ri-todo-line text-theme fs-1"></i>
                                             <span>Checklists</span>
                                         </a>
                                     </div>

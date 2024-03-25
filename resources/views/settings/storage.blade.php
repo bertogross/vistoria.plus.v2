@@ -27,7 +27,7 @@
                             <h5 class="flex-grow-1 fs-16 mb-0" id="filetype-title">{{$totalFiles > 0 ? $totalFiles : 'Nenhum'}} Arquivo{{$totalFiles > 1 ? 's' : '';}}</h5>
                         </div>
                         <div class="col-auto">
-                            <div class="d-flex align-items-center" style="width: 235px;">
+                            <div class="d-flex align-items-center" style="width: 200px;">
                                 <div class="flex-shrink-0">
                                     <i class="ri-database-2-line fs-17"></i>
                                 </div>

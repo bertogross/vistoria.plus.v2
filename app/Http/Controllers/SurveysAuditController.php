@@ -75,10 +75,12 @@ class SurveysAuditController extends Controller
 
         $dataAvailable = SurveyAssignments::where('surveyor_status', 'completed')
             ->whereNull('auditor_status')
+            ->where('surveyor_id', '!=', $currentUserId)
             ->orderBy('updated_at', 'desc')
             ->limit(100)
             ->get()
             ->toArray();
+
 
         $getSurveyAssignmentStatusTranslations = SurveyAssignments::getSurveyAssignmentStatusTranslations();
 

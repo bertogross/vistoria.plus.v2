@@ -29,7 +29,7 @@
             </li>
             <li class="nav-item" role="presentation">
                 <a class="nav-link" data-bs-toggle="tab" href="#nav-border-justified-available" role="tab" aria-selected="false" tabindex="-1">
-                    Vistorias Disponíveis
+                    Vistorias <span class="d-none d-sm-inline-block d-lg-inline-block">Disponíveis</span>
                     <span class="badge border border-dark text-body ms-2" id="count-available-surveyors"></span>
                 </a>
             </li>
@@ -185,7 +185,7 @@
                                             @if (in_array($auditorStatus, ['new', 'pending', 'in_progress']))
                                                 <a
                                                 @if (in_array($surveyorStatus, ['completed', 'auditing']))
-                                                    href="{{route('formAuditorAssignmentURL', $assignmentId)}}"
+                                                    href="{{route('formAssignmentAuditorURL', $assignmentId)}}"
                                                 @else
                                                     onclick="alert('Necessário aguardar finalização da Vistoria')"
                                                 @endif

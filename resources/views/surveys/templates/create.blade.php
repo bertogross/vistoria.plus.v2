@@ -54,14 +54,14 @@
         <div class="card">
             @if ($data && $data->title)
                 <div class="card-header">
-                    <h4 class="card-title mb-0"><i class="ri-checkbox-line fs-16 align-middle text-theme me-2"></i>{{ $data->title }}</h4>
+                    <h4 class="card-title mb-0"><i class="ri-todo-line fs-16 align-middle text-theme me-2"></i>{{ $data->title }}</h4>
                 </div>
             @endif
             <div class="card-body">
                 <form id="surveyTemplateForm" method="POST" class="needs-validation" novalidate autocomplete="off">
                     @csrf
                     <div class="row">
-                        <div class="col-sm-12 col-md-12 col-lg mb-5">
+                        <div class="col-sm-12 col-md-12 col-lg mb-5 rounded">
                             <div class="p-3">
                                 @if ($templateId)
                                     <p class="text-body mb-4">A edição deste não implicará em tarefas outrora delegadas e não serão modificados Termos e Tópicos de Checklists já inicializados.</p>
@@ -232,7 +232,7 @@
 
                             </div>
                         </div>
-                        <div id="load-preview" class="col-sm-12 col-md-12 col-lg load-preview-container p-3 border border-1 border-light rounded h-100"></div>
+                        <div id="load-preview" class="col-sm-12 col-md-12 col-lg load-preview-container p-3 rounded h-100 bg-body"></div>
                     </div>
                 </form>
             </div>

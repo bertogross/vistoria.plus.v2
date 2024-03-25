@@ -86,14 +86,14 @@ document.addEventListener('DOMContentLoaded', function() {
             button.addEventListener('click', async function(event) {
                 event.preventDefault;
 
-                showPreloader();
-
                 var currentStatus = this.getAttribute("data-current-status");
 
                 var surveyId = this.getAttribute("data-survey-id");
                 surveyId = parseInt(surveyId);
 
                 function attachSurveysChangeStatus(surveyId){
+                    showPreloader();
+
                     fetch(surveysChangeStatusURL, {
                         method: 'POST',
                         headers: {
@@ -113,14 +113,15 @@ document.addEventListener('DOMContentLoaded', function() {
                             //console.error('Error start/stop survey:', data.message);
 
                             if(data.action = 'userStatusAlert'){
-                                sweetAlert(data.message)
+                                sweetAlert(data.message);
+
+                                showPreloader(false);
 
                                 return;
                             }
 
                             toastAlert(data.message, 'danger', 5000);
                         }
-                        showPreloader(false);
                     })
                     .catch(error => console.error('Error:', error));
                 }
@@ -299,38 +300,65 @@ document.addEventListener('DOMContentLoaded', function() {
                                 return;
                             }
 
+                            const companyCheckboxes = form.querySelectorAll(".tab-pane.show .form-check-input-companies");
+
+                            companyCheckboxes.forEach(function(checkbox) {
+                                ['click', 'change'].forEach(eventType => {
+                                    // Listen for changes on each company checkbox
+                                    checkbox.addEventListener(eventType, function() {
+                                        // Find the parent .card element
+                                        const card = this.closest('.card');
+                                        if (!card) return;
+
+                                        // Find all user inputs within the same card
+                                        const userInputs = card.querySelectorAll('.form-check-input-users');
+
+                                        // If the company checkbox is checked, add 'required' to user inputs
+                                        // Otherwise, remove 'required'
+                                        userInputs.forEach(function(input) {
+                                            if (checkbox.checked) {
+                                                input.setAttribute('required', '');
+                                            } else {
+                                                input.removeAttribute('required');
+                                            }
+                                        });
+                                    });
+                                });
+                            });
+
                             // Additional logic for specific tabs
                             if (nextTab === 'steparrow-template-info-tab') {
-                                const checkedControlCompanies = form.querySelectorAll(".tab-pane.show .form-check-input-companies:checked");
-                                if(form.querySelectorAll(".tab-pane.show .form-check-input-companies").length){
-                                    if (checkedControlCompanies.length === 0) {
-                                        toastAlert('Necessário selecionar ao menos uma unidade', 'danger', 10000);
+
+                                if (companyCheckboxes.length) {
+                                    // Initialize a flag to keep track of whether any checkbox is checked
+                                    let isChecked = false;
+
+                                    // Iterate over all checkboxes to check if at least one is checked
+                                    companyCheckboxes.forEach(function(checkbox) {
+                                        if (checkbox.checked) {
+                                            isChecked = true;
+                                        }
+                                    });
+
+                                    // If no checkboxes are checked, show an alert
+                                    if (!isChecked) {
+                                        toastAlert('Necessário selecionar ao menos uma Unidade', 'danger', 10000);
                                         return;
                                     }
                                 }
 
-
-                                const checkedControlUsers = form.querySelectorAll(".tab-pane.show .form-check-input-users:checked");
+                                const usersCheckboxes = form.querySelectorAll(".tab-pane.show .form-check-input-users:checked");
 
                                 const selectedCompanies = form.querySelectorAll(".tab-pane .form-check-input-companies:checked");
 
-                                if (checkedControlUsers.length < selectedCompanies.length) {
-                                    toastAlert('Necessário delegar para cada Unidade Ativa as respectivas Atribuições', 'danger', 10000);
+                                if (usersCheckboxes.length < selectedCompanies.length) {
+                                    toastAlert('Delegue para cada Unidade Ativa as respectivas Atribuições', 'danger', 10000);
+
                                     return;
                                 }
 
                                 navigateToTab(nextTab);
-                            /*} else if (nextTab === 'steparrow-success-tab') {
-                                const checkedControlUsers = form.querySelectorAll(".tab-pane.show .form-check-input-users:checked");
 
-                                const selectedCompanies = form.querySelectorAll(".tab-pane .form-check-input-companies:checked");
-
-                                if (checkedControlUsers.length < selectedCompanies.length) {
-                                    toastAlert('Necessário delegar para cada Unidade as respectivas Atribuições', 'danger', 10000);
-                                    return;
-                                }
-
-                                navigateToTab(nextTab);*/
                             } else {
                                 navigateToTab(nextTab);
                             }
@@ -673,6 +701,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(formData);
                 //return;
 
+                // START Check if the number of selected companies and users:
+                // Check if the number of selected companies (checked checkboxes with the name companies[]) matches the quantity of selected surveyors (radio buttons grouped by company, e.g., surveyor[1])
+                const checkedCompanies = form.querySelectorAll('.form-check-input-companies:checked');
+
+                let isValid = true;
+
+                checkedCompanies.forEach(companyCheckbox => {
+                    const companyId = companyCheckbox.value;
+                    // Count the number of selected surveyors for this company
+                    const selectedSurveyors = form.querySelectorAll(`input[name="surveyor[${companyId}]"]:checked`).length;
+
+                    // If no surveyor is selected for a checked company, fail the validation
+                    if (selectedSurveyors === 0) {
+                        isValid = false;
+                        // console.error(`No surveyor selected for company ${companyId}`);
+
+                        toastAlert(`Necessário selecionar ao menos um Usuário para a unidade ${companyId}`, 'danger', 10000);
+                    }
+                });
+                if (!isValid) {
+                    return;
+                }
+                // END Check if the number of selected companies and users
+
                 // Transform data
                 var data = {};
                 // Iterate over formData entries
@@ -711,6 +763,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 //formData.append('distributed_data', JSON.stringify(transformedData, null, 2));
                 formData.append('distributed_data', JSON.stringify(data, null, 2));
 
+                showPreloader();
                 try {
                     let url = surveyId ? surveysStoreOrUpdateURL + `/${surveyId}` : surveysStoreOrUpdateURL;
 
@@ -724,35 +777,43 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
 
                     if (!response.ok) {
+                        showPreloader(false);
+
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
 
                     const data = await response.json();
 
                     if (data.success) {
-                        toastAlert(data.message, 'success', 10000);
+                        //toastAlert(data.message, 'success', 10000);
 
                         document.querySelector('input[name="id"]').value = data.id;
 
-                        sweetWizardAlert(data.message, surveysIndexURL);
-
+                        sweetWizardAlert(data.message, surveysIndexURL, 'success', 'Continuar Editando', 'Concluir');
                     } else {
                         toastAlert(data.message, 'danger', 60000);
                     }
+
+                    showPreloader(false);
                 } catch (error) {
+                    //console.error('Error:', error);
+
+                    showPreloader(false);
+
                     toastAlert('Error: ' + error, 'danger', 60000);
-                    console.error('Error:', error);
                 }
             });
         }
-
     }
 
-    var loadAssignmentActivities = document.getElementById('load-assignment-activities');
-    if( loadAssignmentActivities && requestAssignmentActivitiesURL ){
-        function requestAssignmentActivities() {
-            var subDays = loadAssignmentActivities.getAttribute("data-subDays") ?? 1;
-            fetch(requestAssignmentActivitiesURL + '/' + subDays, {
+    var loadlistingAssignmentActivities = document.getElementById('load-assignment-activities');
+    if( loadlistingAssignmentActivities && listingAssignmentActivitiesURL ){
+        function listingAssignmentActivities() {
+            var subDays = loadlistingAssignmentActivities.getAttribute("data-subDays") ?? 1;
+
+            var btnShowAll = document.getElementById('btn-show-all-assignments');
+
+            fetch(listingAssignmentActivitiesURL + '/' + subDays, {
                     method: 'GET',
                     headers: {
                         'Cache-Control': 'no-cache',
@@ -769,7 +830,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => {
                     //console.log(JSON.stringify(activities, null, 2));
 
-                    const container = loadAssignmentActivities;
+                    const container = loadlistingAssignmentActivities;
 
                     container.innerHTML = '';
 
@@ -811,8 +872,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
 
                         bsPopoverTooltip();
+
+                        if(btnShowAll){
+                            btnShowAll.style.display = "inline-flex";
+                        }
                     }else{
-                        container.innerHTML = '<div class="text-center text-muted">'+ data.message +'</div>';
+                        container.innerHTML = '<div class="text-center text-muted mt-3">'+ data.message +'</div>';
+
+                        if(btnShowAll){
+                            btnShowAll.style.display = "none";
+                        }
                     }
 
                     return;
@@ -821,14 +890,14 @@ document.addEventListener('DOMContentLoaded', function() {
             );
         }
 
-        requestAssignmentActivities();
+        listingAssignmentActivities();
         setInterval(function () {
-            requestAssignmentActivities();
+            listingAssignmentActivities();
         }, 60000);// 60000 = 1 minute
     }
 
     var loadAssignmentListing = document.getElementById('load-assignment-listing');
-    if( loadAssignmentListing && assignmentListingURL ){
+    if( loadAssignmentListing && listingAssignmentByIdURL ){
         const buttonsAssignmentListing = document.querySelectorAll('.btn-assignment-listing');
         if(buttonsAssignmentListing){
             buttonsAssignmentListing.forEach(function(button) {
@@ -839,7 +908,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     const surveyId = this.getAttribute('data-survey-id');
                     const surveyTitle = this.getAttribute('data-survey-title');
-                    const url = assignmentListingURL + '/' + surveyId;
+                    const url = listingAssignmentByIdURL + '/' + surveyId;
 
                     try {
                         const response = await fetch(url, {
@@ -861,7 +930,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const modalTitle = modalElement.querySelector('.modal-title');
                         const modalBody = modalElement.querySelector('.modal-body');
 
-                        modalTitle.innerHTML = surveyTitle;
+                        modalTitle.innerHTML = 'Listagem de Tarefas :: ' + ' <span class="text-theme">' + surveyTitle + '</span>';
                         modalBody.innerHTML = html;
 
                         const modal = new bootstrap.Modal(modalElement);

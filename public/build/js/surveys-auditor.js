@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             toastAlert('Redirecionando ao formulário...', 'success');
 
                             setTimeout(function () {
-                                window.location.href = formAuditorAssignmentURL + '/' +assignmentId;
+                                window.location.href = formAssignmentAuditorURL + '/' +assignmentId;
                             }, 1000);
                         } else {
                             // Handle error
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     toastAlert('Redirecionando ao formulário...', 'success');
 
                     setTimeout(function () {
-                        window.location.href = formAuditorAssignmentURL + '/' +assignmentId;
+                        window.location.href = formAssignmentAuditorURL + '/' +assignmentId;
                     }, 1000);
                  }
             });
@@ -121,9 +121,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
                                     sweetWizardAlert(sweetMessage, profileShowURL, 'warning', 'Ficar por aqui', 'Acessar meu Perfil');
                                 }else{
+                                    /*
                                     sweetMessage += '<br><br>Deseja acessar seu formulário agora?';
 
-                                    sweetWizardAlert(sweetMessage, formAuditorAssignmentURL + '/' + assignmentId, 'success', 'Não', 'Sim, acessar');
+                                    sweetWizardAlert(sweetMessage, formAssignmentAuditorURL + '/' + assignmentId, 'success', 'Não', 'Sim, acessar');
+                                    */
+                                    showPreloader();
+
+                                    toastAlert('Redirecionando ao formulário...', 'success');
+
+                                    setTimeout(() => {
+                                        window.location.href = formAssignmentAuditorURL + '/' + assignmentId;
+                                    }, 100);
                                 }
                             } else {
                                 // Handle error
@@ -186,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                         //console.log('I was closed by the timer')
 
                                                         setTimeout(() => {
-                                                            window.location.href = formAuditorAssignmentURL + '/' + assignmentId;
+                                                            window.location.href = formAssignmentAuditorURL + '/' + assignmentId;
                                                         }, 100);
                                                     }
                                                 });
@@ -399,7 +408,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if(data.showFinalizeButton){
                         document.querySelector('#btn-response-finalize').classList.remove('d-none');
 
-                        sweetWizardAlert('Tarefa Concluída', false, 'success', 'Continuar Editando', 'Finalizar', '#btn-response-finalize');
+                        sweetWizardAlert('O formulário foi completamente preenchido.<br><br><small>Ao clicar em Concluir não será mais possível retornar e alterar estes dados.</small>', false, 'success', 'Continuar Editando', 'Concluir', '#btn-response-finalize');
                     }
                 })
                 .catch(error => console.error('Error:', error));
@@ -469,7 +478,8 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    toastAlert(data.message, 'success');
+                    //toastAlert(data.message, 'success');
+                    showPreloader();
 
                     window.location.href = assignmentShowURL + '/' + assignmentId;
 
