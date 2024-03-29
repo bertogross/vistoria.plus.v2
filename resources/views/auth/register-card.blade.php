@@ -8,7 +8,7 @@
         </div>
         <div class="p-2 mt-4">
 
-            <form id="registerForm" class="no-enter-submit" action="{{ route('register') }}" method="POST">
+            <form id="registerForm" class="no-enter-submit" action="{{ route('register') }}" method="POST" autocomplete="off">
                 @csrf
                 <input type="hidden" name="host_user_id" value="{{ isset($hostId) ? $hostId : '' }}">
                 {{--}}
@@ -17,7 +17,7 @@
 
                 <div class="mb-3">
                     <label for="new_useremail" class="form-label">E-mail</label>
-                    <input type="email"  class="form-control @error('register_email') is-invalid @enderror" name="register_email" value="{{ isset($guestUserEmail) ? $guestUserEmail : old('register_email') }}" id="new_useremail" placeholder="Informe seu e-mail" maxlength="150" required>
+                    <input type="email"  class="form-control @error('register_email') is-invalid @enderror" name="register_email" value="{{ isset($guestUserEmail) ? $guestUserEmail : old('register_email') }}" id="new_useremail" placeholder="Informe seu e-mail" maxlength="150" required autofocus>
                     @error('register_email')
                         <span class="invalid-feedback" role="alert">
                             <strong>{!! $message !!}</strong>
@@ -35,7 +35,9 @@
                 </div>
 
                 <div class="mb-3">
-                    <p class="mb-0 fs-12 text-muted fst-italic">Antes de registrar-se, leia os <a href="{{env('WEBSITE_URL')}}" class="text-theme text-decoration-underline fst-normal fw-medium" target="_blank">Termos e Políticas</a> do {{appName()}}. Se de acordo, prossiga.</p>
+                    <p class="mb-0 fs-12 text-body">
+                        Ao registrar-se você estará concordando com os termos de serviço do {{appName()}}. Leia nossos <a href="{{env('WEBSITE_URL')}}/terms" class="text-theme text-decoration-underline fst-normal fw-medium" target="_blank">Termos</a> e <a href="{{env('WEBSITE_URL')}}/privacy" class="text-theme text-decoration-underline fst-normal fw-medium" target="_blank">Política de Privacidade</a>.
+                    </p>
                 </div>
 
                 <div class="mt-3">

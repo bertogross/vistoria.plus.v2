@@ -193,7 +193,7 @@
 
                                     <div class="mb-4">
                                         <label for="title" class="form-label">Nome do Modelo:</label>
-                                        <input type="text" id="title" name="title" class="form-control" value="{{ $title }}" maxlength="100" required>
+                                        <input type="text" id="title" name="title" class="form-control" value="{{ $title }}" minlength="3" maxlength="100" required {{ !$title ? 'autofocus' : '' }}>
                                         <div class="form-text">O "Nome do Modelo" será exibido na listagem</div>
                                     </div class="mb-4">
 

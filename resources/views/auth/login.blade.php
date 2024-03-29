@@ -28,8 +28,10 @@
 
                         @include('auth.login-card')
 
-                        <div class="mt-4 text-center">
-                            <p class="mb-0">Não possui uma conta? <a href="{{ route('registerURL') }}" class="fw-semibold text-theme text-decoration-underline"> Registre-se </a></p>
+                        <div class="mt-4 card border-1 border-light bg-body">
+                            <div class="card-body text-center">
+                                Não possui uma conta? <a href="{{ route('registerURL') }}" class="fw-semibold text-theme text-decoration-underline"> Registre-se </a>
+                            </div>
                         </div>
                     </div>
                 </div>

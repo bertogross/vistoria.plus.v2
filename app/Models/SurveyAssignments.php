@@ -264,6 +264,9 @@ class SurveyAssignments extends Model
 
         $distributedData = $survey->distributed_data ? json_decode($survey->distributed_data, true) : null;
 
+        $rand = rand(1, 5);
+        sleep($rand);
+
         // Check if has today responses
         $countTodayResponses = $surveyId ? Survey::countSurveyAllResponsesFromToday($surveyId) : 0;
 
@@ -687,30 +690,30 @@ class SurveyAssignments extends Model
     public static function getSurveyAssignmentDeadline($recurring, $assignmentCreatedAt)
     {
         // Ensure that $assignmentCreatedAt is a Carbon instance
-        if (!$assignmentCreatedAt instanceof \Carbon\Carbon) {
+        if (!$assignmentCreatedAt instanceof Carbon) {
             $assignmentCreatedAt = Carbon::parse($assignmentCreatedAt);
         }
 
         switch ($recurring) {
             case 'once':
             case 'daily':
+                // For 'once' and 'daily', there's no need to adjust the date
                 return $assignmentCreatedAt;
-                break;
             case 'weekly':
-                return $assignmentCreatedAt->addWeek();
-                break;
+                // Subtract one day after adding a week
+                return $assignmentCreatedAt->addWeek()->subDay();
             case 'biweekly':
-                return $assignmentCreatedAt->addWeeks(2);
-                break;
+                // Subtract one day after adding two weeks
+                return $assignmentCreatedAt->addWeeks(2)->subDay();
             case 'monthly':
-                return $assignmentCreatedAt->addMonthNoOverflow();
-                break;
+                // Subtract one day after adding a month, considering no overflow
+                return $assignmentCreatedAt->addMonthNoOverflow()->subDay();
             case 'annual':
-                return $assignmentCreatedAt->addYear();
-                break;
+                // Subtract one day after adding a year
+                return $assignmentCreatedAt->addYear()->subDay();
             default:
+                // If the recurrence pattern is unrecognized, return null
                 return null;
-                break;
         }
     }
 

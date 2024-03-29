@@ -76,8 +76,10 @@
                         </div>
                         <!-- end card -->
 
-                        <div class="mt-4 text-center">
-                            <p class="mb-0">Espere, eu lembrei minha senha... <a href="{{route('loginURL')}}" class="fw-semibold text-primary text-decoration-underline"> Login </a> </p>
+                        <div class="mt-4 card border-1 border-light bg-body">
+                            <div class="card-body text-center">
+                                Espere, eu lembrei minha senha... <a href="{{route('loginURL')}}" class="fw-semibold text-primary text-decoration-underline"> Login </a>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -46,8 +46,8 @@
                                             <label for="useremail" class="form-label d-none">E-mail</label>
                                             <input type="email"
                                                 class="form-control @error('email') is-invalid @enderror" id="useremail"
-                                                name="email" placeholder="Informe seu e-mail" value="{{ old('email') }}"
-                                                id="email" maxlength="150" required>
+                                                name="email" placeholder="Digite aqui o e-mail registrado no {{appName()}}" value="{{ old('email') }}"
+                                                id="email" maxlength="150" required autofocus>
                                             @error('email')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{-- $message --}}</strong>
@@ -65,8 +65,10 @@
                         </div>
                         <!-- end card -->
 
-                        <div class="mt-4 text-center">
-                            <p class="mb-0">Espere, eu lembrei minha senha... <a href="{{route('loginURL')}}" class="fw-semibold text-theme text-decoration-underline"> Login </a> </p>
+                        <div class="mt-4 card border-1 border-light bg-body">
+                            <div class="card-body text-center">
+                                Espere, eu lembrei minha senha... <a href="{{route('loginURL')}}" class="fw-semibold text-theme text-decoration-underline"> Login </a>
+                            </div>
                         </div>
 
                     </div>

@@ -173,7 +173,7 @@
                                 <i class="ri-share-line label-icon align-middle fs-16"></i>
                                 <span class="ms-3 d-none d-lg-inline-block d-xl-inline-block">{{limitChars($currentConnectionName, 20)}}</span>
 
-                                <span id="topbar-tasks-alert" class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-warning p-1 blink d-none"><span class="visually-hidden">tasks</span></span>
+                                <span id="topbar-tasks-alert" class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-warning p-1 d-none" data-count="{{$sumSurveyAssignmentSurveyorTasksForTopbar}}"  style="width: 22px; height: 22px; line-height: 12px "></span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <ul class="list-unstyled ps-3 pe-3 mb-0" style="min-width: 270px;">
@@ -361,9 +361,20 @@
 @endif
 
 @if($sumSurveyAssignmentSurveyorTasksForTopbar > 0)
+    @php
+        $sumTopbarHtmlResult = '';
+
+        if($sumSurveyAssignmentSurveyorTasksForTopbar > 0 && $sumSurveyAssignmentSurveyorTasksForTopbar <= 9){
+            $sumTopbarHtmlResult = $sumSurveyAssignmentSurveyorTasksForTopbar;
+        }elseif($sumSurveyAssignmentSurveyorTasksForTopbar > 0 && $sumSurveyAssignmentSurveyorTasksForTopbar > 9){
+            $sumTopbarHtmlResult = '+9';
+        }
+    @endphp
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('topbar-tasks-alert').classList.remove("d-none");
+        const badgeElement = document.getElementById('topbar-tasks-alert')
+        badgeElement.classList.remove("d-none");
+        badgeElement.innerHTML = {{ $sumTopbarHtmlResult }};
     });
     </script>
 @endif
