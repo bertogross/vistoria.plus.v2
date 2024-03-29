@@ -1,24 +1,27 @@
 @php
+    $sumSurveyAssignmentSurveyorTasksForTopbar = 0;
     $user = auth()->user();
-    $userId = $user->id ?? null;
-    if($userId){
+    $currentUserId = $user->id ?? null;
+    if($currentUserId){
         $userName = $user->name;
 
         $hostConnections = getHostConnections();
 
-        $currentConnectionId = getCurrentConnectionByUserId($userId);
+        $currentConnectionId = getCurrentConnectionByUserId($currentUserId);
         $currentConnectionName = getConnectionNameById($currentConnectionId);
         $currentConnectionRoleName = getCurrentConnectionUserRoleName();
 
-        $countSurveyAssignmentSurveyorTasks = \App\Models\SurveyAssignments::countSurveyAssignmentSurveyorTasks($userId, ['new', 'pending', 'in_progress']);
-        $countSurveyAssignmentAuditorTasks = \App\Models\SurveyAssignments::countSurveyAssignmentAuditorTasks($userId, ['new', 'pending', 'in_progress']);
+        $countSurveyAssignmentSurveyorTasks = \App\Models\SurveyAssignments::countSurveyAssignmentSurveyorTasks($currentUserId, ['new', 'pending', 'in_progress']);
+        $countSurveyAssignmentAuditorTasks = \App\Models\SurveyAssignments::countSurveyAssignmentAuditorTasks($currentUserId, ['new', 'pending', 'in_progress']);
 
-        $profileUrl = $userId ? route('profileShowURL', ['id' => $userId]) . '?d=' . now()->timestamp : route('profileShowURL');
+        $profileUrl = $currentUserId ? route('profileShowURL', ['id' => $currentUserId]) . '?d=' . now()->timestamp : route('profileShowURL');
 
         $companyLogo = getCompanyLogo();
     }
+
+    $dataBs = 'data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="bottom"';
 @endphp
-@if ($userId)
+@if ($currentUserId)
     <header id="page-topbar">
         <div class="layout-width">
             <div class="navbar-header">
@@ -112,8 +115,8 @@
                             <div class="p-2">
                                 <div class="row g-0">
                                     <div class="col">
-                                        <a class="dropdown-icon-item {{$userId == $currentConnectionId ? ' init-loader' : ''}}"
-                                        @if ($userId != $currentConnectionId)
+                                        <a class="dropdown-icon-item {{$currentUserId == $currentConnectionId ? ' init-loader' : ''}}"
+                                        @if ($currentUserId != $currentConnectionId)
                                             onclick="alert('Para acessar seus Checklists, alterne para conta Principal')"
                                         @else
                                             href="{{ route('surveysIndexURL') }}"
@@ -166,19 +169,29 @@
 
                     @if ($hostConnections->isNotEmpty())
                         <div class="dropdown ms-1 topbar-head-dropdown header-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" title="Conexão atual: <strong>{{$currentConnectionName}}</strong>">
-                            <button type="button" class="btn btn-sm btn-outline-{{$currentConnectionId != $userId ? 'theme' : 'light' }} btn-label text-body-secondary bg-light-subtle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 27px; padding-left: 25px;">
-                                <i class="ri-share-line label-icon align-middle fs-16"></i><span class="ms-3 d-none d-lg-inline-block d-xl-inline-block">{{limitChars($currentConnectionName, 20)}}</span>
+                            <button type="button" class="btn btn-sm btn-outline-{{$currentConnectionId != $currentUserId ? 'theme' : 'light' }} btn-label text-body-secondary bg-light-subtle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 27px; padding-left: 25px;">
+                                <i class="ri-share-line label-icon align-middle fs-16"></i>
+                                <span class="ms-3 d-none d-lg-inline-block d-xl-inline-block">{{limitChars($currentConnectionName, 20)}}</span>
+
+                                <span id="topbar-tasks-alert" class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-warning p-1 blink d-none"><span class="visually-hidden">tasks</span></span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <ul class="list-unstyled ps-3 pe-3 mb-0" style="min-width: 270px;">
                                     <h6 class="dropdown-header mb-2 ps-0">Alternar Conexões</h6>
 
                                     <li class="form-check form-switch form-switch-theme mb-0" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="Alternar para a conta Principal, <strong>{{$userName}}</strong>">
-                                        <input id="toggle-connection-{{$userId}}" class="form-check-input {{$currentConnectionId != $userId ? 'toggle-connection' : ''}}" type="radio" role="switch" name="connection" value="{{$userId}}" {{ !$hostConnections || $currentConnectionId == $userId ? 'checked' : '' }}>
-                                        <label class="form-check-label w-100 text-uppercase" for="toggle-connection-{{$userId}}">
-                                            <span class="badge border border-dark text-body float-end ms-2 me-4 float-end ms-2 fs-10">
+                                        <input id="toggle-connection-{{$currentUserId}}" class="form-check-input {{$currentConnectionId != $currentUserId ? 'toggle-connection' : ''}}" type="radio" role="switch" name="connection" value="{{$currentUserId}}" {{ !$hostConnections || $currentConnectionId == $currentUserId ? 'checked' : '' }}>
+                                        <label class="form-check-label w-100 text-uppercase" for="toggle-connection-{{$currentUserId}}">
+                                            <span class="badge border border-dark text-body float-end me-5 float-end ms-2 fs-10">
                                                 Principal
                                             </span>
+                                            @php
+                                                $countSurveyAssignmentSurveyorTasksForTopbar = \App\Models\SurveyAssignments::countSurveyAssignmentSurveyorTasksForTopbar($currentUserId, $currentUserId);
+                                                $sumSurveyAssignmentSurveyorTasksForTopbar += $countSurveyAssignmentSurveyorTasksForTopbar;
+
+                                                echo $countSurveyAssignmentSurveyorTasksForTopbar > 0 ? '<span class="position-absolute float-end me-n2 end-0 badge rounded-pill border border-warning text-warning blink" '.$dataBs.'" data-bs-title="Vistorias" data-bs-content="Você possui tarefas em <strong>'.$userName.'</strong>">'.$countSurveyAssignmentSurveyorTasksForTopbar.'</span>' : '';
+                                            @endphp
+
                                             {{$userName}}
                                         </label>
                                     </li>
@@ -204,37 +217,41 @@
                                             value="{{$hostId}}" {{ $hostId == $currentConnectionId ? 'checked' : '' }}>
 
                                             <label class="form-check-label w-100 text-uppercase" for="toggle-connection-{{$hostId}}">
-                                                @php
-                                                    $dataBs = 'data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="bottom"';
-                                                @endphp
                                                 @switch($questStatus)
                                                     @case('waiting')
-                                                        <span class="position-absolute text-warning float-end me-0 end-0 ri-question-line align-middle mt-n1 fs-16 btn-accept-invitation cursor-pointer"
+                                                        <span class="position-absolute text-warning float-end me-0 end-0 ri-question-line align-middle mt-n2 fs-22 btn-accept-invitation cursor-pointer"
                                                         {!! $dataBs !!}
                                                         data-bs-title="Status da Conexão"
                                                         data-bs-content="Aguardando seu consentimento para acesso ao <strong>{{$hostUserName}}</strong>.<br>Clique para aceitar." data-host-id="{{$hostId}}" data-host-name="{{$hostUserName}}"></span>
                                                         @break
                                                     @case('inactive')
-                                                        <span class="position-absolute text-danger float-end me-0 end-0 ri-question-line align-middle mt-n1 fs-16"
+                                                        <span class="position-absolute text-danger float-end me-3 end-0 ri-question-line align-middle mt-n2 fs-22"
                                                         {!! $dataBs !!}
                                                         data-bs-title="Status da Conexão"
                                                         data-bs-content="<strong class='text-danger'>Inoperante</strong><br><br>Consulte <strong>{{$hostUserName}}</strong> quanto da viabilidade de reativação"></span>
                                                         @break
                                                     @case('revoked')
-                                                        <span class="position-absolute text-warning float-end me-0 end-0 ri-question-line align-middle mt-n1 fs-16"
+                                                        <span class="position-absolute text-warning float-end me-3 end-0 ri-question-line align-middle mt-n2 fs-22"
                                                         {!! $dataBs !!}
                                                         data-bs-html="true"
                                                         data-bs-title="Status da Conexão"
                                                         data-bs-content="<strong class='text-warning'>Revogado</strong><br><br>Você revogou seu acesso.<br><br>Para reconectar acesse Configurações Gerais >> Minhas Conexões"></span>
                                                         @break
                                                     @default
-                                                        <span class="position-absolute text-success float-end me-0 end-0 ri-checkbox-circle-line align-middle mt-n1 fs-16"
+                                                        <span class="position-absolute text-success float-end me-3 end-0 ri-checkbox-circle-line align-middle mt-n2 fs-22"
                                                         {!! $dataBs !!}
                                                         data-bs-title="Status da Conexão"
                                                         data-bs-content="Seu conexão com <strong>{{$hostUserName}}</strong> está <span class='text-success'>Ativa</span>"></span>
                                                 @endswitch
 
-                                                <span class="badge border border-dark text-body float-end ms-2 me-4"
+                                                @php
+                                                    $countSurveyAssignmentSurveyorTasksForTopbar = \App\Models\SurveyAssignments::countSurveyAssignmentSurveyorTasksForTopbar($hostId, $currentUserId);
+                                                    $sumSurveyAssignmentSurveyorTasksForTopbar += $countSurveyAssignmentSurveyorTasksForTopbar;
+
+                                                    echo $countSurveyAssignmentSurveyorTasksForTopbar > 0 ? '<span class="position-absolute float-end me-n2 end-0 badge rounded-pill border border-warning text-warning blink" '.$dataBs.'" data-bs-title="Vistorias" data-bs-content="Você possui tarefas em <strong>'.$hostUserName.'</strong>">'.$countSurveyAssignmentSurveyorTasksForTopbar.'</span>' : '';
+                                                @endphp
+
+                                                <span class="badge border border-dark text-body float-end ms-2 me-5"
                                                 data-bs-toggle="tooltip"
                                                 data-bs-html="true"
                                                 data-bs-placement="top"
@@ -261,7 +278,7 @@
                     <div class="dropdown ms-sm-3 header-item topbar-user">
                         <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="d-flex align-items-center">
-                                <span class="position-absolute translate-middle badge border border-light rounded-circle bg-theme p-1 {{ $countSurveyAssignmentSurveyorTasks+$countSurveyAssignmentAuditorTasks > 0 ? 'blink' : 'd-none' }}" style="margin-left: 30px;margin-top: 15px;" title="Tarefas Pendentes"><span class="visually-hidden">{{$countSurveyAssignmentSurveyorTasks+$countSurveyAssignmentAuditorTasks}} Tarefas Pendentes</span></span>
+                                <span class="position-absolute translate-middle badge border border-light rounded-circle bg-theme p-1 {{ $countSurveyAssignmentSurveyorTasks+$countSurveyAssignmentAuditorTasks > 0 ? 'blink' : 'd-none' }}" style="margin-left: 29px; margin-top: 25px;" title="Tarefas Pendentes"><span class="visually-hidden">{{$countSurveyAssignmentSurveyorTasks+$countSurveyAssignmentAuditorTasks}} Tarefas Pendentes</span></span>
                                 <img class="rounded-circle header-profile-user avatar-img" src="{{checkUserAvatar($user->avatar)}}" alt="Avatar" loading="lazy">
                                 <span class="text-start ms-xl-2">
                                     <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{$userName}}</span>
@@ -293,8 +310,8 @@
                                 </span>
                             </a>
 
-                            @if(in_array(getUserRoleById($userId, $currentConnectionId), [1,2]))
-                                <a class="dropdown-item init-loader" href="{{ route('surveysAuditIndexURL', $userId) }}">
+                            @if(in_array(getUserRoleById($currentUserId, $currentConnectionId), [1,2]))
+                                <a class="dropdown-item init-loader" href="{{ route('surveysAuditIndexURL', $currentUserId) }}">
                                     <i class="ri-fingerprint-2-line text-muted fs-16 align-middle me-1"></i>
                                     <span class="align-middle">
                                         Minhas Auditorias
@@ -310,8 +327,8 @@
                             <a class="dropdown-item" href="auth-lockscreen-basic"><i class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Lock screen</span></a>
                             -->
 
-                            <a class="dropdown-item {{ $userId == $currentConnectionId ? ' init-loader' : ''}}"
-                                @if ($userId != $currentConnectionId)
+                            <a class="dropdown-item {{ $currentUserId == $currentConnectionId ? ' init-loader' : ''}}"
+                                @if ($currentUserId != $currentConnectionId)
                                     onclick="alert('Para acessar Configurações, alterne para conta Principal')"
                                 @else
                                     href="{{ route('settingsAccountShowURL') }}"
@@ -341,4 +358,12 @@
             </div>
         </div>
     </header>
+@endif
+
+@if($sumSurveyAssignmentSurveyorTasksForTopbar > 0)
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('topbar-tasks-alert').classList.remove("d-none");
+    });
+    </script>
 @endif

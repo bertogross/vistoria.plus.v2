@@ -20,7 +20,6 @@
     "test:unit:coverage": "NODE_ENV=test nyc --reporter=lcov --reporter=text --reporter=text-summary mocha",
     "test:e2e": "run-p --race start cypress:run",
     "js:watch": "cross-env NODE_ENV=development node server.js",
-    "js:build": "webpack --config webpack.config.prod.js",
     "css:watch": "nodemon -e scss -x \"npm run css:build\"",
     "css:build": "run-s css:sass css:prefix css:min",
     "css:sass": "sass -I scss src/styles/base.scss public/assets/styles/base.css && sass -I scss src/styles/choices.scss public/assets/styles/choices.css",
@@ -101,11 +100,7 @@
     "stylelint-config-standard-scss": "^6.1.0",
     "ts-loader": "^9.4.1",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.3",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.0",
-    "webpack-dev-middleware": "^6.0.1",
-    "webpack-hot-middleware": "^2.25.3"
+    "typescript": "^4.9.3"
   },
   "dependencies": {
     "deepmerge": "^4.2.2",

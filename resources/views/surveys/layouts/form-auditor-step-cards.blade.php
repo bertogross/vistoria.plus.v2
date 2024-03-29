@@ -157,7 +157,7 @@
                                             <label for="input-attachment-{{$radioIndex}}" class="btn btn-light d-flex align-content-center flex-wrap me-1 mb-0 rounded-2 btn-add-photo" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Anexar Fotografia" data-step-id="{{$stepId}}" data-topic-id="{{$topicId}}">
                                                 <i class="ri-image-add-fill text-body fs-1 m-auto text-white"></i>
                                             </label>
-                                            <input type="file" id="input-attachment-{{$radioIndex}}" class="input-upload-photo d-none" accept="image/jpeg">
+                                            <input type="file" id="input-attachment-{{$radioIndex}}" class="input-upload-photo d-none" capture="environment" accept="image/jpeg">
                                         @endif
 
                                         <label class="btn btn-light d-flex align-content-center flex-wrap text-center ms-1 me-1 mb-0 btn-toggle-element rounded-2" data-toggle-target="textarea-{{ $topicIndex.$radioIndex }}" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Adicionar Observações">

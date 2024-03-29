@@ -30,6 +30,7 @@
             $createdAt = $assignment['created_at'];
 
             $title = $survey->title;
+            $startAt = $survey->start_at;
 
             $recurring = $survey->recurring;
             $recurringLabel = $getSurveyRecurringTranslations[$recurring]['label'];
@@ -37,6 +38,9 @@
             $deadline = SurveyAssignments::getSurveyAssignmentDeadline($recurring, $createdAt);
             $deadlineFormated = $deadline->format('Ymd');
             $deadline = $deadline->locale('pt_BR')->isoFormat('D [de] MMMM, YYYY');
+
+            $deadlineScheduled = SurveyAssignments::getSurveyAssignmentDeadlineScheduled($recurring, $startAt);
+            $deadlineScheduled = $deadlineScheduled->locale('pt_BR')->isoFormat('D [de] MMMM, YYYY');
 
             $templateName = getSurveyTemplateNameById($survey->template_id);
 
@@ -132,7 +136,7 @@
                 </div>
             </div>
             <div class="card-body bg-body">
-                <h5 class="fs-13 text-truncate task-title mb-0">
+                <h5 class="fs-13 text-truncate task-title mb-0" data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" data-bs-placement="top" title="{{ $title }}">
                     {{ $title }}
                 </h5>
 
@@ -149,11 +153,24 @@
                             </div>
                         @endif
                     </li>
-                    <li class="list-group-item" data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" data-bs-placement="top" title="Da repetição desta tarefa">
+                    <li class="list-group-item"
+                    @if($recurring != 'once')
+                        data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" data-bs-placement="top" title="Recorrência iniciada em {{ $startAt->locale('pt_BR')->isoFormat('D [de] MMMM, YYYY'); }}"
+                    @endif
+                    >
                         <i class="ri-refresh-line align-top me-2 text-info"></i> Recorrência: {{ $recurringLabel }}
+                        @if($recurring != 'once')
+                            <div class="fs-10 fw-normal text-muted ms-4">
+                                {{ $startAt->locale('pt_BR')->isoFormat('D [de] MMMM, YYYY'); }}
+                            </div>
+                        @endif
                     </li>
-                    <li class="list-group-item" data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" data-bs-placement="top" title="A data limite para execução desta tarefa">
-                        <i class="ri-calendar-todo-line align-top me-2 text-info"></i> Prazo: {{ $deadline }}
+                    <li class="list-group-item" data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" data-bs-placement="top" title="{{$surveyorStatus == 'scheduled' ? 'A data em que esta tarefa se tornará Vigente' : 'A data limite para execução desta tarefa'}}">
+                        @if($surveyorStatus == 'scheduled')
+                            <i class="ri-timer-line align-top me-2 text-warning"></i> Data: {{ $deadlineScheduled }}
+                        @else
+                            <i class="ri-calendar-todo-line align-top me-2 text-info"></i> Prazo: {{ $deadline }}
+                        @endif
                     </li>
                 </ul>
 
@@ -202,12 +219,12 @@
                         @if ($currentUserId == $designatedUserId && in_array($statusKey, ['new','pending','in_progress']) )
                             <button type="button"
                                 data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
-                                title="{{$status['reverse']}}"
+                                title="{{ $status['reverse'] ?? '' }}"
                                 class="btn btn-sm btn-label right btn-{{$status['color']}} {{ $designated == 'surveyor' ? 'btn-assignment-surveyor-action' : 'btn-assignment-auditor-action' }}"
                                 data-survey-id="{{$surveyId}}"
                                 data-assignment-id="{{$assignmentId}}"
                                 data-current-status="{{$statusKey}}">
-                                    <i class="{{$status['icon']}} label-icon align-middle fs-16"></i> {{$status['reverse']}}
+                                    <i class="{{$status['icon']}} label-icon align-middle fs-16"></i> {{ $status['reverse'] ?? '' }}
                             </button>
 
                             @if ( in_array(getUserRoleById($currentUserId, $currentConnectionId), [1,2]) && in_array($statusKey, ['new','pending','in_progress','completed']) )
@@ -224,6 +241,16 @@
                                 class="btn btn-sm btn-label right btn-dark">
                                     <i class="ri-eye-line label-icon align-middle"></i> Visualizar
                             </a>
+                        @endif
+
+                        @if($surveyorStatus == 'scheduled')
+                            <button type="button"
+                            data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
+                            title="Pré-visualizar Formulário"
+                            data-assignment-id="{{ $assignmentId }}"
+                            class="btn btn-sm btn-label right btn-dark btn-assignment-form-preview">
+                                <i class="ri-survey-line label-icon align-middle"></i> Pré-visualizar
+                            </button>
                         @endif
 
                         {{--

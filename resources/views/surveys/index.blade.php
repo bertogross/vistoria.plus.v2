@@ -127,6 +127,8 @@
 
     @include('surveys.layouts.modal-listing-assignments')
 
+    @include('surveys.layouts.modal-preview-form-assignment')
+
 @endsection
 @section('script')
     <script src="{{ URL::asset('build/libs/flatpickr/flatpickr.min.js') }}"></script>
@@ -141,6 +143,7 @@
         var surveysChangeStatusURL = "{{ route('surveysChangeStatusURL') }}";
         var surveysShowURL = "{{ route('surveysShowURL') }}";
         var surveysStoreOrUpdateURL = "{{ route('surveysStoreOrUpdateURL') }}";
+        var formAssignmentSurveyorURL = "{{ route('formAssignmentSurveyorURL') }}";
         var surveyReloadUsersTabURL = "{{ route('surveyReloadUsersTabURL') }}";
         var listingAssignmentActivitiesURL = "{{ route('listingAssignmentActivitiesURL') }}";
         var listingAssignmentByIdURL = "{{ route('listingAssignmentByIdURL') }}";

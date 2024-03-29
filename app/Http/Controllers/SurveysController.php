@@ -38,7 +38,7 @@ class SurveysController extends Controller
 
         // Usefull if crontab or Kernel schedule is losted
         // D:public_html\app\Console\Commands
-        Survey::populateSurveys();
+        Survey::processSurveys();
 
         $createdAt = $request->input('created_at');
         $status = $request->input('status');

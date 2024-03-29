@@ -17,7 +17,7 @@ class TeamController extends Controller
 
         // Usefull if crontab or Kernel schedule is losted
         // D:public_html\app\Console\Commands
-        Survey::populateSurveys();
+        Survey::processSurveys();
 
         $users = getUsers();
 

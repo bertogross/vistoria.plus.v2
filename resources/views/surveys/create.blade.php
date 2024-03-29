@@ -256,7 +256,7 @@
 
                             <div id="steparrow-recurring-info" class="tab-pane fade" role="tabpanel" aria-labelledby="steparrow-recurring-info-tab">
                                 <div class="mb-3">
-                                    <label for="date-recurring-field" class="form-label">Tipo de Recorrência: {{ $getSurveyRecurringTranslations['$recurring'] ?? '' }}</label>
+                                    <label for="date-recurring-field" class="form-label">Tipo de Recorrência: {!! isset($getSurveyRecurringTranslations[$recurring]['label']) ? '<strong class="text-theme">' .$getSurveyRecurringTranslations[$recurring]['label']. '</strong>' : '' !!}</label>
                                     @if ( $data && $countAllResponses > 0 && !in_array($surveyStatus, ['new', 'scheduled']) )
                                         {!! $alertMessage1 !!}
                                         <input type="hidden" name="recurring" value="{{$recurring}}">

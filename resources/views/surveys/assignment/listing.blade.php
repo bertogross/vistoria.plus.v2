@@ -84,6 +84,6 @@
     </div>
 @else
     @component('components.nothing')
-        @slot('text', 'Ainda não há dados')
+        @slot('text', 'Tarefas relacionadas a este Checklist ainda não foram executadas')
     @endcomponent
 @endif

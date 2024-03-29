@@ -361,12 +361,11 @@ class Survey extends Model
     }
 
     // START Used with crontab to start recurring tasks
-    public static function populateSurveys($databaseId = null)
+    public static function processSurveys($databaseId = null)
     {
         $today = Carbon::now()->startOfDay();
 
         Survey::setSurveyDatabaseConnection($databaseId);
-
         // Debugging: Log the current database connection
         // \Log::info('Current Database Connection: ' . config('database.connections.vpAppTemplate.database'));
 
@@ -376,7 +375,7 @@ class Survey extends Model
             if ( $survey->start_at && $survey->start_at->startOfDay() == $today ) {
                 $survey->update(['status' => 'started']);
 
-                SurveyAssignments::startSurveyAssignments($survey->id);
+                SurveyAssignments::populateSurveyAssignments($survey->id);
             }
         });
 
@@ -386,7 +385,7 @@ class Survey extends Model
             if ( $survey->start_at && $survey->start_at <= $today ) {
                 $survey->update(['status' => 'started']);
 
-                SurveyAssignments::startSurveyAssignments($survey->id);
+                SurveyAssignments::populateSurveyAssignments($survey->id);
             }
         });
 
@@ -395,9 +394,9 @@ class Survey extends Model
 
             if ( $survey->end_in && $today > $survey->end_in ) {
                 $survey->update(['status' => 'completed']);
+            }else{
+                SurveyAssignments::populateSurveyAssignments($survey->id);
             }
-
-            SurveyAssignments::startSurveyAssignments($survey->id);
         });
 
         Survey::processSurveysWithStatus('completed', function ($survey) {
@@ -432,7 +431,7 @@ class Survey extends Model
                 $callback($survey);
             }
         } catch (\Exception $e) {
-            \Log::error("Error in populateSurveys with status {$status}: " . $e->getMessage());
+            \Log::error("Error in processSurveys with status {$status}: " . $e->getMessage());
         }
     }
     // END Used with crontab to start recurring tasks

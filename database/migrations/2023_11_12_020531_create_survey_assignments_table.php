@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigInteger('company_id')->default(0);
             $table->bigInteger('surveyor_id')->nullable()->comment('The surveyor user_id');
             $table->bigInteger('auditor_id')->nullable()->comment('The auditor user_id');
-            $table->enum('surveyor_status', ['new', 'pending', 'in_progress', 'auditing', 'completed', 'losted'])->default('new')->comment('The status of the survey task for this surveyor');
+            $table->enum('surveyor_status', ['scheduled', 'new', 'pending', 'in_progress', 'auditing', 'completed', 'losted'])->default('new')->comment('The status of the survey task for this surveyor');
             $table->enum('auditor_status', ['waiting', 'new', 'pending', 'in_progress', 'completed', 'losted', 'bypass'])->nullable()->comment('The status of the survey task for this auditor');
             $table->timestamps();
         });

@@ -171,8 +171,7 @@
                                             {{ $assignment->updated_at ? date('d/m/Y H:i', strtotime($assignment->updated_at)) : '-' }}
                                         </td>
                                         <td class="text-center">
-                                            <span
-                                                class="badge bg-{{ $getSurveyAssignmentStatusTranslations[$assignmentStatus]['color'] }}-subtle text-{{ $getSurveyAssignmentStatusTranslations[$assignmentStatus]['color'] }} text-uppercase"
+                                            <span class="badge bg-{{ $getSurveyAssignmentStatusTranslations[$assignmentStatus]['color'] }}-subtle text-{{ $getSurveyAssignmentStatusTranslations[$assignmentStatus]['color'] }} text-uppercase"
                                                 data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top"
                                                 title="{{ $getSurveyAssignmentStatusTranslations[$assignmentStatus]['description'] }}">
                                                 {{ $getSurveyAssignmentStatusTranslations[$assignmentStatus]['label'] }}

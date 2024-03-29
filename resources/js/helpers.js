@@ -357,34 +357,6 @@ export function formatPhoneNumber() {
     });
 }
 
-export function getChartColorsArray(chartId) {
-    if (document.getElementById(chartId) !== null) {
-      var colors = document.getElementById(chartId).getAttribute("data-colors");
-
-      if (colors) {
-        colors = JSON.parse(colors);
-        return colors.map(function (value) {
-          var newValue = value.replace(" ", "");
-          if (newValue.indexOf(",") === -1) {
-            var color = getComputedStyle(document.documentElement).getPropertyValue(newValue);
-            if (color) return color;
-            else return newValue;
-          } else {
-            var val = value.split(',');
-            if (val.length == 2) {
-              var rgbaColor = getComputedStyle(document.documentElement).getPropertyValue(val[0]);
-              rgbaColor = "rgba(" + rgbaColor + "," + val[1] + ")";
-              return rgbaColor;
-            } else {
-              return newValue;
-            }
-          }
-        });
-      } else {
-        console.warn('data-colors Attribute not found on:', chartId);
-      }
-    }
-}
 
 export function onlyNumbers(number){
     if (number === null || number === undefined) {
@@ -439,6 +411,15 @@ export function sumInputNumbers(from, to, decimal = 0) {
     updateSum();
 }
 
+
+// Format file size
+export function formatSize(bytes) {
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes === 0) return '0 Byte';
+    const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+}
+
 export function setCookie(cname, cvalue, exdays = 1) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
@@ -470,15 +451,6 @@ export function removeCookie(cname) {
     var cookieString = cname + "=;" + expires + ";path=/;SameSite=Strict;Secure";
     document.cookie = cookieString;
     // PS: Cookies with the HttpOnly = true flag cannot be deleted using JavaScript
-}
-
-
-// Format file size
-export function formatSize(bytes) {
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    if (bytes === 0) return '0 Byte';
-    const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
 }
 
 // Set a value in the session storage
@@ -650,43 +622,64 @@ export function updateProgressBar(number1, number2, progressBarId) {
 }
 
 export function bsPopoverTooltip() {
-    setTimeout(() => {
-        // Arrays to keep track of all tooltips and popovers
-        let allTooltips = [];
-        let allPopovers = [];
+    // Initialize tooltips and popovers
+    const tooltips = [];
+    const popovers = [];
 
-        // Function to hide all tooltips
-        function hideAllTooltips() {
-            allTooltips.forEach(tooltip => tooltip.hide());
-            allTooltips = []; // Clear the array after hiding all tooltips
-        }
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+        tooltips.push(new bootstrap.Tooltip(el));
+    });
 
-        // Function to hide all popovers
-        function hideAllPopovers() {
-            allPopovers.forEach(popover => popover.hide());
-            allPopovers = []; // Clear the array after hiding all popovers
-        }
+    document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+        popovers.push(new bootstrap.Popover(el));
+    });
 
-        // Hide existing tooltips and popovers
-        hideAllTooltips();
-        hideAllPopovers();
+    // Function to hide all tooltips
+    function hideAllTooltips() {
+        tooltips.forEach(tooltip => tooltip.hide());
+    }
 
-        // Find all elements with data-bs-toggle
-        var toggles = document.querySelectorAll('[data-bs-toggle]');
+    // Function to hide all popovers
+    function hideAllPopovers() {
+        popovers.forEach(popover => popover.hide());
+    }
 
-        toggles.forEach(function(toggle) {
-            var toggleType = toggle.getAttribute('data-bs-toggle');
-            if (toggleType === 'tooltip') {
-                // Initialize tooltip and store the instance
-                allTooltips.push(new bootstrap.Tooltip(toggle));
-            } else if (toggleType === 'popover') {
-                // Initialize popover and store the instance
-                allPopovers.push(new bootstrap.Popover(toggle));
-            }
-        });
-    }, 100);
+    // Event listener to hide tooltips and popovers after they are shown
+    document.querySelectorAll('[data-bs-toggle="tooltip"], [data-bs-toggle="popover"]').forEach(el => {
+        el.addEventListener('shown.bs.tooltip', () => setTimeout(hideAllTooltips, 5000));
+        el.addEventListener('shown.bs.popover', () => setTimeout(hideAllPopovers, 5000));
+    });
 }
 
+
+export function getChartColorsArray(chartId) {
+    if (document.getElementById(chartId) !== null) {
+      var colors = document.getElementById(chartId).getAttribute("data-colors");
+
+      if (colors) {
+        colors = JSON.parse(colors);
+        return colors.map(function (value) {
+          var newValue = value.replace(" ", "");
+          if (newValue.indexOf(",") === -1) {
+            var color = getComputedStyle(document.documentElement).getPropertyValue(newValue);
+            if (color) return color;
+            else return newValue;
+          } else {
+            var val = value.split(',');
+            if (val.length == 2) {
+              var rgbaColor = getComputedStyle(document.documentElement).getPropertyValue(val[0]);
+              rgbaColor = "rgba(" + rgbaColor + "," + val[1] + ")";
+              return rgbaColor;
+            } else {
+              return newValue;
+            }
+          }
+        });
+      } else {
+        console.warn('data-colors Attribute not found on:', chartId);
+      }
+    }
+}
 export function initFlatpickr() {
     const elements = document.querySelectorAll('.flatpickr-default');
     if(elements){

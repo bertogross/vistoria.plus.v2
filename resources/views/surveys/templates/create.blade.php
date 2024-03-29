@@ -36,7 +36,7 @@
         $description = $data->description ?? '';
 
         $countSurveys = isset($surveysCount) && $surveysCount > 0 ? $surveysCount : 0;
-        $countSurveysText = $surveysCount > 1 ? 'Este modelo está sendo utilizado por '.$countSurveys.' Checklists. A edição deste não influênciará nos dados das rotinas que estão em andamento.' : 'Este modelo está sendo utilizado em 1 Checklist. A edição deste não influênciará nos dados da rotina que está em andamento.';
+        $countSurveysText = $surveysCount > 1 ? 'Este modelo está sendo utilizado em '.$countSurveys.' Checklists. A edição deste não influênciará nos dados das rotinas que estão em andamento.' : 'Este modelo está sendo utilizado em 1 Checklist. A edição deste não influênciará nos dados da rotina que está em andamento.';
         $countSurveysText .= '<br><br>Se a intenção for a de modificar tópicos dos processos em andamento, não será possível devido ao armazenamento de informações para comparativo. Portanto, o caminho ideal será encerrar determinado Checklist e gerar um novo registro. Se este for o caso, prossiga com a edição deste modelo e reutilize-o gerando um novo Checklist.'
     @endphp
 
@@ -284,7 +284,7 @@
     <script>
         var surveysIndexURL = "{{ route('surveysIndexURL') }}";
         var surveysTemplateEditURL = "{{ route('surveysTemplateEditURL') }}";
-        var surveysTemplatePreviewFromSurveyTemplatesURL = "{{ route('surveysTemplatePreviewFromSurveyTemplatesURL') }}";
+        var previewFromSurveyTemplatesURL = "{{ route('previewFromSurveyTemplatesURL') }}";
         var surveysTemplatePreviewFromWarehouseURL = "{{ route('surveysTemplatePreviewFromWarehouseURL') }}";
         var surveysTemplateStoreOrUpdateURL = "{{ route('surveysTemplateStoreOrUpdateURL') }}";
 

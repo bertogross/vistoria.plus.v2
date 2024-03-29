@@ -45,7 +45,6 @@
         ->get()
         ->toArray();
 
-    $purpose = 'validForm';
 @endphp
 @extends('layouts.master')
 @section('title')
@@ -70,12 +69,18 @@
         @endslot
     @endcomponent
     <div id="content" class="rounded rounded-2 mb-4" style="max-width: 700px; margin: 0 auto;">
+        @if($purpose == 'fakeForm')
+            <div class="alert alert-info alert-dismissible alert-label-icon label-arrow fade show">
+                <i class="ri-information-line label-icon"></i> <strong class="text-uppercase">Demonstrativo</strong><br>Esta é uma <u>demonstração</u> do formulário que será preenchido pelo(a) Vistoriador(a) e por isso as ações de click não irão funcionar nesta sessão.
+            </div>
+        @endif
+
         <div class="bg-info-subtle position-relative">
             <div class="card-body p-5 text-center">
-                <h2>Vistoria</h2>
+                <h1>Vistoria</h1>
 
                 @if ($companyName )
-                    <h2 class="text-theme text-uppercase">{{ $companyName }}</h2>
+                    <h3 class="text-theme text-uppercase">{{ $companyName }}</h3>
                 @endif
 
                 <h3>{{ $title ? ucfirst($title) : 'NI' }}</h3>

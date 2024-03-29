@@ -36,7 +36,7 @@ class FetchSurveys extends Command
         // Check if we have any user IDs to process
         if ($userIds->isNotEmpty()) {
             foreach ($userIds as $databaseId) {
-                Survey::populateSurveys($databaseId);
+                Survey::processSurveys($databaseId);
             }
         }
     }

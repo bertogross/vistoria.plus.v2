@@ -87,7 +87,7 @@
                     <thead class="table-light text-muted text-uppercase">
                         <tr>
                             <th data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Usuário autor deste registro" width="50"></th>
-                            <th data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Título do modelo que serviu de base para gerar os tópicos desta vistoria">
+                            <th data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Título do modelo que serviu de base para gerar os tópicos desta vistoria" style="min-width: 280px;">
                                 Título
                             </th>
                             <th class="text-center d-none" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="A Data de Registro não é necessáriamente a data de início das tarefas">
@@ -165,10 +165,8 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>
-                                    <span class="text-body" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="{{ucfirst($surveyTitle)}}">
-                                        {{ limitChars(ucfirst($surveyTitle), 30) }}
-                                    </span>
+                                <td class="text-wrap" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="{{ucfirst($surveyTitle)}}">
+                                    {{ limitChars(ucfirst($surveyTitle), 100) }}
 
                                     {{--
                                     <div class="text-muted small" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="{{ limitChars(ucfirst($getSurveyTemplateNameById), 200) }}">
@@ -235,14 +233,15 @@
                                     {!! $recurringSubLabel ? '<br><small class="badge bg-dark-subtle text-body">' . $recurringSubLabel . '</small>' : '' !!}
                                 </td>
                                 <td class="text-center">
-                                    <span
-                                        class="badge bg-{{ $getSurveyStatusTranslations[$surveyStatus]['color'] }}-subtle text-{{ $getSurveyStatusTranslations[$surveyStatus]['color'] }} text-uppercase"
+                                    <span class="badge bg-{{ $getSurveyStatusTranslations[$surveyStatus]['color'] }}-subtle text-{{ $getSurveyStatusTranslations[$surveyStatus]['color'] }} text-uppercase"
                                         data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top"
                                         title="{{ $getSurveyStatusTranslations[$surveyStatus]['description'] }}">
                                         {{ $getSurveyStatusTranslations[$surveyStatus]['label'] }}
+                                        {{--
                                         @if ($surveyStatus == 'started')
                                             <span class="spinner-border align-top ms-1"></span>
                                         @endif
+                                        --}}
                                     </span>
                                 </td>
                                 <td class="text-center">
@@ -261,7 +260,7 @@
 
                                     {{-- TODO --}}
                                     @if (env('APP_DEBUG'))
-                                        <button type="button" onclick="alert('In development stage')"
+                                        <button type="button"
                                         class="btn btn-sm btn-soft-dark ri-survey-line btn-survey-form-preview"
                                         data-survey-id="{{ $surveyId }}"
                                         data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Pré-visualizar Formulário"></button>

@@ -154,6 +154,9 @@ class SurveysAssignmentsController extends Controller
             abort(404);
         }
 
+        $preview = $request->query('preview', false);
+        $purpose = $preview ? 'fakeForm' : 'validForm';
+
         $currentUserId = auth()->id();
 
         $assignmentData = SurveyAssignments::findOrFail($assignmentId) ?? null;
@@ -205,7 +208,8 @@ class SurveysAssignmentsController extends Controller
             'templateData',
             'assignmentData',
             'stepsWithTopics',
-            'percentage'
+            'percentage',
+            'purpose'
         ));
     }
 
@@ -282,39 +286,44 @@ class SurveysAssignmentsController extends Controller
 
         $currentStatus = $data->surveyor_status;
 
-        if($currentStatus == 'auditing'){
-            return response()->json([
-                'success' => false,
-                'message' => 'Esta Tarefa já foi finalizada e não poderá ser editada.',
-            ]);
+        switch ($currentStatus) {
+            case 'auditing':
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Esta Tarefa já foi finalizada e não poderá ser editada.',
+                ]);
+            case 'scheduled':
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tarefa agendada não poderá ser inicializada.',
+                ]);
+            case 'losted':
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Esta Tarefa foi perdida pois o prazo expirou e por isso não poderá mais ser editada',
+                ]);
+            case 'new':
+                // [if currentStatus is new] Change to pending.
+                $newStatus = 'pending';
+                $message = 'Formulário gerado com sucesso';
+                break;
+            case 'in_progress':
+                // [if currentStatus is in_progress] Change to auditing.
+                // $newStatus = 'auditing'; // Commented out as per your original logic
+                $newStatus = 'completed';
+                $message = 'Dados gravados';
+                break;
+            default:
+                $newStatus = $currentStatus;
+                $message = 'Status inalterado';
+                break;
         }
-        if($currentStatus == 'losted' ){
-            return response()->json([
-                'success' => false,
-                'message' => 'Esta Tarefa foi perdida pois o prazo expirou e por isso não poderá mais ser editada',
-            ]);
+
+        if (in_array($currentStatus, ['new', 'in_progress'])) {
+            SurveyAssignments::changeSurveyorAssignmentStatus($assignmentId, $newStatus);
+
+            return response()->json(['success' => true, 'message' => $message, 'newStatus' => $newStatus]);
         }
-
-        if($currentStatus == 'new'){
-            // [if currentStatus is new] Change to pending.
-            $newStatus = 'pending';
-
-            $message = 'Formulário gerado com sucesso';
-        }elseif($currentStatus == 'in_progress'){
-            // [if currentStatus is in_progress] Change to auditing.
-            //$newStatus = 'auditing';
-            $newStatus = 'completed';
-
-            $message = 'Dados gravados';
-        }else{
-            $message = 'Status inalterado';
-
-            $newStatus = $currentStatus;
-        }
-
-        SurveyAssignments::changeSurveyorAssignmentStatus($assignmentId, $newStatus);
-
-        return response()->json(['success' => true, 'message' => $message]);
     }
 
     public function changeAssignmentAuditorStatus(Request $request)
@@ -520,7 +529,7 @@ class SurveysAssignmentsController extends Controller
         }
     }
 
-    public function requestAssignments(Request $request, $subDays = null)
+    /*public function requestAssignments(Request $request, $subDays = null)
     {
         $error = response()->json(['success' => false, 'message' => 'Ainda não há dados']);
 
@@ -538,17 +547,11 @@ class SurveysAssignmentsController extends Controller
             $days = Carbon::now()->subDays($subDays);
         }
 
-        $surveyorArrStatus = ['new', 'pending', 'in_progress', 'auditing', 'completed'];
+        $surveyorArrStatus = ['scheduled', 'new', 'pending', 'in_progress', 'auditing', 'completed'];
 
         $auditorArrStatus = ['pending', 'in_progress', 'completed']; //'waiting',
 
         // Fetching surveyor and auditor assignments
-        /*$assignments = SurveyAssignments::whereIn('surveyor_status', $surveyorArrStatus)
-            ->orWhereIn('auditor_status', $auditorArrStatus)
-            ->whereDate('created_at', '>=', $days)
-            ->orderBy('updated_at', 'desc')
-            ->limit(100)
-            ->get();*/
         $assignments = SurveyAssignments::where(function ($query) use ($surveyorArrStatus, $auditorArrStatus) {
                 $query->whereIn('surveyor_status', $surveyorArrStatus)
                       ->orWhereIn('auditor_status', $auditorArrStatus);
@@ -581,7 +584,7 @@ class SurveysAssignmentsController extends Controller
         } else {
             return $error;
         }
-    }
+    }*/
 
     private function processAssignment($assignment, $designated)
     {

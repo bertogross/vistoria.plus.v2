@@ -23,6 +23,8 @@
         $getGuestIdsConnectedOnHost = getGuestIdsConnectedOnHostId();
         //appPrintR($getGuestIdsConnectedOnHost);
 
+        $userSurveysRelated = SurveyAssignments::getSurveyAssignmentSurveyorTasksFromUserId($profileUserId);
+
         $titleLabel = $connectedToName ? '<span class="badge bg-light-subtle text-body badge-border float-end" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Conta Conectada">'.$connectedToName.'</span>' : '';
 
         //appPrintR($assignmentData);
@@ -44,8 +46,8 @@
                     <div class="avatar-lg profile-user position-relative d-inline-block">
                         <img src="{{checkUserAvatar($user->avatar)}}" alt="avatar" class="img-thumbnail rounded-circle avatar-img" loading="lazy" />
                         @if($profileUserId == auth()->id())
-                            <div class="avatar-xs p-0 rounded-circle profile-photo-edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="right" title="Alterar Avatar">
-                                <input class="d-none" name="avatar" id="member-image-input" type="file" accept="image/jpeg">
+                            <div class="avatar-xs p-0 rounded-circle profile-photo-edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="right" title="Alterar Foto">
+                                <input class="d-none" name="avatar" id="member-image-input" type="file" capture="user" accept="image/jpeg">
                                 <label for="member-image-input" class="profile-photo-edit avatar-xs">
                                     <span class="avatar-title rounded-circle bg-light text-body">
                                         <i class="ri-camera-fill"></i>
@@ -129,21 +131,18 @@
                                     @endphp
 
                                     <div class="tasks-list
-                                    {{-- in_array($key, ['waiting', 'auditing', 'pending', 'completed', 'in_progress', 'losted']) && $countTotal < 1 ? 'd-none' : '' --}}
                                     {{ in_array($key, ['waiting', 'pending', 'auditing', 'losted']) && $countTotal < 1 ? 'd-none' : '' }}
                                     {{-- $countTotal < 1 ? 'd-none' : '' --}}
                                     p-2">
                                         <div class="d-flex mb-3">
                                             <div class="flex-grow-1">
                                                 <h6 class="fs-14 text-uppercase fw-semibold mb-1">
-                                                    <span data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="{{$status['label']}}" data-bs-content="{{$status['description']}}">
-                                                        {{$status['label']}}
-                                                    </span>
+                                                    {{$status['label']}}
                                                     <small class="badge bg-{{$status['color']}} align-bottom ms-1 totaltask-badge">
                                                         {{ $countTotal }}
                                                     </small>
                                                 </h6>
-                                                <p class="text-muted mb-2">{{$status['description']}}</p>
+                                                <p class="text-muted mb-2">{!!$status['description']!!}</p>
                                             </div>
                                             <div class="flex-shrink-0">
                                                 {{--
@@ -211,7 +210,7 @@
                                 <div class="text-center">
                                     <div class="text-muted"><span class="fw-medium">{{$countSurveyorTasks}}</span> {{ $countSurveyorTasks > 1 ? 'Vistorias' : 'Vistoria' }} {{ $countSurveyorTasks > 1 ? 'Atribuídas' : 'Atribuída' }}</div>
                                 </div>
-                                <div class="mt-2 mb-4">
+                                <div class="mt-2 mb-0">
                                     @foreach ($filteredStatuses as $key => $status)
                                         @php
                                             $filteredSurveyorData = [];
@@ -233,7 +232,7 @@
                                             <div class="row align-items-center g-2">
                                                 <div class="col-auto">
                                                     <div class="p-1" style="min-width: 100px;">
-                                                        <h6 class="mb-0" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="{{$status['label']}}" data-bs-content="{{$status['description']}}">
+                                                        <h6 class="mb-0" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="{{$status['label']}}" data-bs-content="{!!$status['description']!!}">
                                                             {{$status['label']}}
                                                         </h6>
                                                     </div>
@@ -257,10 +256,12 @@
                             @endif
 
                             @if($countAuditorTasks > 0)
+                                <hr class="w-50 start-50 position-relative translate-middle-x clearfix mt-4 mb-4">
+
                                 <div class="text-center">
                                     <div class="text-muted"><span class="fw-medium">{{$countAuditorTasks}}</span> {{ $countAuditorTasks > 1 ? 'Auditorias' : 'Auditoria' }} {{ $countAuditorTasks > 1 ? 'Requisitadas' : 'Requisitada' }}</div>
                                 </div>
-                                <div class="mt-2 mb-4">
+                                <div class="mt-2 mb-0">
                                     @foreach ($filteredStatuses as $key => $status)
                                         @php
                                             $filteredAuditorData = [];
@@ -282,7 +283,7 @@
                                             <div class="row align-items-center g-2">
                                                 <div class="col-auto">
                                                     <div class="p-1" style="min-width: 100px;">
-                                                        <h6 class="mb-0" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="{{$status['label']}}" data-bs-content="{{$status['description']}}">
+                                                        <h6 class="mb-0" data-bs-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-title="{{$status['label']}}" data-bs-content="{!!$status['description']!!}">
                                                             {{$status['label']}}
                                                         </h6>
                                                     </div>
@@ -305,11 +306,34 @@
                                 </div>
                             @endif
 
+                            @if ($userSurveysRelated && is_array($userSurveysRelated) && count($userSurveysRelated) > 0)
+                                <hr class="w-50 start-50 position-relative translate-middle-x clearfix mt-4 mb-4">
+
+                                <div class="text-center">
+                                    <div class="text-muted">Checklists Relacionados</div>
+                                </div>
+                                <ul class="list-group mt-2 mb-4"">
+                                @foreach ($userSurveysRelated as $surveyId)
+                                    @php
+                                        $survey = getSurveyDataById($surveyId);
+                                    @endphp
+                                    <li class="list-group-item">
+                                        @if($survey->recurring != 'once')
+                                        <a href="{{ route('surveysShowURL', $surveyId) }}" class="btn btn-sm btn-dark ri-eye-line float-end init-loader" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="left" title="Visualização Analítica em Checklists Recorrentes"></a>
+                                        @endif
+                                        <i class="ri-todo-line align-top me-2 text-theme"></i> <span class="fs-11">{{$survey->title}}</span>
+                                    </li>
+                                @endforeach
+                                </div>
+                            @endif
+
                         </div>
                     </div>
                 </div>
             @endif
         </div>
+
+        @include('surveys.layouts.modal-preview-form-assignment')
     @else
         <div class="alert alert-danger">Você não possui permissão de acesso a este usuário</div>
     @endif

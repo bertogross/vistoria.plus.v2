@@ -87,7 +87,7 @@ Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])-
         Route::prefix('template')->group(function () {
             Route::get('/create', [SurveysTemplatesController::class, 'create'])->name('surveysTemplateCreateURL');
             Route::get('/edit/{id?}', [SurveysTemplatesController::class, 'edit'])->name('surveysTemplateEditURL')->where('id', '[0-9]+');
-            Route::get('/preview/{id?}', [SurveysTemplatesController::class, 'previewFromSurveyTemplates'])->name('surveysTemplatePreviewFromSurveyTemplatesURL')->where('id', '[0-9]+');
+            Route::get('/preview/{id?}', [SurveysTemplatesController::class, 'previewFromSurveyTemplates'])->name('previewFromSurveyTemplatesURL')->where('id', '[0-9]+');
             Route::get('/preview-from-warehouse/{id?}', [SurveysTemplatesController::class, 'previewFromWarehouse'])->name('surveysTemplatePreviewFromWarehouseURL')->where('id', '[0-9]+');
             Route::get('/selected-From-Warehouse/{id?}', [SurveysTemplatesController::class, 'selectedFromWarehouse'])->name('surveysTemplateSelectedFromWarehouseURL')->where('id', '[0-9]+');
             Route::get('/selected-From-SurveyTemplate/{id?}', [SurveysTemplatesController::class, 'selectedFromSurveyTemplates'])->name('surveysTemplateSelectedFromSurveyTemplateURL')->where('id', '[0-9]+');
@@ -98,7 +98,7 @@ Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])-
         Route::prefix('assignment')->group(function () {
             Route::get('/show/{id?}', [SurveysAssignmentsController::class, 'show'])->name('assignmentShowURL')->where('id', '[0-9]+');
 
-            Route::get('/surveyor-form/{id?}', [SurveysAssignmentsController::class, 'formAssignmentSurveyor'])->name('formAssignmentSurveyorURL')->where('id', '[0-9]+');
+            Route::get('/surveyor-form/{id?}', [SurveysAssignmentsController::class, 'formAssignmentSurveyor'])->name('formAssignmentSurveyorURL');
             Route::post('/surveyor-status', [SurveysAssignmentsController::class, 'changeAssignmentSurveyorStatus'])->name('changeAssignmentSurveyorStatusURL');
 
             Route::get('/auditor-form/{id?}', [SurveysAssignmentsController::class, 'formAssignmentAuditor'])->name('formAssignmentAuditorURL')->where('id', '[0-9]+');

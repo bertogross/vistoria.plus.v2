@@ -22,7 +22,8 @@ class SurveyAssignments extends Model
     protected $fillable = ['survey_id', 'company_id', 'surveyor_id', 'auditor_id', 'surveyor_status', 'auditor_status'];
 
     // Populate assignments
-    public static function startSurveyAssignments($surveyId)
+    /*
+    public static function populateSurveyAssignments($surveyId)
     {
         $today = Carbon::today();
         $survey = Survey::findOrFail($surveyId);
@@ -46,58 +47,139 @@ class SurveyAssignments extends Model
 
             // If there are no assignments for today, check the recurrence pattern
             if ($assignmentsCount == 0) {
+
+                // Before the switch statement
+                if ($startAt->isToday()) {
+                    self::distributingAssignments($surveyId);
+                    return;
+                }
+
                 switch ($recurring) {
                     case 'once':
-                        self::distributingAssignments($surveyId);
-                    break;
                     case 'daily':
                         self::distributingAssignments($surveyId);
                     break;
                     case 'weekly':
                         // Calculate the day of the week for both $startAt and $today
-                        $specificDayOfWeek = $startAt->dayOfWeek;
-                        $currentDayOfWeek = $today->dayOfWeek;
-
-                        if ($specificDayOfWeek === $currentDayOfWeek) {
+                        if ($startAt->dayOfWeek === $today->dayOfWeek) {
                             self::distributingAssignments($surveyId);
                         }
                     break;
                     case 'biweekly':
-                        // Calculate 15 days after $startAt for biweekly recurrence
-                        $biweeklyDate = $startAt->addDays(15);
+                        // Calculate the number of days since the start date
+                        $daysSinceStart = $startAt->diffInDays($today);
 
-                        // Check if today matches the calculated biweekly date
-                        if ($today->equalTo($biweeklyDate)) {
+                        // Check if the number of days since the start date is a multiple of 15
+                        if ( $startAt->format('Y-m-d') == $today->format('Y-m-d') || $daysSinceStart % 15 === 0 ) {
                             self::distributingAssignments($surveyId);
                         }
                     break;
                     case 'monthly':
-                        // Check if $startAt matches the specific day of the month for monthly recurrence
-                        $specificDayOfMonth = $startAt->day;
+                        // Get the last day of the current month
+                        $lastDayOfMonth = $today->copy()->endOfMonth()->day;
 
-                        // Adjust the specificDay to a date that is safe within this month
-                        if ($specificDayOfMonth > $today->daysInMonth) {
-                            $specificDayOfMonth = $today->daysInMonth;
-                        }
+                        // Scheduled day (e.g., 31st)
+                        $scheduledDay = min($startAt->day, $lastDayOfMonth);
 
-                        if ($today->day == $specificDayOfMonth) {
+                        // Check if today is the scheduled day or the last day of the month if the scheduled day doesn't exist
+                        if ($startAt->format('Y-m-d') == $today->format('Y-m-d') || $today->day == $scheduledDay) {
                             self::distributingAssignments($surveyId);
                         }
                     break;
                     case 'annual':
                         // Check if $startAt matches the specific day and month for annual recurrence
-                        $specificDay = $startAt->day;
-                        $specificMonth = $startAt->month;
+                        $scheduledDay = $startAt->day;
+                        $scheduledMonth = $startAt->month;
 
-                        // Check if the $startAt date conflicts with the current month and year
-                        if ($today->year == $startAt->year && $today->month == $specificMonth) {
-                            // Adjust the specificDay to a date that is safe within this month
-                            if ($specificDay > $today->daysInMonth) {
-                                $specificDay = $today->daysInMonth; // Set it to the last day of the month
-                            }
+                        // Handle February 29th on non-leap years
+                        if ($scheduledMonth == 2 && $scheduledDay == 29 && !$today->isLeapYear()) {
+                            // Adjust to February 28th if it's not a leap year
+                            $scheduledDay = 28;
                         }
 
-                        if ($today->day == $specificDay && $today->month == $specificMonth) {
+                        // Check if today matches the scheduled annual date
+                        if ( $startAt->format('Y-m-d') == $today->format('Y-m-d') || ($today->month == $scheduledMonth && $today->day == $scheduledDay) ) {
+                            self::distributingAssignments($surveyId);
+                        }
+                    break;
+                }
+            }
+        }
+    }
+    */
+    public static function populateSurveyAssignments($surveyId)
+    {
+        // Get today's date
+        $today = Carbon::today();
+        // Retrieve the survey by ID or fail with a 404 error
+        $survey = Survey::findOrFail($surveyId);
+
+        // Perform any necessary checks or preparations for the survey until yesterday
+        self::checkSurveyAssignmentUntilYesterday($survey->id);
+
+        // Retrieve important survey details
+        $startAt = $survey->start_at; // Date when the survey started
+        // Ensure that $startAt is a Carbon instance
+        if (!$startAt instanceof Carbon) {
+            $startAt = Carbon::parse($startAt);
+        }
+
+        $status = $survey->status; // Current status of the survey
+        $recurring = $survey->recurring; // Recurrence pattern of the survey
+        $distributedData = $survey->distributed_data ?? null; // Additional data for distribution, if any
+
+        // Proceed only if there's distributed data and the survey has started
+        if ($distributedData && $status == 'started') {
+
+            // Check if there are already survey assignments created for today
+            $assignmentsCount = self::where('survey_id', $surveyId)
+                ->whereDate('created_at', '=', $today)
+                ->count();
+
+            // If no assignments for today, proceed based on the recurrence pattern
+            if ($assignmentsCount == 0) {
+                // Check if today is the start date and distribute assignments if so
+                if ($startAt->isToday()) {
+                    self::distributingAssignments($surveyId);
+                    return; // Exit the function early as assignments for the start date are distributed
+                }
+
+                // Handle different recurrence patterns
+                switch ($recurring) {
+                    case 'once':
+                    case 'daily':
+                        // For 'once' and 'daily', distribute assignments without further checks
+                        self::distributingAssignments($surveyId);
+                    break;
+                    case 'weekly':
+                        // For 'weekly', distribute if today is the same day of the week as the start date
+                        if ($startAt->dayOfWeek === $today->dayOfWeek) {
+                            self::distributingAssignments($surveyId);
+                        }
+                    break;
+                    case 'biweekly':
+                        // For 'biweekly', calculate if today is a multiple of 15 days from the start date
+                        $daysSinceStart = $startAt->diffInDays($today);
+                        if ($daysSinceStart % 15 === 0) {
+                            self::distributingAssignments($surveyId);
+                        }
+                    break;
+                    case 'monthly':
+                        // For 'monthly', handle cases where the month may not have the start day
+                        $lastDayOfMonth = $today->copy()->endOfMonth()->day;
+                        $scheduledDay = min($startAt->day, $lastDayOfMonth);
+                        if ($today->day == $scheduledDay) {
+                            self::distributingAssignments($surveyId);
+                        }
+                    break;
+                    case 'annual':
+                        // For 'annual', adjust for February 29th on non-leap years
+                        $scheduledDay = $startAt->day;
+                        $scheduledMonth = $startAt->month;
+                        if ($scheduledMonth == 2 && $scheduledDay == 29 && !$today->isLeapYear()) {
+                            $scheduledDay = 28; // Adjust to February 28th
+                        }
+                        if ($today->month == $scheduledMonth && $today->day == $scheduledDay) {
                             self::distributingAssignments($surveyId);
                         }
                     break;
@@ -106,7 +188,9 @@ class SurveyAssignments extends Model
         }
     }
 
+
     // Check the 'survey_assignments' table to see which tasks were not completed by yesterday and change the status to 'losted'
+    /*
     public static function checkSurveyAssignmentUntilYesterday($surveyId)
     {
         $yesterday = Carbon::yesterday()->format('Y-m-d');
@@ -130,6 +214,37 @@ class SurveyAssignments extends Model
             $assignment->save();
         }
     }
+    */
+    public static function checkSurveyAssignmentUntilYesterday($surveyId)
+    {
+        // TODO
+        // Attention to biweekly, weekly, monthly and annual if necessary change to losted/bypass
+
+
+        $yesterday = Carbon::yesterday()->format('Y-m-d');
+
+        // Get all survey assignments that were not completed by yesterday
+        $assignments = self::where('survey_id', $surveyId)
+                            ->whereDate('created_at', '<=', $yesterday)
+                            ->get();
+
+        foreach ($assignments as $assignment) {
+            // If the assignment is already completed or in auditing, but not completed by the auditor
+            if ($assignment->surveyor_status === 'completed' || $assignment->surveyor_status === 'auditing') {
+                if ($assignment->auditor_status !== 'completed') {
+                    $assignment->auditor_status = 'bypass';
+                    $assignment->surveyor_status = 'completed';
+                }
+            }
+            // If neither the surveyor nor the auditor has completed their task
+            else if ($assignment->auditor_status !== 'completed') {
+                $assignment->auditor_status = 'bypass';
+                $assignment->surveyor_status = 'losted';
+            }
+
+            $assignment->save();
+        }
+    }
 
     // Start the task by distributing to each party
     public static function distributingAssignments($surveyId)
@@ -137,6 +252,15 @@ class SurveyAssignments extends Model
         $today = Carbon::now()->startOfDay();
 
         $survey = Survey::findOrFail($surveyId);
+
+        $startAt = $survey->start_at; // Date when the survey started
+        $status = $survey->status; // Current status of the survey
+        $recurring = $survey->recurring; // Recurrence pattern of the survey
+
+        // Prevent start scheduled tasks
+        if($startAt > $today){
+            return;
+        }
 
         $distributedData = $survey->distributed_data ? json_decode($survey->distributed_data, true) : null;
 
@@ -173,7 +297,6 @@ class SurveyAssignments extends Model
                     break;
                 }
 
-
                 // Check if this surveyor_id has recent completed task
                 $findRecentlySurveyorAssignment = DB::connection('vpAppTemplate')
                     ->table('survey_assignments')
@@ -207,14 +330,14 @@ class SurveyAssignments extends Model
     public static function removeDistributingAssignments($surveyId)
     {
         $lastDate = self::where('survey_id', $surveyId)
-            ->whereIn('surveyor_status', ['new', 'pending', 'in_progress', ''])
+            ->whereIn('surveyor_status', ['scheduled', 'new', 'pending', 'in_progress', ''])
             ->max(DB::raw('DATE(created_at)'));
 
         if ($lastDate) {
             // Fetch the assignments to be deleted
             $assignments = self::whereDate('created_at', $lastDate)
                 ->where('survey_id', $surveyId)
-                ->whereIn('surveyor_status', ['new', 'pending', 'in_progress', ''])
+                ->whereIn('surveyor_status', ['scheduled', 'new', 'pending', 'in_progress', ''])
                 ->get();
 
             $assignmentIds = $assignments->pluck('id');
@@ -272,6 +395,7 @@ class SurveyAssignments extends Model
     public static function getSurveyAssignmentBySurveyId($surveyId)
     {
         return self::where('survey_id', $surveyId)
+            ->whereNotIn('surveyor_status', ['scheduled'])
             ->orderBy('updated_at', 'desc')
             ->get();
     }
@@ -441,7 +565,6 @@ class SurveyAssignments extends Model
         ];
     }
 
-
     public static function calculateSurveyPercentage($surveyId, $companyId, $assignmentId, $surveyorId, $auditorId, $designated)
     {
         // Assuming you have a method to count the total number of topics/questions in a survey
@@ -473,8 +596,16 @@ class SurveyAssignments extends Model
     public static function getSurveyAssignmentStatusTranslations()
     {
         return [
-             'new' => [
-                'label' => 'Nova',
+            'scheduled' => [
+                'label' => 'Agendada',
+                'reverse' => '',
+                'description' => 'A data indica quando se tornará Vigente <i class="ri-information-line text-info non-printable align-top" data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" data-bs-placement="top" title="Exceto para tarefas Diárias."></i>',
+                'singular_description' => 'Tarefa agendada',
+                'icon' => 'ri-timer-line',
+                'color' => 'warning'
+            ],
+            'new' => [
+                'label' => 'Vigente',
                 'reverse' => 'Iniciar',
                 'description' => 'Tarefas não inicializadas',
                 'singular_description' => 'Tarefa não inicializada',
@@ -583,6 +714,78 @@ class SurveyAssignments extends Model
         }
     }
 
+    public static function getSurveyAssignmentDeadlineScheduled($recurring, $startAt)
+    {
+        // Ensure that $startAt is a Carbon instance
+        if (!$startAt instanceof Carbon) {
+            $startAt = Carbon::parse($startAt);
+        }
+
+        $today = Carbon::today();
+
+        // Handle the 'once' recurrence immediately
+        if ($recurring === 'once') {
+            return $startAt;
+        }
+
+        // Adjusted logic for recurring patterns
+        switch ($recurring) {
+            case 'daily':
+                // For daily tasks, the next occurrence is simply the day after today, unless today is before startAt
+                return $today->lt($startAt) ? $startAt : $today->copy()->addDay();
+
+            case 'weekly':
+                // Calculate the next occurrence that falls on the same day of the week as startAt
+                $nextOccurrence = $today->lt($startAt) ? $startAt : $today->copy()->next($startAt->dayOfWeek);
+                return $nextOccurrence;
+
+            case 'biweekly':
+                // For biweekly, you need to calculate this manually since Carbon doesn't have a built-in method
+                $nextOccurrence = $startAt->copy();
+                while ($nextOccurrence->lte($today)) {
+                    $nextOccurrence->addWeeks(2);
+                }
+                return $nextOccurrence;
+
+            case 'monthly':
+                // For monthly recurrences, increment from startAt by one month until after today
+                $nextOccurrence = $startAt->copy();
+                while ($nextOccurrence->lte($today)) {
+                    $nextOccurrence->addMonthNoOverflow();
+                }
+                return $nextOccurrence;
+
+            case 'annual':
+                // For annual tasks, increment from startAt by one year until after today
+                $nextOccurrence = $startAt->copy();
+                while ($nextOccurrence->lte($today)) {
+                    $nextOccurrence->addYear();
+                }
+                return $nextOccurrence;
+
+            default:
+                // If the recurrence pattern is unrecognized, return null
+                return null;
+        }
+    }
+
+    public static function getSurveyAssignmentSurveyorTasksFromUserId($userId)
+    {
+        if(!$userId){
+            return;
+        }
+
+        $keys = ['new', 'pending', 'in_progress', 'auditing', 'completed', 'losted'];
+
+        $assignments = DB::connection('vpAppTemplate')->table('survey_assignments')
+            ->where('surveyor_id', $userId)
+            ->whereIn('surveyor_status', $keys)
+            ->pluck('survey_id')
+            ->toArray();
+
+        return $assignments && is_array($assignments) && count($assignments) > 1 ? array_unique($assignments) : $assignments;
+    }
+
     // Count the number of survey assignments for a surveyor based on status.
     public static function countSurveyAssignmentSurveyorTasks($userId, $keys = false)
     {
@@ -603,6 +806,35 @@ class SurveyAssignments extends Model
         return $assignments ? $assignments->count() : 0;
     }
 
+    public static function countSurveyAssignmentSurveyorTasksForTopbar($connectionId, $questId)
+    {
+        if (!$connectionId || !$questId) {
+            return 0;
+        }
+
+        $databaseName = 'vpApp' . $connectionId;
+        $keys = ['new', 'pending', 'in_progress'];
+
+        // Prepare the placeholders for the status values
+        $statusPlaceholders = implode(',', array_fill(0, count($keys), '?'));
+
+        $query = "
+            SELECT COUNT(*) as task_count
+            FROM {$databaseName}.survey_assignments
+            WHERE surveyor_id = ?
+            AND surveyor_status IN ({$statusPlaceholders})
+        ";
+
+        // Combine $questId and $keys into a single array of parameters for binding
+        $parameters = array_merge([$questId], $keys);
+
+        // Execute the query with parameter binding to prevent SQL injection
+        $results = DB::select($query, $parameters);
+
+        // Since we're using COUNT(*) in the SQL, $results should have one row with task_count
+        return isset($results[0]->task_count) ? (int) $results[0]->task_count : 0;
+    }
+
     // Count the number of survey assignments for an auditor based on status.
     public static function countSurveyAssignmentAuditorTasks($userId, $keys = false)
     {
@@ -619,7 +851,6 @@ class SurveyAssignments extends Model
 
         return $assignments ? $assignments->count() : 0;
     }
-
 
 
 }

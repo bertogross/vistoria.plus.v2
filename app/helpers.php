@@ -754,6 +754,14 @@ if (!function_exists('getSurveyNameById')) {
     }
 }
 
+if (!function_exists('getSurveyDataById')) {
+    function getSurveyDataById($surveyId) {
+        $survey = $surveyId ? Survey::find($surveyId) : null;
+
+        return $survey ?? null;
+    }
+}
+
 if (!function_exists('getSurveyTemplateNameById')) {
     function getSurveyTemplateNameById($templateId) {
         $template = $templateId ? SurveyTemplates::find($templateId) : null;

@@ -24,7 +24,7 @@ class ProfileController extends Controller
 
         // Usefull if crontab or Kernel schedule is losted
         // D:public_html\app\Console\Commands
-        Survey::populateSurveys();
+        Survey::processSurveys();
 
         $profileUserId = $user->id;
 
@@ -41,7 +41,7 @@ class ProfileController extends Controller
 
 
         $getSurveyAssignmentStatusTranslations = SurveyAssignments::getSurveyAssignmentStatusTranslations();
-        $requiredKeys = ['new', 'pending', 'in_progress', 'auditing', 'completed', 'losted'];
+        $requiredKeys = ['new', 'pending', 'in_progress', 'auditing', 'completed', 'losted'];//'scheduled',
         $filteredStatuses = array_intersect_key($getSurveyAssignmentStatusTranslations, array_flip($requiredKeys));
 
         return view('profile.index', compact(
