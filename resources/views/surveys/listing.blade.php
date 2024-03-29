@@ -150,8 +150,8 @@
                                 $delegation = \App\Models\SurveyAssignments::getAssignmentDelegatedsBySurveyId($surveyId);
 
                                 $getUserData = getUserData($authorId);
-                                $authorAvatar = checkUserAvatar($getUserData->avatar);
-                                $authorName = $getUserData->name;
+                                    $authorAvatar = $getUserData->avatar ?? null;
+                                    $authorName = $getUserData->name ?? null;
                             @endphp
                             <tr class="main-row" data-id="{{ $surveyId }}">
                                 <td>
@@ -160,7 +160,7 @@
                                             <a href="{{ route('profileShowURL', $authorId) }}" class="d-inline-block"
                                                 data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top"
                                                 title="{{ $authorName }} foi o autor deste registro">
-                                                <img src="{{ $authorAvatar }}" alt="{{ $authorName }}" class="rounded-circle avatar-xxs" loading="lazy">
+                                                {!!snippetAvatar($authorAvatar, $authorName, 'rounded-circle avatar-xxs')!!}
                                             </a>
                                         </div>
                                     </div>
@@ -193,7 +193,7 @@
                                                     @endphp
                                                     @if($userId)
                                                         <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item border-1 border-info" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-html="true" data-bs-title="Vistoria" data-bs-content="<strong>Usuário</strong>: {{ $getUserData->name }} <br><br><strong>Unidade</strong>: {{ $companyName }}">
-                                                            <img src="{{ checkUserAvatar($getUserData->avatar) }}" alt="{{ $getUserData->name }}" class="rounded-circle avatar-xxs">
+                                                            {!!snippetAvatar($getUserData->avatar, $getUserData->name, 'rounded-circle avatar-xxs')!!}
                                                         </a>
                                                     @endif
                                                 @endforeach
@@ -210,7 +210,7 @@
                                                     @endphp
                                                     @if($userId)
                                                         <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item border-1 border-secondary" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-html="true" data-bs-title="Auditoria" data-bs-content="<strong>Usuário</strong>: {{ $getUserData->name }} <br><br><strong>Unidade</strong>: {{ $companyName }}">
-                                                            <img src="{{ checkUserAvatar($getUserData->avatar) }}" alt="{{ $getUserData->name }}" class="rounded-circle avatar-xxs">
+                                                            {!!snippetAvatar($getUserData->avatar, $getUserData->name, 'rounded-circle avatar-xxs')!!}
                                                         </a>
                                                     @endif
                                                 @endforeach

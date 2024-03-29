@@ -146,7 +146,7 @@
                                                     $getUserData = getUserData($surveyorId);
                                                 @endphp
                                                 <a href="{{ route('profileShowURL', $surveyorId) }}" class="avatar-group-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Vistoria: {{ $getUserData->name }} : {{ $companyName }}">
-                                                    <img src="{{ checkUserAvatar($getUserData->avatar) }}" alt="" class="rounded-circle avatar-xxs">
+                                                    {!!snippetAvatar($getUserData->avatar, $getUserData->name, 'rounded-circle avatar-xxs')!!}
                                                 </a> {{ $getUserData->name }}
                                             </div>
                                         </td>
@@ -162,7 +162,7 @@
                                                 @endphp
                                                 <div class="avatar-group flex-nowrap d-inline-block align-middle">
                                                     <a href="{{ route('profileShowURL', $auditorId) }}" class="avatar-group-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Vistoria: {{ $getUserData->name }} : {{ $companyName }}">
-                                                        <img src="{{ checkUserAvatar($getUserData->avatar) }}" alt="" class="rounded-circle avatar-xxs">
+                                                        {!!snippetAvatar($getUserData->avatar, $getUserData->name, 'rounded-circle avatar-xxs')!!}
                                                     </a> {{ $getUserData->name }}
                                                 </div>
                                             </div>

@@ -51,9 +51,9 @@
                             @php
                                 $hostId = $connection->user_id;
                                 $getHostUserData = getUserData($hostId);
-                                $hostAvatar = $getHostUserData->avatar;
-                                $hostEmail = $getHostUserData->email;
-                                $hostName = $getHostUserData->name;
+                                $hostAvatar = $getHostUserData->avatar ?? null;
+                                $hostEmail = $getHostUserData->email ?? null;
+                                $hostName = $getHostUserData->name ?? null;
 
                                 $questStatus = $connection->status;
                                 $questInput = $questStatus == 'active' ? 'checked' : '';
@@ -65,8 +65,7 @@
                                 <td class="align-middle">
                                     <div class="d-flex gap-2 align-items-center">
                                         <div class="flex-shrink-0">
-                                            <img src="{{ checkUserAvatar($hostAvatar) }}" alt="{{$hostName}}"
-                                                class="avatar-xs rounded-circle" loading="lazy">
+                                            {!!snippetAvatar($hostAvatar, $hostName, 'avatar-xs rounded-circle fs-20')!!}
                                         </div>
                                         <div class="flex-grow-1" style="line-height: 16px;">
                                             {{$hostName}}

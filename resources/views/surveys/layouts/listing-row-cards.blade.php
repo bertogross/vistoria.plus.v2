@@ -112,8 +112,8 @@ based on apps-crm-deals.blade.php
                 @php
                     $userId = $value['user_id'];
                     $companyName = getCompanyNameById($value['id']);
-                    $avatar = checkUserAvatar(getUserData($userId)->avatar);
-                    $name = getUserData($userId)->name;
+                    $avatar = getUserData($userId)->avatar ?? null;
+                    $name = getUserData($userId)->name ?? null;
                 @endphp
                 <div class="card mb-1 ribbon-box ribbon-fill ribbon-sm right">
                     <div class="ribbon ribbon-primary"><i class="ri-flashlight-fill"></i></div>
@@ -121,8 +121,7 @@ based on apps-crm-deals.blade.php
                         <a class="d-flex align-items-center" data-bs-toggle="collapse" href="#leadDiscovered{{$index}}" role="button"
                             aria-expanded="false" aria-controls="leadDiscovered{{$index}}">
                             <div class="flex-shrink-0">
-                                <img src="{{ $avatar }}" alt="{{ $name }}"
-                                class="avatar-xs rounded-circle" loading="lazy">
+                                {!!snippetAvatar($avatar, $name, 'avatar-xs rounded-circle')!!}
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="fs-13 mb-1">{{ $name }}</h6>
@@ -204,8 +203,8 @@ based on apps-crm-deals.blade.php
                 @php
                     $userId = $value['user_id'];
                     $companyName = getCompanyNameById($value['id']);
-                    $avatar = getUserData($userId)->avatar;
-                    $name = getUserData($userId)->name;
+                    $avatar = getUserData($userId)->avatar ?? null;
+                    $name = getUserData($userId)->name ?? null;
                 @endphp
                 <div class="card mb-1 ribbon-box ribbon-fill ribbon-sm right">
                     <div class="ribbon ribbon-info"><i class="ri-flashlight-fill"></i></div>
@@ -213,8 +212,7 @@ based on apps-crm-deals.blade.php
                         <a class="d-flex align-items-center" data-bs-toggle="collapse" href="#contactInitiated{{$index}}"
                             role="button" aria-expanded="false" aria-controls="contactInitiated{{$index}}">
                             <div class="flex-shrink-0">
-                                <img src="{{ $avatar }}" alt="{{ $name }}"
-                                class="avatar-xs rounded-circle" loading="lazy">
+                                {!!snippetAvatar($avatar, $name, 'avatar-xs rounded-circle')!!}
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="fs-13 mb-1">{{ $name }}</h6>

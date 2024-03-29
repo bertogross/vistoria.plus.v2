@@ -48,16 +48,15 @@
                             //$companies = $user->companies ?? getActiveCompanieIds();
                             $profileUrl = route('profileShowURL', ['id' => $userId]) . '?d=' . now()->timestamp;
                             $getUserData = getUserData($userId);
-                            $avatar = $getUserData->avatar;
-                            $name = $getUserData->name;
-                            $email = $getUserData->email;
+                            $avatar = $getUserData->avatar ?? null;
+                            $name = $getUserData->name ?? null;
+                            $email = $getUserData->email ?? null;
                         @endphp
                         <tr>
                             <td>
                                 <div class="d-flex gap-2 align-items-center">
                                     <div class="flex-shrink-0">
-                                        <img src="{{ checkUserAvatar($avatar) }}" alt=""
-                                            class="avatar-xs rounded-circle" loading="lazy">
+                                        {!!snippetAvatar($avatar, $name, 'avatar-xs rounded-circle fs-20')!!}
                                     </div>
                                     <div class="flex-grow-1" style="line-height: 16px;">
                                         {{$name}}

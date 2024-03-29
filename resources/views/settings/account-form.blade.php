@@ -134,10 +134,10 @@
                                 <img src="{{ checkUserAvatar($user->avatar) }}" alt="{{$user->name}}" class="img-thumbnail rounded-circle avatar-img" loading="lazy">
 
                                 <div class="avatar-xs p-0 rounded-circle profile-photo-edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="right" title="Alterar Foto">
-                                    <input class="d-none" name="avatar" id="member-image-input" type="file" capture="user" accept="image/jpeg">
+                                    <input class="d-none" name="avatar" id="member-image-input" type="file" accept="image/jpeg">
                                     <label for="member-image-input" class="profile-photo-edit avatar-xs">
                                         <span class="avatar-title rounded-circle bg-light text-body">
-                                            <i class="ri-camera-fill"></i>
+                                            <i class="ri-camera-fill {{ !$user->avatar ? 'blink text-warning' : ''}}""></i>
                                         </span>
                                     </label>
                                 </div>

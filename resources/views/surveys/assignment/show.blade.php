@@ -17,13 +17,13 @@
 
     $surveyorId = $assignmentData->surveyor_id;
     $getSurveyorUserData = getUserData($surveyorId);
-    $surveyorName = $getSurveyorUserData->name ?? '';
-    $surveyorAvatar = checkUserAvatar($getSurveyorUserData->avatar);
+    $surveyorName = $getSurveyorUserData->name ?? null;
+    $surveyorAvatar = $getSurveyorUserData->avatar ?? null;
 
     $auditorId = $assignmentData->auditor_id;
     $getAuditorUserData = getUserData($auditorId);
     $auditorName = $auditorId ? $getAuditorUserData->name : '';
-    $auditorAvatar = $auditorId ? checkUserAvatar($getAuditorUserData->avatar) : '';
+    $auditorAvatar = $auditorId ? $getAuditorUserData->avatar : '';
 
     $surveyorStatus = $assignmentData->surveyor_status;
     $auditorStatus = $assignmentData->auditor_status;
@@ -185,8 +185,8 @@
                     <div class="col-sm-12 col-md-6">
                         <div class="card">
                             <div class="card-body" style="height: 145px;">
-                                <a href="{{route('profileShowURL', $surveyorId)}}">
-                                    <img src="{{ $surveyorAvatar }}" alt="{{$surveyorName}}" class="avatar-xs rounded-circle float-end" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Vistoria realizada por {{$surveyorName}}.<br>Clique para acessar o Perfil." loading="lazy">
+                                <a href="{{route('profileShowURL', $surveyorId)}}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Vistoria realizada por {{$surveyorName}}.<br>Clique para acessar o Perfil.">
+                                    {!!snippetAvatar($surveyorAvatar, $surveyorName, 'avatar-xs rounded-circle float-end')!!}
                                 </a>
                                 <h6 class="text-muted text-uppercase mb-4">Vistoria</h6>
                                 <span class="text-success" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="Avaliações positivas efetuadas pelo(a) vistoriador(a)">Conforme</span>: {{$complianceSurveyorYesCount}}
@@ -204,8 +204,8 @@
                                     @elseif($timeLimit->gt($now) && $auditorStatus != 'completed')
                                         <span class="fs-5 float-end ri-time-line text-secondary" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="Dentro do prazo para realizar Auditoria"></span>
                                     @else
-                                        <a href="{{route('profileShowURL', $auditorId)}}">
-                                            <img src="{{$auditorAvatar}}" alt="{{$auditorName}}" class="avatar-xs rounded-circle float-end" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Auditoria realizada por {{$auditorName}}.<br>Clique para acessar o Perfil." loading="lazy">
+                                        <a href="{{route('profileShowURL', $auditorId)}}" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Auditoria realizada por {{$auditorName}}.<br>Clique para acessar o Perfil.">
+                                            {!!snippetAvatar($auditorAvatar, $auditorName, 'avatar-xs rounded-circle float-end')!!}
                                         </a>
                                     @endif
 

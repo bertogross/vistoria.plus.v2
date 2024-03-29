@@ -25,14 +25,14 @@
                         $surveyorStatus = $assignment->surveyor_status;
                         $surveyorId = $assignment->surveyor_id;
                             $getUserData = getUserData($surveyorId);
-                            $surveyorAvatar = checkUserAvatar($getUserData->avatar);
-                            $surveyorName = $getUserData->name;
+                            $surveyorAvatar = $getUserData->avatar ?? null;
+                            $surveyorName = $getUserData->name ?? null;
 
                         $auditorStatus = $assignment->auditor_status;
                         $auditorId = $assignment->auditor_id;
                             $getUserData = getUserData($auditorId);
-                            $auditorAvatar = checkUserAvatar($getUserData->avatar);
-                            $auditorName = $getUserData->name;
+                            $auditorAvatar = $getUserData->avatar ?? null;
+                            $auditorName = $getUserData->name ?? null;
                     @endphp
                     <tr class="main-row" data-id="{{ $assignmentId }}">
                         <td>
@@ -42,7 +42,7 @@
                             {{getCompanyNameById($companyId)}}
                         </td>
                         <td>
-                            <img src="{{ $surveyorAvatar }}" alt="{{ $surveyorName }}" class="rounded-circle avatar-xxs"> {{$surveyorName}}
+                            {!!snippetAvatar($surveyorAvatar, $surveyorName, 'rounded-circle avatar-xxs')!!} {{$surveyorName}}
                             @if($surveyorStatus)
                                 <br>
                                 <span
@@ -55,7 +55,7 @@
                         </td>
                         <td>
                             @if ($auditorId)
-                                <img src="{{ $auditorAvatar }}" alt="{{ $auditorName }}" class="rounded-circle avatar-xxs"> {{$auditorName}}
+                                {!!snippetAvatar($auditorAvatar, $auditorName, 'rounded-circle avatar-xxs')!!} {{$auditorName}}
                             @endif
 
                             @if( $auditorStatus && $auditorId )

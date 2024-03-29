@@ -278,8 +278,8 @@
                     <div class="dropdown ms-sm-3 header-item topbar-user">
                         <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="d-flex align-items-center">
-                                <span class="position-absolute translate-middle badge border border-light rounded-circle bg-theme p-1 {{ $countSurveyAssignmentSurveyorTasks+$countSurveyAssignmentAuditorTasks > 0 ? 'blink' : 'd-none' }}" style="margin-left: 29px; margin-top: 25px;" title="Tarefas Pendentes"><span class="visually-hidden">{{$countSurveyAssignmentSurveyorTasks+$countSurveyAssignmentAuditorTasks}} Tarefas Pendentes</span></span>
-                                <img class="rounded-circle header-profile-user avatar-img" src="{{checkUserAvatar($user->avatar)}}" alt="Avatar" loading="lazy">
+                                <span class="position-absolute translate-middle badge border border-light rounded-circle bg-warning p-1 {{ $countSurveyAssignmentSurveyorTasks+$countSurveyAssignmentAuditorTasks > 0 ? 'blink' : 'd-none' }}" style="margin-left: 29px; margin-top: 25px;" title="Tarefas Pendentes"><span class="visually-hidden">{{$countSurveyAssignmentSurveyorTasks+$countSurveyAssignmentAuditorTasks}} Tarefas Pendentes</span></span>
+                                {!!snippetAvatar($user->avatar, $user->name, 'rounded-circle header-profile-user avatar-img fs-20')!!}
                                 <span class="text-start ms-xl-2">
                                     <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{$userName}}</span>
                                     <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="Este é seu nível de autorização relacionado a conta <strong>{{$currentConnectionName}}<strong>">{{$currentConnectionRoleName}}</span>

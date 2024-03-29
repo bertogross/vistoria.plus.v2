@@ -18,18 +18,14 @@
                         @php
                             $userId = $value['user_id'] ?? null;
                             $getUserData = $userId ? getUserData($userId) : null;
+                                $surveyorsName = $getUserData->name ?? null;
+                                $surveyorsAvatar = $getUserData->avatar ?? null;
                             $userCompanyId = $value['company_id'] ?? null;
                             $companyName = $userCompanyId ? getCompanyNameById($userCompanyId) : '';
                         @endphp
-                        @if($userId && $swapData && $companyId == $userCompanyId)
-                            <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Vistoria: {{ $getUserData->name }} : {{ $companyName }}">
-                                <img src="{{ checkUserAvatar($getUserData->avatar) }}" alt="" class="rounded-circle avatar-xxs">
-                            </a>
-                        @elseif($userId && !$swapData)
-                            <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Vistoria: {{ $getUserData->name }} : {{ $companyName }}">
-                                <img src="{{ checkUserAvatar($getUserData->avatar) }}" alt="" class="rounded-circle avatar-xxs">
-                            </a>
-                        @endif
+                        <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Vistoria: {{ $surveyorsName }} : {{ $companyName }}">
+                            {!!snippetAvatar($surveyorsAvatar, $surveyorsName, 'rounded-circle avatar-xxs')!!}
+                        </a>
                     @endforeach
                 @endif
             </div>
@@ -41,18 +37,14 @@
                         @php
                             $userId = $value['user_id'] ?? null;
                             $getUserData = $userId ? getUserData($userId) : null;
+                                $auditorName = $getUserData->name ?? null;
+                                $auditorAvatar = $getUserData->avatar ?? null;
                             $userCompanyId = $value['company_id'] ?? null;
                             $companyName = $userCompanyId ? getCompanyNameById($userCompanyId) : '';
                         @endphp
-                        @if($userId && $swapData && $companyId == $userCompanyId)
-                            <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Auditoria: {{ $getUserData->name }} : {{ $companyName }}">
-                                <img src="{{ checkUserAvatar($getUserData->avatar) }}" alt="" class="rounded-circle avatar-xxs">
-                            </a>
-                        @elseif($userId && !$swapData)
-                            <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Auditoria: {{ $getUserData->name }} : {{ $companyName }}">
-                                <img src="{{ checkUserAvatar($getUserData->avatar) }}" alt="" class="rounded-circle avatar-xxs">
-                            </a>
-                        @endif
+                        <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Auditoria: {{ $auditorName }} : {{ $companyName }}">
+                            {!!snippetAvatar($auditorAvatar, $auditorName, 'rounded-circle avatar-xxs')!!}
+                        </a>
                     @endforeach
                 @endif
             </div>

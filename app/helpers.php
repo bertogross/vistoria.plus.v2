@@ -257,6 +257,132 @@ if( !function_exists('checkUserAvatar') ){
     }
 }
 
+if( !function_exists('snippetAvatar') ){
+    function snippetAvatar($avatar = null, $name = null, $class = 'rounded-circle avatar-xxs', $style = false) {
+        $path = $avatar ? 'storage/' . $avatar : null;
+
+        if($path && @getimagesize($path)){
+            $result = URL::asset('storage/' . $avatar);
+            return '<img src="'.$result.'" alt="Avatar" class="'.$class.'" loading="lazy">';
+        }else{
+            $letter = $name ? substr($name, 0, 1) : '?';
+
+            switch ($letter) {
+                case 'A':
+                    $background = "#FF5733";
+                    $text = "#FFFFFF";
+                    break;
+                case 'B':
+                    $background = "#33FF57";
+                    $text = "#000000";
+                    break;
+                case 'C':
+                    $background = "#3357FF";
+                    $text = "#FFFFFF";
+                    break;
+                case 'D':
+                    $background = "#F33FF5";
+                    $text = "#FFFFFF";
+                    break;
+                case 'E':
+                    $background = "#3CFF33";
+                    $text = "#000000";
+                    break;
+                case 'F':
+                    $background = "#33F3FF";
+                    $text = "#000000";
+                    break;
+                case 'G':
+                    $background = "#FF5733";
+                    $text = "#FFFFFF";
+                    break;
+                case 'H':
+                    $background = "#8E44AD";
+                    $text = "#FFFFFF";
+                    break;
+                case 'I':
+                    $background = "#3498DB";
+                    $text = "#FFFFFF";
+                    break;
+                case 'J':
+                    $background = "#1ABC9C";
+                    $text = "#000000";
+                    break;
+                case 'K':
+                    $background = "#2ECC71";
+                    $text = "#000000";
+                    break;
+                case 'L':
+                    $background = "#F1C40F";
+                    $text = "#000000";
+                    break;
+                case 'M':
+                    $background = "#E67E22";
+                    $text = "#FFFFFF";
+                    break;
+                case 'N':
+                    $background = "#E74C3C";
+                    $text = "#FFFFFF";
+                    break;
+                case 'O':
+                    $background = "#95A5A6";
+                    $text = "#000000";
+                    break;
+                case 'P':
+                    $background = "#F39C12";
+                    $text = "#000000";
+                    break;
+                case 'Q':
+                    $background = "#D35400";
+                    $text = "#FFFFFF";
+                    break;
+                case 'R':
+                    $background = "#C0392B";
+                    $text = "#FFFFFF";
+                    break;
+                case 'S':
+                    $background = "#BDC3C7";
+                    $text = "#000000";
+                    break;
+                case 'T':
+                    $background = "#7F8C8D";
+                    $text = "#FFFFFF";
+                    break;
+                case 'U':
+                    $background = "#563CFF";
+                    $text = "#FFFFFF";
+                    break;
+                case 'V':
+                    $background = "#605A4C";
+                    $text = "#FFFFFF";
+                    break;
+                case 'W':
+                    $background = "#AF7AC5";
+                    $text = "#FFFFFF";
+                    break;
+                case 'X':
+                    $background = "#1B4F72";
+                    $text = "#FFFFFF";
+                    break;
+                case 'Y':
+                    $background = "#1ABC9C";
+                    $text = "#000000";
+                    break;
+                case 'Z':
+                    $background = "#F7DC6F";
+                    $text = "#000000";
+                    break;
+                default:
+                    $background = "#563CFF";
+                    $text = "#FFFFFF";
+                    break;
+            }
+
+            return '<span class="fs-15 '.$class.' text-uppercase text-white d-inline-block text-center font-monospace align-middle overflow-hidden" loading="lazy" style=" background-color:'.$background.'; color: '.$text.';  '.$style.'">'.$letter.'</span>';
+        }
+    }
+}
+
 if( !function_exists('getUserCover') ){
     function getUserCover($userId = null) {
         $user = getUserData($userId);

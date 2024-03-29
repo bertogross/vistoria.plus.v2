@@ -43,8 +43,8 @@
                     @foreach ($users as $user)
                         @php
                             $userId = $user->id;
-                            $userName = $user->name;
-                            $userAvatar = checkUserAvatar($user->avatar);
+                            $userName = $user->name ?? null;
+                            $userAvatar = $user->avatar ?? null;
                             $isDelegated = false;
 
                             if($userId == auth()->id()){
@@ -94,7 +94,7 @@
                                     <label class="form-check-label d-flex align-items-center"
                                         for="surveyor-user-{{ $company->id.$userId }}">
                                         <span class="flex-shrink-0">
-                                            <img src="{{$userAvatar}}" alt="{{ $userName }}" class="avatar-xxs rounded-circle">
+                                            {!!snippetAvatar($userAvatar, $userName, 'avatar-xxs rounded-circle')!!}
                                         </span>
                                         <span class="flex-grow-1 ms-2 {{ in_array($userStatus, ['inactive', 'revoked']) ? 'text-danger' : '' }}">{{ $userName }}</span>
                                     </label>

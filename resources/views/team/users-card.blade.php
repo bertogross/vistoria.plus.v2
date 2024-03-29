@@ -4,10 +4,10 @@
     use App\Models\SurveyAssignments;
 
     $userId = $user->id;
-    $avatar = $user->avatar;
-    $cover = $user->cover;
-    $name = $user->name;
-    $email = $user->email;
+    $avatar = $user->avatar ?? null;
+    $cover = $user->cover ?? null;
+    $name = $user->name ?? null;
+    $email = $user->email ?? null;
 
     $profileUrl = route('profileShowURL', ['id' => $userId]) . '?d=' . now()->timestamp;
 
@@ -55,9 +55,7 @@
                 @endif
                 <div class="col-lg-4 col">
                     <div class="team-profile-img">
-                        <div class="avatar-lg img-thumbnail rounded-circle flex-shrink-0">
-                            <img src="{{ checkUserAvatar($avatar) }}" alt="{{$name}}" class="member-img img-fluid d-block rounded-circle" loading="lazy">
-                        </div>
+                        {!!snippetAvatar($avatar, $name, 'member-img avatar-lg img-thumbnail rounded-circle flex-shrink-0 overflow-hidden img-fluid rounded-circle img-thumbnail display-1', 'font-size: 65px !important;')!!}
                         <div class="team-content">
                             <h5 class="fs-16 mb-1 text-uppercase">{{$name}}</h5>
                             <h6 class="fs-11 mb-1 text-muted mb-3">{{$email}}</h6>

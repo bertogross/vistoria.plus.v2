@@ -310,6 +310,7 @@
         var assignmentShowURL = "{{ route('assignmentShowURL') }}";
         var surveysChangeStatusURL = "{{ route('surveysChangeStatusURL') }}";
         var listingAssignmentByIdURL = "{{ route('listingAssignmentByIdURL') }}";
+        var formAssignmentSurveyorURL = "{{ route('formAssignmentSurveyorURL') }}";
     </script>
     <script src="{{ URL::asset('build/js/surveys.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 
