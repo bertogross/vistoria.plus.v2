@@ -22,8 +22,8 @@
                                 <h1 class="title text-muted">500</h1>
                             </div>
                             <div>
-                                <h4>Erro interno do servidor!</h4>
-                                <p class="text-muted w-75 mx-auto">Não sabemos exatamente o que aconteceu, mas nossos servidores dizem que algo está errado.</p>
+                                <h4>Erro interno do servidor</h4>
+                                <p class="text-muted w-75 mx-auto">Iremos verificar o que aconteceu.</p>
                                 <a href="{{ url('/') }}" class="init-loader btn btn-theme"><i class="mdi mdi-home me-1"></i>Voltar ao início</a>
                             </div>
                         </div><!-- end col-->

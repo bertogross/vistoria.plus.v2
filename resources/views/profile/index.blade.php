@@ -99,7 +99,7 @@
                             @if($profileUserId == $currentConnectionId)
                                 Minhas Tarefas
                             @else
-                                Tarefas de <span class="text-theme">{{ $user->name }}</span>
+                                Tarefas delegadas a <span class="text-theme">{{ $user->name }}</span>
                             @endif
                         </h5>
                     </div>

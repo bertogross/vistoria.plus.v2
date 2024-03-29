@@ -2,6 +2,7 @@ import {
     toastAlert,
     lightbox,
     showPreloader,
+    bsPopoverTooltip,
     showButtonWhenInputChange
 } from './helpers.js';
 
@@ -355,6 +356,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (document.body.classList.contains("production")) {
         document.addEventListener('contextmenu', preventRightClick);
     }
+
 });
 
 document.querySelectorAll('.init-loader').forEach(function(link) {
@@ -363,7 +365,9 @@ document.querySelectorAll('.init-loader').forEach(function(link) {
     });
 });
 
-
+window.addEventListener("load", function () {
+    showPreloader(false);
+});
 
 // Alert users when they try to type in an input or textarea element that is marked as readonly
 /*
@@ -388,4 +392,5 @@ document.addEventListener('DOMContentLoaded', handleReadonlyInputs);
 document.addEventListener('DOMContentLoaded', lightbox);
 document.addEventListener('DOMContentLoaded', checkInternetConnection);
 document.addEventListener('DOMContentLoaded', showButtonWhenInputChange);
+document.addEventListener('DOMContentLoaded', bsPopoverTooltip);
 

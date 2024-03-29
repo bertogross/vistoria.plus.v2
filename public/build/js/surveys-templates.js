@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         document.querySelector('input[name="id"]').value = data.id;
 
                         // Make the preview request
-                        ajaxContentFromURL(data.id, surveysTemplatePreviewFromSurveyTemplatesURL);
+                        ajaxContentFromURL(data.id, previewFromSurveyTemplatesURL);
 
                         if(checkAutosave === 'no'){
                             toastAlert(data.message, 'success');
@@ -297,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 modal.show();
 
-                ajaxContentFromURL(id, surveysTemplatePreviewFromSurveyTemplatesURL, 'load-template-preview');
+                ajaxContentFromURL(id, previewFromSurveyTemplatesURL, 'load-template-preview');
             });
         });
     }
@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Make the preview request after page load
     var idInput = document.querySelector('input[name="id"]');
     var idValue = idInput ? idInput.value : null;
-    ajaxContentFromURL(idValue, surveysTemplatePreviewFromSurveyTemplatesURL);
+    ajaxContentFromURL(idValue, previewFromSurveyTemplatesURL);
 
 
     // Call the function when the DOM is fully loaded

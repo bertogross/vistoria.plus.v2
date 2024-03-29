@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
                         icon: 'warning',
                         title: "Tem certeza que deseja Interromper esta Tarefa?",
-                        html: 'Interromper Tarefas em andamento terão suas respectivas atividades não completadas <strong>removidas</strong>. <br><br><strong class="text-warning">Não será possível reverter remoções.</strong>',
+                        html: 'Interromper Tarefas em andamento terão suas respectivas atividades não completadas <strong>removidas</strong>. <br><br><strong class="text-warning small">Não será possível reverter remoções.</strong>',
                         confirmButtonText: "Sim, interromper",
                             confirmButtonClass: 'btn btn-outline-danger w-xs me-2',
                                 showCloseButton: false,
@@ -153,6 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
 
     function recurringOnce(){
         const recurringSelect = document.getElementById('date-recurring-field');
@@ -964,11 +965,35 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
+    const previewFormButtons = document.querySelectorAll('.btn-assignment-form-preview');
+    if(previewFormButtons && formAssignmentSurveyorURL){
+        previewFormButtons.forEach(function(button) {
+            button.addEventListener('click', async function(event) {
+                event.preventDefault;
+
+                var surveyId = this.getAttribute("data-assignment-id");
+
+                var idValue = surveyId ?? null;
+
+                ajaxContentFromURL(idValue, formAssignmentSurveyorURL, 'assignment-form-preview');
+
+                var modalElement = document.getElementById('assignmentPreviewFormModal');
+                var modal = new bootstrap.Modal(modalElement, {
+                    backdrop: 'static',// 'static'
+                    keyboard: false
+                });
+                modal.show();
+
+            });
+        });
+    }
+
     // Make the preview request
     if(document.getElementById('surveysForm')){
         var idInput = document.querySelector('input[name="id"]');
         if(idInput){
             var idValue = idInput ? idInput.value : null;
+
             ajaxContentFromURL(idValue, surveysShowURL);
         }
     }

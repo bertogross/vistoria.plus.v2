@@ -408,7 +408,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if(data.showFinalizeButton){
                         document.querySelector('#btn-response-finalize').classList.remove('d-none');
 
-                        sweetWizardAlert('O formulário foi completamente preenchido.<br><br><small>Ao clicar em Concluir não será mais possível retornar e alterar estes dados.</small>', false, 'success', 'Continuar Editando', 'Concluir', '#btn-response-finalize');
+                        sweetWizardAlert('O formulário foi completamente preenchido.<div class="fs-13 mt-3 text-warning">Ao clicar em Concluir não será mais possível alterar estes dados.</div>', false, 'success', 'Continuar Editando', 'Concluir', '#btn-response-finalize');
                     }
                 })
                 .catch(error => console.error('Error:', error));

@@ -18,11 +18,11 @@
                     <div class="col-xl-4 text-center">
                         <div class="error-500 position-relative">
                             <img src="{{ URL::asset('build/images/error500.png') }}" alt="" class="img-fluid error-500-img error-img" />
-                            <h1 class="title text-muted"></h1>
+                            <h1 class="title text-muted">Ocorreu um erro</h1>
                         </div>
                         <div>
                             <h4>Error!</h4>
-                            <p class="text-muted w-75 mx-auto">Não sabemos exatamente o que aconteceu, mas nossos servidores dizem que algo está errado.</p>
+                            <p class="text-muted w-75 mx-auto">Iremos verificar o que aconteceu.</p>
                             <a href="{{ url('/') }}" class="init-loader btn btn-theme"><i class="mdi mdi-home me-1"></i>Voltar ao início</a>
                         </div>
                     </div><!-- end col-->

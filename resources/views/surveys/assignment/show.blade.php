@@ -154,7 +154,14 @@
             </div>
         @elseif ($surveyorStatus == 'losted' && $countResponses)
             <div class="alert alert-danger alert-dismissible alert-label-icon label-arrow fade show" role="alert">
-                <i class="ri-alert-line label-icon blink"></i> Tarefa de Vistoria perdida por não ter sido concluída no prazo. Mas, alguns dados foram capturados.
+                <i class="ri-alert-line label-icon blink"></i> Tarefa de Vistoria perdida por não ter sido concluída no prazo.<br>
+                <span class="text-body text-opacity-75">
+                    @if ($percentage > 99)
+                        Aparentemente 100% do formulário foi preenchido mas a pessoa não deu a tarefa como finalizada.
+                    @else
+                        Entretanto, alguns dados foram capturados.
+                    @endif
+                </span>
             </div>
         {{--
         @elseif ($surveyorStatus == 'completed')
@@ -172,23 +179,23 @@
 
         @endif
 
-        @if ($countResponses )
-            <div class="row mb-2 mt-4">
-                <div class="col-sm-6 col-md-4">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <div class="card">
-                                <div class="card-body" style="height: 145px;">
-                                    <a href="{{route('profileShowURL', $surveyorId)}}">
-                                        <img src="{{ $surveyorAvatar }}" alt="{{$surveyorName}}" class="avatar-xs rounded-circle float-end" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Vistoria realizada por {{$surveyorName}}.<br>Clique para acessar o Perfil." loading="lazy">
-                                    </a>
-                                    <h6 class="text-muted text-uppercase mb-4">Vistoria</h6>
-                                    <span class="text-success" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="Avaliações positivas efetuadas pelo(a) vistoriador(a)">Conforme</span>: {{$complianceSurveyorYesCount}}
-                                    <br><br>
-                                    <span class="text-danger" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="Avaliações negativas efetuadas pelo(a) vistoriador(a)">Não Conforme</span>: {{$complianceSurveyorNoCount}}
-                                </div>
+        <div class="row mb-2 mt-4">
+            <div class="col-sm-6 col-md-4">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="card">
+                            <div class="card-body" style="height: 145px;">
+                                <a href="{{route('profileShowURL', $surveyorId)}}">
+                                    <img src="{{ $surveyorAvatar }}" alt="{{$surveyorName}}" class="avatar-xs rounded-circle float-end" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Vistoria realizada por {{$surveyorName}}.<br>Clique para acessar o Perfil." loading="lazy">
+                                </a>
+                                <h6 class="text-muted text-uppercase mb-4">Vistoria</h6>
+                                <span class="text-success" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="Avaliações positivas efetuadas pelo(a) vistoriador(a)">Conforme</span>: {{$complianceSurveyorYesCount}}
+                                <br><br>
+                                <span class="text-danger" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" title="Avaliações negativas efetuadas pelo(a) vistoriador(a)">Não Conforme</span>: {{$complianceSurveyorNoCount}}
                             </div>
                         </div>
+                    </div>
+                    @if($countResponses)
                         <div class="col-sm-12 col-md-6 {{-- !$auditorId || !in_array($auditorStatus, ['losted', 'bypass']) ? 'col' : 'd-none' --}}">
                             <div class="card">
                                 <div class="card-body" style="height: 145px;">
@@ -245,8 +252,13 @@
                                                 Prazo: {{ $assignmentCreatedAt ? $deadline : 'Indefinido' }}
                                             </div>
                                         @else
-                                            <button type="button" onclick="alert('Não é possível Auditar uma Vistoria por você realizada.')"
-                                            class="btn btn-label right btn-soft-secondary w-100 cursor-not-allowed" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Não é possível Auditar uma Vistoria por você realizada.">
+                                            <button type="button"
+                                            @if ($countResponses && in_array($surveyorStatus, ['completed']))
+                                                onclick="alert('Não será possível Auditar uma Vistoria por você realizada.')"
+                                            @else
+                                                onclick="alert('Não será possível Auditar uma Vistoria não finalizada.')"
+                                            @endif
+                                            class="btn btn-label right btn-soft-secondary w-100 cursor-not-allowed" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Não será possível Auditar esta Vistoria.">
                                                 <i class="ri-fingerprint-2-line label-icon align-middle fs-16"></i> Auditar
                                             </button>
 
@@ -274,14 +286,19 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
+                </div>
 
+                @if ( in_array($surveyorStatus, ['completed']) || ( in_array($surveyorStatus, ['losted']) && $percentage > 99 ))
                     <div class="card">
                         <div class="card-body h-100">
                             <div id="polarTermsAreaChart"></div>
                         </div>
                     </div>
-                </div>
+                @endif
+            </div>
+
+            @if ( in_array($surveyorStatus, ['completed']) || ( in_array($surveyorStatus, ['losted']) && $percentage > 99 ))
                 <div class="col-sm-6 col-md-8">
                     <div class="card">
                         <div class="card-body">
@@ -296,218 +313,198 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            {{--
-            @if ( $surveyorStatus == 'completed' && $auditorStatus == 'losted')
-                <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show mt-4" role="alert">
-                    <i class="ri-alert-line label-icon blink"></i> A tarefa foi completada. Entretanto, o prazo da Auditoria expirou.
-                </div>
-            @elseif ( $surveyorStatus == 'losted' && $auditorStatus == 'losted')
-                <div class="alert alert-danger alert-dismissible alert-label-icon label-arrow fade show mt-4" role="alert">
-                    <i class="ri-alert-line label-icon blink"></i> A Checklist e a Auditoria não foram realizadas no prazo.
-                </div>
-            @elseif ($surveyorStatus == 'losted')
-                <div class="alert alert-info alert-dismissible alert-label-icon label-arrow fade show mt-4" role="alert">
-                    <i class="ri-alert-line label-icon blink"></i> O prazo expirou e esta Vistoria foi perdido
-                </div>
-            @elseif ($auditorStatus == 'losted')
-                <div class="alert alert-secondary alert-dismissible alert-label-icon label-arrow fade show mt-4" role="alert">
-                    <i class="ri-alert-line label-icon blink"></i> O prazo expirou e esta Auditoria foi perdida
-                </div>
             @endif
-            --}}
+        </div>
 
-            <h5 class="text-uppercase">Resultado:</h5>
-            @foreach ($stepsWithTopics as $stepIndex => $step)
-                @php
-                    $topicBadgeIndex = 0;
+        <h5 class="text-uppercase">Resultado:</h5>
+        @foreach ($stepsWithTopics as $stepIndex => $step)
+            @php
+                $topicBadgeIndex = 0;
 
-                    $stepId = isset($step['step_id']) ? intval($step['step_id']) : '';
-                    $termId = isset($step['term_id']) ? intval($step['term_id']) : '';
-                    $termName = $termId >= 100000 ? getWarehouseTermNameById($termId) : getTermNameById($termId);
-                    $originalPosition = isset($step['step_order']) ? intval($step['step_order']) : 0;
-                    $newPosition = $originalPosition;
-                    $topics = $step['topics'];
-                @endphp
+                $stepId = isset($step['step_id']) ? intval($step['step_id']) : '';
+                $termId = isset($step['term_id']) ? intval($step['term_id']) : '';
+                $termName = $termId >= 100000 ? getWarehouseTermNameById($termId) : getTermNameById($termId);
+                $originalPosition = isset($step['step_order']) ? intval($step['step_order']) : 0;
+                $newPosition = $originalPosition;
+                $topics = $step['topics'];
+            @endphp
 
-                @if( $topics )
-                    <div class="card joblist-card">
-                        <div class="card-header border-bottom-dashed">
-                            <h5 class="job-title text-theme text-uppercase">{{ $termName }}</h5>
-                        </div>
-                        @if ( $topics && is_array($topics))
+            @if( $topics )
+                <div class="card joblist-card">
+                    <div class="card-header border-bottom-dashed">
+                        <h5 class="job-title text-theme text-uppercase">{{ $termName }}</h5>
+                    </div>
+                    @if ( $topics && is_array($topics))
+                        @php
+                            $bg = 'bg-opacity-75';
+                        @endphp
+                        @foreach ($topics as $topicIndex => $topic)
                             @php
-                                $bg = 'bg-opacity-75';
+                                $topicBadgeIndex++;
+
+                                $topicId = isset($topic['topic_id']) ? intval($topic['topic_id']) : '';
+                                $question = $topic['question'] ?? '';
+
+                                $originalPosition = 0;
+                                $newPosition = 0;
+
+                                $stepIdToFind = $stepId;
+                                $topicIdToFind = $topicId;
+
+                                $filteredItems = array_filter($responsesData, function ($item) use ($stepIdToFind, $topicIdToFind) {
+                                    return $item['step_id'] == $stepIdToFind && $item['topic_id'] == $topicIdToFind;
+                                });
+
+                                // Reset array keys
+                                $filteredItems = array_values($filteredItems);
+
+                                $responseId = $filteredItems[0]['id'] ?? '';
+
+                                $surveyAttachmentIds =  $filteredItems[0]['attachments_survey'] ?? '';
+                                $surveyAttachmentIds = $surveyAttachmentIds ? json_decode($surveyAttachmentIds, true) : '';
+
+                                $auditAttachmentIds =  $filteredItems[0]['attachments_audit'] ?? '';
+                                $auditAttachmentIds = $auditAttachmentIds ? json_decode($auditAttachmentIds, true) : '';
+
+                                $commentSurvey = $filteredItems[0]['comment_survey'] ?? '';
+                                $complianceSurvey = $filteredItems[0]['compliance_survey'] ?? '';
+
+                                $commentAudit = $filteredItems[0]['comment_audit'] ?? '';
+                                $complianceAudit = $filteredItems[0]['compliance_audit'] ?? '';
+
+                                $bgSurveyor = $complianceSurvey == 'yes' ? 'bg-opacity-10 bg-success' : 'bg-opacity-10 bg-danger';
+                                $bgSurveyor = $complianceSurvey ? $bgSurveyor : 'bg-opacity-10 bg-warning';
+
+                                $bgAuditor = $complianceAudit == 'yes' ? 'bg-opacity-10 bg-secondary' : 'bg-opacity-10 bg-warning';
+                                $bgAuditor = $complianceAudit ? $bgAuditor : 'bg-opacity-10 bg-secondary';
+
+                                $topicBadgeColor = $complianceSurvey == 'no' && $complianceAudit == 'yes' ? 'warning' : 'success';
+
+                                if($complianceSurvey == 'no' && $complianceAudit){
+                                    $topicLabelColor = $complianceSurvey == 'no' && $complianceAudit == 'yes' ? '<span class="ri-emotion-normal-fill text-warning float-end blink fs-3 mt-n2" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Vistoria Aprovada mas necessita de ações"></span>' : '<span class="ri-emotion-sad-fill text-warning float-end fs-3 mt-n2" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Vistoria Indeferida mesmo que com Status Não Conforme"></span>'; // $complianceSurvey == 'no' ||
+
+                                    $topicBadgeColor = 'warning';
+
+                                } else if($complianceSurvey && $complianceAudit){
+                                    $topicLabelColor = $complianceAudit == 'no' ? '<span class="ri-emotion-unhappy-fill text-warning float-end blink fs-3 mt-n2" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Não Conforme"></span>' : '<span class="ri-emotion-fill text-success float-end fs-3 mt-n2" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Em conformidade"></span>';
+
+                                    $topicBadgeColor = $complianceAudit == 'no' ? 'warning' : 'success';
+                                } else{
+                                    $topicLabelColor = $auditorId ? '<span class="fs-4 ri-alert-fill text-secondary float-end" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Não Comparável"></span>' : '';
+
+                                    $topicBadgeColor = 'secondary';
+                                }
+
                             @endphp
-                            @foreach ($topics as $topicIndex => $topic)
-                                @php
-                                    $topicBadgeIndex++;
+                            <div class="card-body pb-0">
+                                {!! $topicLabelColor !!}
+                                <h5 class="mb-0">
+                                    <span class="badge bg-light-subtle badge-border text-{{$topicBadgeColor}} align-bottom me-1">{{ $topicBadgeIndex }}</span>
+                                    {{ $question ? ucfirst($question) : 'NI' }}
+                                </h5>
+                                <div class="row mt-3">
+                                    <div class="{{ $auditorId ? 'col-md-6' : 'col-md-12' }} pb-3">
+                                        <div class="card border-0 h-100">
+                                            <div class="card-header border-1 border-bottom-dashed {{ $bgSurveyor }}">
+                                                <h6 class="card-title mb-0">
+                                                    @if ($auditorId)
+                                                        Checklist:
+                                                    @endif
+                                                    {!! $complianceSurvey && $complianceSurvey == 'yes' ? '<span class="text-success">Conforme</span>' : '' !!}
+                                                    {!! $complianceSurvey && $complianceSurvey == 'no' ? '<span class="text-danger">Não Conforme</span>' : '' !!}
+                                                    {!! !$complianceSurvey ? '<span class="text-warning">Não Informado</span>' : '' !!}
+                                                </h6>
+                                            </div>
+                                            <div class="card-body rounded-bottom-2 {{ $bgSurveyor }} pb-0">
+                                                {!! $commentSurvey ? '<p>'.nl2br($commentSurvey).'</p>' : '' !!}
 
-                                    $topicId = isset($topic['topic_id']) ? intval($topic['topic_id']) : '';
-                                    $question = $topic['question'] ?? '';
+                                                @if ( !empty($surveyAttachmentIds) && is_array($surveyAttachmentIds) )
+                                                    <div class="row">
+                                                        @foreach ($surveyAttachmentIds as $attachmentId)
+                                                            @php
+                                                                $attachmentUrl = $dateAttachment = '';
+                                                                if (!empty($attachmentId)) {
+                                                                    $attachmentUrl = App\Models\Attachments::getAttachmentPathById($attachmentId);
 
-                                    $originalPosition = 0;
-                                    $newPosition = 0;
+                                                                    $dateAttachment = App\Models\Attachments::getAttachmentDateById($attachmentId);
+                                                                }
+                                                            @endphp
+                                                            @if ($attachmentUrl)
+                                                                <div class="element-item col-auto">
+                                                                    <div class="gallery-box card p-0 m-1">
+                                                                        <div class="gallery-container">
+                                                                            <a href="{{ $attachmentUrl }}" class="image-popup" title="Imagem capturada em {{$dateAttachment}}hs" data-gallery="gallery-{{$responseId}}">
+                                                                                <img class="rounded gallery-img" alt="image" height="70" src="{{ $attachmentUrl }}" loading="lazy">
 
-                                    $stepIdToFind = $stepId;
-                                    $topicIdToFind = $topicId;
-
-                                    $filteredItems = array_filter($responsesData, function ($item) use ($stepIdToFind, $topicIdToFind) {
-                                        return $item['step_id'] == $stepIdToFind && $item['topic_id'] == $topicIdToFind;
-                                    });
-
-                                    // Reset array keys
-                                    $filteredItems = array_values($filteredItems);
-
-                                    $responseId = $filteredItems[0]['id'] ?? '';
-
-                                    $surveyAttachmentIds =  $filteredItems[0]['attachments_survey'] ?? '';
-                                    $surveyAttachmentIds = $surveyAttachmentIds ? json_decode($surveyAttachmentIds, true) : '';
-
-                                    $auditAttachmentIds =  $filteredItems[0]['attachments_audit'] ?? '';
-                                    $auditAttachmentIds = $auditAttachmentIds ? json_decode($auditAttachmentIds, true) : '';
-
-                                    $commentSurvey = $filteredItems[0]['comment_survey'] ?? '';
-                                    $complianceSurvey = $filteredItems[0]['compliance_survey'] ?? '';
-
-                                    $commentAudit = $filteredItems[0]['comment_audit'] ?? '';
-                                    $complianceAudit = $filteredItems[0]['compliance_audit'] ?? '';
-
-                                    $bgSurveyor = $complianceSurvey == 'yes' ? 'bg-opacity-10 bg-success' : 'bg-opacity-10 bg-danger';
-                                    $bgSurveyor = $complianceSurvey ? $bgSurveyor : 'bg-opacity-10 bg-warning';
-
-                                    $bgAuditor = $complianceAudit == 'yes' ? 'bg-opacity-10 bg-secondary' : 'bg-opacity-10 bg-warning';
-                                    $bgAuditor = $complianceAudit ? $bgAuditor : 'bg-opacity-10 bg-secondary';
-
-                                    $topicBadgeColor = $complianceSurvey == 'no' && $complianceAudit == 'yes' ? 'warning' : 'success';
-
-                                    if($complianceSurvey == 'no' && $complianceAudit){
-                                        $topicLabelColor = $complianceSurvey == 'no' && $complianceAudit == 'yes' ? '<span class="ri-emotion-normal-fill text-warning float-end blink fs-3 mt-n2" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Vistoria Aprovada mas necessita de ações"></span>' : '<span class="ri-emotion-sad-fill text-warning float-end fs-3 mt-n2" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Vistoria Indeferida mesmo que com Status Não Conforme"></span>'; // $complianceSurvey == 'no' ||
-
-                                        $topicBadgeColor = 'warning';
-
-                                    } else if($complianceSurvey && $complianceAudit){
-                                        $topicLabelColor = $complianceAudit == 'no' ? '<span class="ri-emotion-unhappy-fill text-warning float-end blink fs-3 mt-n2" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Não Conforme"></span>' : '<span class="ri-emotion-fill text-success float-end fs-3 mt-n2" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Em conformidade"></span>';
-
-                                        $topicBadgeColor = $complianceAudit == 'no' ? 'warning' : 'success';
-                                    } else{
-                                        $topicLabelColor = $auditorId ? '<span class="fs-4 ri-alert-fill text-secondary float-end" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Não Comparável"></span>' : '';
-
-                                        $topicBadgeColor = 'secondary';
-                                    }
-
-                                @endphp
-                                <div class="card-body pb-0">
-                                    {!! $topicLabelColor !!}
-                                    <h5 class="mb-0">
-                                        <span class="badge bg-light-subtle badge-border text-{{$topicBadgeColor}} align-bottom me-1">{{ $topicBadgeIndex }}</span>
-                                        {{ $question ? ucfirst($question) : 'NI' }}
-                                    </h5>
-                                    <div class="row mt-3">
-                                        <div class="{{ $auditorId ? 'col-md-6' : 'col-md-12' }} pb-3">
-                                            <div class="card border-0 h-100">
-                                                <div class="card-header border-1 border-bottom-dashed {{ $bgSurveyor }}">
-                                                    <h6 class="card-title mb-0">
-                                                        @if ($auditorId)
-                                                            Checklist:
-                                                        @endif
-                                                        {!! $complianceSurvey && $complianceSurvey == 'yes' ? '<span class="text-success">Conforme</span>' : '' !!}
-                                                        {!! $complianceSurvey && $complianceSurvey == 'no' ? '<span class="text-danger">Não Conforme</span>' : '' !!}
-                                                        {!! !$complianceSurvey ? '<span class="text-warning">Não Informado</span>' : '' !!}
-                                                    </h6>
-                                                </div>
-                                                <div class="card-body rounded-bottom-2 {{ $bgSurveyor }} pb-0">
-                                                    {!! $commentSurvey ? '<p>'.nl2br($commentSurvey).'</p>' : '' !!}
-
-                                                    @if ( !empty($surveyAttachmentIds) && is_array($surveyAttachmentIds) )
-                                                        <div class="row">
-                                                            @foreach ($surveyAttachmentIds as $attachmentId)
-                                                                @php
-                                                                    $attachmentUrl = $dateAttachment = '';
-                                                                    if (!empty($attachmentId)) {
-                                                                        $attachmentUrl = App\Models\Attachments::getAttachmentPathById($attachmentId);
-
-                                                                        $dateAttachment = App\Models\Attachments::getAttachmentDateById($attachmentId);
-                                                                    }
-                                                                @endphp
-                                                                @if ($attachmentUrl)
-                                                                    <div class="element-item col-auto">
-                                                                        <div class="gallery-box card p-0 m-1">
-                                                                            <div class="gallery-container">
-                                                                                <a href="{{ $attachmentUrl }}" class="image-popup" title="Imagem capturada em {{$dateAttachment}}hs" data-gallery="gallery-{{$responseId}}">
-                                                                                    <img class="rounded gallery-img" alt="image" height="70" src="{{ $attachmentUrl }}" loading="lazy">
-
-                                                                                    <div class="gallery-overlay">
-                                                                                        <h5 class="overlay-caption fs-10">{{$dateAttachment}}</h5>
-                                                                                    </div>
-                                                                                </a>
-                                                                            </div>
+                                                                                <div class="gallery-overlay">
+                                                                                    <h5 class="overlay-caption fs-10">{{$dateAttachment}}</h5>
+                                                                                </div>
+                                                                            </a>
                                                                         </div>
                                                                     </div>
-                                                                @endif
-                                                            @endforeach
-                                                        </div>
-                                                    @endif
-                                                </div>
+                                                                </div>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
-                                        <div class="{{ $auditorId ? 'col-md-6' : 'd-none' }} pb-3">
-                                            <div class="card border-0 h-100">
-                                                <div class="card-header border-1 border-bottom-dashed {{ $bgAuditor }}">
-                                                    <h6 class="card-title mb-0">
-                                                        Auditoria:
-                                                        {!! $complianceAudit && $complianceAudit == 'yes' ? '<span class="text-secondary">Aprovada</span>' : '' !!}
-                                                        {!! $complianceAudit && $complianceAudit == 'no' ? '<span class="text-warning">Indeferida</span>' : '' !!}
-                                                        {!! !$complianceAudit ? '<span class="text-secondary">Não Informado</span>' : '' !!}
-                                                    </h6>
-                                                </div>
-                                                <div class="card-body rounded-bottom-2 {{ $bgAuditor }} pb-0">
-                                                    {!! $commentAudit ? '<p>'.nl2br($commentAudit).'</p>' : '' !!}
+                                    </div>
+                                    <div class="{{ $auditorId ? 'col-md-6' : 'd-none' }} pb-3">
+                                        <div class="card border-0 h-100">
+                                            <div class="card-header border-1 border-bottom-dashed {{ $bgAuditor }}">
+                                                <h6 class="card-title mb-0">
+                                                    Auditoria:
+                                                    {!! $complianceAudit && $complianceAudit == 'yes' ? '<span class="text-secondary">Aprovada</span>' : '' !!}
+                                                    {!! $complianceAudit && $complianceAudit == 'no' ? '<span class="text-warning">Indeferida</span>' : '' !!}
+                                                    {!! !$complianceAudit ? '<span class="text-secondary">Não Informado</span>' : '' !!}
+                                                </h6>
+                                            </div>
+                                            <div class="card-body rounded-bottom-2 {{ $bgAuditor }} pb-0">
+                                                {!! $commentAudit ? '<p>'.nl2br($commentAudit).'</p>' : '' !!}
 
-                                                    @if ( !empty($auditAttachmentIds) && is_array($auditAttachmentIds) )
-                                                        <div class="row">
-                                                            @foreach ($auditAttachmentIds as $attachmentId)
-                                                                @php
-                                                                    $attachmentUrl = $dateAttachment = '';
-                                                                    if (!empty($attachmentId)) {
-                                                                        $attachmentUrl = App\Models\Attachments::getAttachmentPathById($attachmentId);
+                                                @if ( !empty($auditAttachmentIds) && is_array($auditAttachmentIds) )
+                                                    <div class="row">
+                                                        @foreach ($auditAttachmentIds as $attachmentId)
+                                                            @php
+                                                                $attachmentUrl = $dateAttachment = '';
+                                                                if (!empty($attachmentId)) {
+                                                                    $attachmentUrl = App\Models\Attachments::getAttachmentPathById($attachmentId);
 
-                                                                        $dateAttachment = App\Models\Attachments::getAttachmentDateById($attachmentId);
-                                                                    }
-                                                                @endphp
-                                                                @if ($attachmentUrl)
-                                                                    <div class="element-item col-auto">
-                                                                        <div class="gallery-box card p-0 m-1">
-                                                                            <div class="gallery-container">
-                                                                                <a href="{{ $attachmentUrl }}" class="image-popup" title="Imagem capturada em {{$dateAttachment}}hs" data-gallery="gallery-{{$responseId}}">
-                                                                                    <img class="rounded gallery-img" alt="image" height="70" src="{{ $attachmentUrl }}" loading="lazy">
+                                                                    $dateAttachment = App\Models\Attachments::getAttachmentDateById($attachmentId);
+                                                                }
+                                                            @endphp
+                                                            @if ($attachmentUrl)
+                                                                <div class="element-item col-auto">
+                                                                    <div class="gallery-box card p-0 m-1">
+                                                                        <div class="gallery-container">
+                                                                            <a href="{{ $attachmentUrl }}" class="image-popup" title="Imagem capturada em {{$dateAttachment}}hs" data-gallery="gallery-{{$responseId}}">
+                                                                                <img class="rounded gallery-img" alt="image" height="70" src="{{ $attachmentUrl }}" loading="lazy">
 
-                                                                                    <div class="gallery-overlay">
-                                                                                        <h5 class="overlay-caption fs-10">{{$dateAttachment}}</h5>
-                                                                                    </div>
-                                                                                </a>
-                                                                            </div>
+                                                                                <div class="gallery-overlay">
+                                                                                    <h5 class="overlay-caption fs-10">{{$dateAttachment}}</h5>
+                                                                                </div>
+                                                                            </a>
                                                                         </div>
                                                                     </div>
-                                                                @endif
-                                                            @endforeach
-                                                        </div>
-                                                    @endif
-                                                </div>
+                                                                </div>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
-                        @endif
-                    </div>
-                @endif
-            @endforeach
-        @endif
+                            </div>
+                        @endforeach
+                    @endif
+                </div>
+            @endif
+        @endforeach
     </div>
 
-    @if ($surveyorStatus != 'completed')
+    @if (!in_array($surveyorStatus, ['completed', 'losted']))
         <div class="fixed-bottom mb-0 ms-auto me-auto w-100" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" title="Esta barra indica a evolução de uma tarefa com base no percentual">
             <div class="flex-grow-1">
                 <div class="progress animated-progress progress-label rounded-0">
@@ -542,285 +539,287 @@
         @endif
     </script>
 
-    @if ($countResponses )
+    @if ($countResponses)
         <script src="{{ URL::asset('build/libs/glightbox/js/glightbox.min.js') }}"></script>
 
         <script src="{{ URL::asset('build/libs/apexcharts/apexcharts.min.js') }}"></script>
 
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const rawTermsData = @json($analyticTermsData);
-            const terms = @json($terms);
+        @if ( in_array($surveyorStatus, ['completed']) || ( in_array($surveyorStatus, ['losted']) && $percentage > 99 ) )
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const rawTermsData = @json($analyticTermsData);
+                const terms = @json($terms);
 
-            // START #barTermsChart
-            var seriesData = [];
-            var categories = [];
+                // START #barTermsChart
+                var seriesData = [];
+                var categories = [];
 
-            /*for (var termId in rawTermsData) {
-                var totalComplianceYes = 0;
-                var totalComplianceNo = 0;
+                /*for (var termId in rawTermsData) {
+                    var totalComplianceYes = 0;
+                    var totalComplianceNo = 0;
 
-                for (var date in rawTermsData[termId]) {
-                    var termData = rawTermsData[termId][date];
-                    totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
-                    totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
-                }
-
-                seriesData.push({
-                    x: terms[termId]['name'],
-                    y: totalComplianceYes - totalComplianceNo
-                });
-
-                categories.push(terms[termId]['name']);
-            }*/
-            for (var termId in rawTermsData) {
-                var totalComplianceYes = 0;
-                var totalComplianceNo = 0;
-
-                for (var date in rawTermsData[termId]) {
-                    var termData = rawTermsData[termId][date];
-                    totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
-                    totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
-                }
-
-                var totalResponses = totalComplianceYes + totalComplianceNo;
-                var complianceScore = totalResponses > 0 ? (totalComplianceYes / totalResponses) * 100 : 0;
-
-                seriesData.push({
-                    x: terms[termId]['name'],
-                    y: parseFloat(complianceScore.toFixed(0))
-                });
-
-                categories.push(terms[termId]['name']);
-            }
-
-            var optionsTermsChart = {
-                series: [{
-                    name: 'Score',
-                    data: seriesData
-                }],
-                title: {
-                    text: 'Dinâmica de Pontuação na Conformidade entre Termos'
-                },
-                chart: {
-                    type: 'bar',
-                    height: 402,
-                    toolbar: {
-                        show: false,
+                    for (var date in rawTermsData[termId]) {
+                        var termData = rawTermsData[termId][date];
+                        totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
+                        totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
                     }
-                },
-                plotOptions: {
-                    bar: {
-                        horizontal: false,
-                        columnWidth: '55%',
-                        colors: {
-                            ranges: [{
-                                from: -1000,
-                                to: 0,
-                                color: '#DF5253'
-                            }, {
-                                from: 1,
-                                to: 1000,
-                                color: '#13c56b'
-                            }],
-                        },
-                        dataLabels: {
-                            position: 'top',
+
+                    seriesData.push({
+                        x: terms[termId]['name'],
+                        y: totalComplianceYes - totalComplianceNo
+                    });
+
+                    categories.push(terms[termId]['name']);
+                }*/
+                for (var termId in rawTermsData) {
+                    var totalComplianceYes = 0;
+                    var totalComplianceNo = 0;
+
+                    for (var date in rawTermsData[termId]) {
+                        var termData = rawTermsData[termId][date];
+                        totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
+                        totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
+                    }
+
+                    var totalResponses = totalComplianceYes + totalComplianceNo;
+                    var complianceScore = totalResponses > 0 ? (totalComplianceYes / totalResponses) * 100 : 0;
+
+                    seriesData.push({
+                        x: terms[termId]['name'],
+                        y: parseFloat(complianceScore.toFixed(0))
+                    });
+
+                    categories.push(terms[termId]['name']);
+                }
+
+                var optionsTermsChart = {
+                    series: [{
+                        name: 'Score',
+                        data: seriesData
+                    }],
+                    title: {
+                        text: 'Dinâmica de Pontuação na Conformidade entre Termos'
+                    },
+                    chart: {
+                        type: 'bar',
+                        height: 402,
+                        toolbar: {
+                            show: false,
+                        }
+                    },
+                    plotOptions: {
+                        bar: {
+                            horizontal: false,
+                            columnWidth: '55%',
+                            colors: {
+                                ranges: [{
+                                    from: -1000,
+                                    to: 0,
+                                    color: '#DF5253'
+                                }, {
+                                    from: 1,
+                                    to: 1000,
+                                    color: '#13c56b'
+                                }],
+                            },
+                            dataLabels: {
+                                position: 'top',
+                            },
                         },
                     },
-                },
-                xaxis: {
-                    categories: categories
-                },
-                fill: {
-                    opacity: 1
-                },
-            };
+                    xaxis: {
+                        categories: categories
+                    },
+                    fill: {
+                        opacity: 1
+                    },
+                };
 
-            var barTermsChart = new ApexCharts(document.querySelector("#barTermsChart"), optionsTermsChart);
-            barTermsChart.render();
-            // END #barTermsChart
+                var barTermsChart = new ApexCharts(document.querySelector("#barTermsChart"), optionsTermsChart);
+                barTermsChart.render();
+                // END #barTermsChart
 
-            // START #mixedTermsChart
-            var columnSeriesData = [];
-            var lineSeriesData = [];
-            var categories = [];
+                // START #mixedTermsChart
+                var columnSeriesData = [];
+                var lineSeriesData = [];
+                var categories = [];
 
-            /*for (var termId in rawTermsData) {
-                var totalComplianceYes = 0;
-                var totalComplianceNo = 0;
+                /*for (var termId in rawTermsData) {
+                    var totalComplianceYes = 0;
+                    var totalComplianceNo = 0;
 
-                for (var date in rawTermsData[termId]) {
-                    var termData = rawTermsData[termId][date];
-                    totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
-                    totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
+                    for (var date in rawTermsData[termId]) {
+                        var termData = rawTermsData[termId][date];
+                        totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
+                        totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
+                    }
+
+                    columnSeriesData.push(totalComplianceYes);
+                    lineSeriesData.push(totalComplianceNo);
+                    categories.push(terms[termId]['name']);
+                }*/
+                for (var termId in rawTermsData) {
+                    var totalComplianceYes = 0;
+                    var totalComplianceNo = 0;
+
+                    for (var date in rawTermsData[termId]) {
+                        var termData = rawTermsData[termId][date];
+                        totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
+                        totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
+                    }
+
+                    var totalResponses = totalComplianceYes + totalComplianceNo;
+                    var complianceYesPercentage = totalResponses > 0 ? parseFloat(((totalComplianceYes / totalResponses) * 100).toFixed(0)) : 0;
+                    var complianceNoPercentage = totalResponses > 0 ? parseFloat(((totalComplianceNo / totalResponses) * 100).toFixed(0)) : 0;
+
+                    columnSeriesData.push(complianceYesPercentage);
+                    lineSeriesData.push(complianceNoPercentage);
+                    categories.push(terms[termId]['name']);
                 }
 
-                columnSeriesData.push(totalComplianceYes);
-                lineSeriesData.push(totalComplianceNo);
-                categories.push(terms[termId]['name']);
-            }*/
-            for (var termId in rawTermsData) {
-                var totalComplianceYes = 0;
-                var totalComplianceNo = 0;
-
-                for (var date in rawTermsData[termId]) {
-                    var termData = rawTermsData[termId][date];
-                    totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
-                    totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
-                }
-
-                var totalResponses = totalComplianceYes + totalComplianceNo;
-                var complianceYesPercentage = totalResponses > 0 ? parseFloat(((totalComplianceYes / totalResponses) * 100).toFixed(0)) : 0;
-                var complianceNoPercentage = totalResponses > 0 ? parseFloat(((totalComplianceNo / totalResponses) * 100).toFixed(0)) : 0;
-
-                columnSeriesData.push(complianceYesPercentage);
-                lineSeriesData.push(complianceNoPercentage);
-                categories.push(terms[termId]['name']);
-            }
-
-            var optionsMixedTermsChart = {
-                series: [{
-                    name: 'Conforme',
-                    type: 'column',
-                    data: columnSeriesData
-                }, {
-                    name: 'Não Conforme',
-                    type: 'line',
-                    data: lineSeriesData
-                }],
-                chart: {
-                    height: 402,
-                    type: 'line',
-                    toolbar: {
-                        show: false,
-                    }
-                },
-                stroke: {
-                    width: [0, 4]
-                },
-                title: {
-                    text: 'Insights Comparativos de Conformidade'// Compliance Overview by Term
-                },
-                dataLabels: {
-                    enabled: true,
-                    enabledOnSeries: [1]
-                },
-                labels: categories,
-                xaxis: {
-                    type: 'category'
-                },
-                yaxis: [{
-                    title: {
-                        text: 'Conforme'
-                    }
-                }, {
-                    opposite: true,
-                    title: {
-                        text: 'Não Conforme'
-                    }
-                }],
-                colors: ['#13c56b', '#DF5253']  // Assign custom colors to Compliance Yes and No
-            };
-
-            var mixedTermsChart = new ApexCharts(document.querySelector("#mixedTermsChart"), optionsMixedTermsChart);
-            mixedTermsChart.render();
-            // END #mixedTermsChart
-
-
-            // START #polarTermsAreaChart
-            var seriesData = [];
-            var labels = [];
-
-            var termMetrics = {};
-
-            /*
-            // Aggregate data for each term
-            for (var termId in rawTermsData) {
-                for (var date in rawTermsData[termId]) {
-                    var termData = rawTermsData[termId][date];
-                    var totalCompliance = termData.filter(item => item.compliance_survey === 'yes').length;
-
-                    if (!termMetrics[termId]) {
-                        termMetrics[termId] = 0;
-                    }
-                    termMetrics[termId] += totalCompliance;
-                }
-            }
-
-            // Prepare data for the chart
-            for (var termId in termMetrics) {
-                seriesData.push(termMetrics[termId]);
-                // Assuming 'terms' is an object where keys are term IDs and values contain term details
-                labels.push(terms[termId]['name']);
-            }
-            */
-
-            // Aggregate data for each term
-            for (var termId in rawTermsData) {
-                var totalComplianceYes = 0;
-                var totalComplianceNo = 0;
-
-                for (var date in rawTermsData[termId]) {
-                    var termData = rawTermsData[termId][date];
-                    totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
-                    totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
-                }
-
-                var totalResponses = totalComplianceYes + totalComplianceNo;
-                var compliancePercentage = totalResponses > 0 ? parseFloat(((totalComplianceYes / totalResponses) * 100).toFixed(0)) : 0;
-
-                termMetrics[termId] = compliancePercentage;
-            }
-
-            // Prepare data for the chart
-            for (var termId in termMetrics) {
-                seriesData.push(termMetrics[termId]);
-                labels.push(terms[termId]['name']);
-            }
-
-
-            var optionsTermsAreaChart = {
-                series: seriesData,
-                chart: {
-                    height: 280,
-                    type: 'polarArea',
-                    toolbar: {
-                        show: false,
-                    }
-                },
-                title: {
-                    text: 'Análise Polar de Conformidade'// Terms Compliance Polar Analysis
-                },
-                labels: labels,
-                stroke: {
-                    colors: ['#fff']
-                },
-                fill: {
-                    opacity: 0.8
-                },
-                legend: {
-                    show: true,
-                    position: 'bottom'
-                },
-                yaxis: {
-                    show: false // Disable Y-axis labels
-                },
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        chart: {
-                            width: '100%'
+                var optionsMixedTermsChart = {
+                    series: [{
+                        name: 'Conforme',
+                        type: 'column',
+                        data: columnSeriesData
+                    }, {
+                        name: 'Não Conforme',
+                        type: 'line',
+                        data: lineSeriesData
+                    }],
+                    chart: {
+                        height: 402,
+                        type: 'line',
+                        toolbar: {
+                            show: false,
                         }
-                    }
-                }]
-            };
+                    },
+                    stroke: {
+                        width: [0, 4]
+                    },
+                    title: {
+                        text: 'Insights Comparativos de Conformidade'// Compliance Overview by Term
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        enabledOnSeries: [1]
+                    },
+                    labels: categories,
+                    xaxis: {
+                        type: 'category'
+                    },
+                    yaxis: [{
+                        title: {
+                            text: 'Conforme'
+                        }
+                    }, {
+                        opposite: true,
+                        title: {
+                            text: 'Não Conforme'
+                        }
+                    }],
+                    colors: ['#13c56b', '#DF5253']  // Assign custom colors to Compliance Yes and No
+                };
 
-            var polarTermsAreaChart = new ApexCharts(document.querySelector("#polarTermsAreaChart"), optionsTermsAreaChart);
-            polarTermsAreaChart.render();
-            // END #polarTermsAreaChart
-        });
-        </script>
+                var mixedTermsChart = new ApexCharts(document.querySelector("#mixedTermsChart"), optionsMixedTermsChart);
+                mixedTermsChart.render();
+                // END #mixedTermsChart
+
+
+                // START #polarTermsAreaChart
+                var seriesData = [];
+                var labels = [];
+
+                var termMetrics = {};
+
+                /*
+                // Aggregate data for each term
+                for (var termId in rawTermsData) {
+                    for (var date in rawTermsData[termId]) {
+                        var termData = rawTermsData[termId][date];
+                        var totalCompliance = termData.filter(item => item.compliance_survey === 'yes').length;
+
+                        if (!termMetrics[termId]) {
+                            termMetrics[termId] = 0;
+                        }
+                        termMetrics[termId] += totalCompliance;
+                    }
+                }
+
+                // Prepare data for the chart
+                for (var termId in termMetrics) {
+                    seriesData.push(termMetrics[termId]);
+                    // Assuming 'terms' is an object where keys are term IDs and values contain term details
+                    labels.push(terms[termId]['name']);
+                }
+                */
+
+                // Aggregate data for each term
+                for (var termId in rawTermsData) {
+                    var totalComplianceYes = 0;
+                    var totalComplianceNo = 0;
+
+                    for (var date in rawTermsData[termId]) {
+                        var termData = rawTermsData[termId][date];
+                        totalComplianceYes += termData.filter(item => item.compliance_survey === 'yes').length;
+                        totalComplianceNo += termData.filter(item => item.compliance_survey === 'no').length;
+                    }
+
+                    var totalResponses = totalComplianceYes + totalComplianceNo;
+                    var compliancePercentage = totalResponses > 0 ? parseFloat(((totalComplianceYes / totalResponses) * 100).toFixed(0)) : 0;
+
+                    termMetrics[termId] = compliancePercentage;
+                }
+
+                // Prepare data for the chart
+                for (var termId in termMetrics) {
+                    seriesData.push(termMetrics[termId]);
+                    labels.push(terms[termId]['name']);
+                }
+
+
+                var optionsTermsAreaChart = {
+                    series: seriesData,
+                    chart: {
+                        height: 280,
+                        type: 'polarArea',
+                        toolbar: {
+                            show: false,
+                        }
+                    },
+                    title: {
+                        text: 'Análise Polar de Conformidade'// Terms Compliance Polar Analysis
+                    },
+                    labels: labels,
+                    stroke: {
+                        colors: ['#fff']
+                    },
+                    fill: {
+                        opacity: 0.8
+                    },
+                    legend: {
+                        show: true,
+                        position: 'bottom'
+                    },
+                    yaxis: {
+                        show: false // Disable Y-axis labels
+                    },
+                    responsive: [{
+                        breakpoint: 480,
+                        options: {
+                            chart: {
+                                width: '100%'
+                            }
+                        }
+                    }]
+                };
+
+                var polarTermsAreaChart = new ApexCharts(document.querySelector("#polarTermsAreaChart"), optionsTermsAreaChart);
+                polarTermsAreaChart.render();
+                // END #polarTermsAreaChart
+            });
+            </script>
+        @endif
     @endif
 
 @endsection

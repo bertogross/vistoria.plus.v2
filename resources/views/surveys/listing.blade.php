@@ -245,7 +245,7 @@
                                     </span>
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge rounded-pill bg-dark-subtle text-body" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Quantidade de Tarefas Concluídas">{{ $countSurveyAssignmentBySurveyId }}</span>
+                                    <span class="badge rounded-pill bg-dark-subtle text-body" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Quantidade de Tarefas Concluídas">{{ $countSurveyAssignmentBySurveyId ?? '' }}</span>
                                 </td>
                                 <td scope="row" class="text-end">
                                     @if (in_array($surveyStatus, ['new', 'started', 'stopped']))

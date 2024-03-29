@@ -264,8 +264,11 @@ class SurveyAssignments extends Model
 
         $distributedData = $survey->distributed_data ? json_decode($survey->distributed_data, true) : null;
 
-        $rand = rand(1, 5);
-        sleep($rand);
+        // Is necessary for prevent conflict (duplicate Assignments data in mysql) when schedulle running via crontab in development enviroment and testing enviroment with the same mysql host at the same time
+        if(env('APP_DEBUG')){
+            $rand = rand(5, 10);
+            sleep($rand);
+        }
 
         // Check if has today responses
         $countTodayResponses = $surveyId ? Survey::countSurveyAllResponsesFromToday($surveyId) : 0;
@@ -610,7 +613,7 @@ class SurveyAssignments extends Model
             'new' => [
                 'label' => 'Vigente',
                 'reverse' => 'Iniciar',
-                'description' => 'Tarefas não inicializadas',
+                'description' => 'Disponíveis e no prazo',
                 'singular_description' => 'Tarefa não inicializada',
                 'icon' => 'ri-play-fill',
                 'color' => 'primary'
@@ -649,7 +652,7 @@ class SurveyAssignments extends Model
             'completed' => [
                 'label' => 'Concluída',
                 'reverse' => '',
-                'description' => 'Tarefas que foram concluídas',
+                'description' => 'Concluídas no prazo',
                 'singular_description' => 'Tarefa concluída',
                 'icon' => 'ri-check-double-fill',
                 'color' => 'success'
@@ -657,7 +660,7 @@ class SurveyAssignments extends Model
             'losted' => [
                 'label' => 'Perdida',
                 'reverse' => '',
-                'description' => 'Tarefas não concluídas no prazo',
+                'description' => 'Não concluídas no prazo',
                 'singular_description' => 'Tarefa não concluída no prazo',
                 'icon' => 'ri-skull-line',
                 'color' => 'danger'

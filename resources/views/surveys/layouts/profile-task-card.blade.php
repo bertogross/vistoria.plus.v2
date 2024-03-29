@@ -96,10 +96,10 @@
                 @endif
         @endif
 
-        <div class="card tasks-box bg-body" data-assignment-id="{{$assignmentId}}">
-            <div class="card-header border-bottom border-1 border-bottom-dashed bg-body">
+        <div class="card tasks-box {{in_array($statusKey, ['losted']) ? ' border-1 border-danger border-opacity-50 ' : ''}}" data-assignment-id="{{$assignmentId}}">
+            <div class="card-header border-bottom border-1 border-bottom-dashed {{in_array($statusKey, ['losted']) ? 'border-danger border-opacity-50 bg-danger-subtle' : ' bg-body'}}">
                 <div class="row">
-                    <div class="col text-theme fw-medium fs-15">
+                    <div class="col fw-medium fs-15 {{in_array($statusKey, ['losted']) ? 'text-body' : 'text-theme'}}">
                         {{ $companyName }}
                     </div>
                     <div class="col-auto">
@@ -135,7 +135,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body bg-body">
+            <div class="card-body {{in_array($statusKey, ['losted']) ? ' bg-danger-subtle' : ' bg-body'}}">
                 <h5 class="fs-13 text-truncate task-title mb-0" data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" data-bs-placement="top" title="{{ $title }}">
                     {{ $title }}
                 </h5>
@@ -143,7 +143,7 @@
                 <ul class="list-group mt-3">
                     <li class="list-group-item">
                         <i class="ri-checkbox-line align-top me-2 text-info"></i> {{ $totalTopics }} Tópicos
-                        @if (in_array($statusKey, ['completed']))
+                        @if (in_array($statusKey, ['completed', 'losted']))
                             <div class="progress progress-sm bg-success-subtle rounded-2 mt-3" data-bs-toggle="tooltip" data-bs-html="true" data-bs-trigger="hover" data-bs-placement="top" title="{{$percentYes}}% de Conformidades relatadas por {{$surveyorName}}">
                                 <div class="progress-bar bg-success" role="progressbar" style="width: {{$percentYes}}%;" aria-valuenow="{{$percentYes}}" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
@@ -169,7 +169,7 @@
                         @if($surveyorStatus == 'scheduled')
                             <i class="ri-timer-line align-top me-2 text-warning"></i> Data: {{ $deadlineScheduled }}
                         @else
-                            <i class="ri-calendar-todo-line align-top me-2 text-info"></i> Prazo: {{ $deadline }}
+                            <i class="ri-calendar-todo-line align-top me-2 {{in_array($statusKey, ['losted']) ? 'text-danger' : 'text-info'}}"></i> Prazo: {{ $deadline }}
                         @endif
                     </li>
                 </ul>
@@ -191,7 +191,7 @@
                 @endif
             </div>
             <!--end card-body-->
-            <div class="card-footer border-top-dashed bg-body">
+            <div class="card-footer border-top-dashed {{in_array($statusKey, ['losted']) ? ' bg-danger-subtle border-danger border-opacity-50' : ' bg-body'}}">
                 <div class="row">
                     <div class="col small">
                         <div class="avatar-group ps-0">
@@ -234,11 +234,19 @@
                                     class="btn btn-sm btn-dark ri-eye-line">
                                 </a>
                             @endif
-                        @elseif( ( ( $currentUserId === $surveyorId || $currentUserId === $auditorId ) && in_array($statusKey, ['completed']) ) || ( in_array(getUserRoleById($currentUserId, $currentConnectionId), [1,2]) && in_array($statusKey, ['completed']) ) )
+                        @elseif(
+                            (
+                                ( $currentUserId === $surveyorId || $currentUserId === $auditorId ) &&
+                                in_array($statusKey, ['completed', 'losted']) ) ||
+                                (
+                                    in_array(getUserRoleById($currentUserId, $currentConnectionId), [1,2])  &&
+                                    in_array($statusKey, ['completed', 'losted'])
+                                )
+                            )
                             <a href="{{ route('assignmentShowURL', $assignmentId) }}"
                                 data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
                                 title="Visualizar"
-                                class="btn btn-sm btn-label right btn-dark">
+                                class="btn btn-sm btn-label right btn-{{in_array($statusKey, ['losted']) ? 'light' : 'dark'}}">
                                     <i class="ri-eye-line label-icon align-middle"></i> Visualizar
                             </a>
                         @endif

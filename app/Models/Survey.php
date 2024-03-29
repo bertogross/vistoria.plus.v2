@@ -324,7 +324,7 @@ class Survey extends Model
                     'survey_responses.compliance_survey',
                     'survey_response_steps.term_id'
                 )
-                ->where('survey_assignments.surveyor_status', 'completed')
+                ->whereIn('survey_assignments.surveyor_status', ['completed', 'losted'])
                 ->where('survey_responses.compliance_survey', '!=', null)
                 ->when($assignmentId, function ($query) use ($assignmentId) {
                     $query->where('survey_assignments.id', $assignmentId);
