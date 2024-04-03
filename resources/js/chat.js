@@ -5,7 +5,6 @@ Website: https://Themesbrand.com/
 Contact: Themesbrand@gmail.com
 File: Chat init js
 */
-
 (function () {
     var dummyUserImage = "build/images/users/user-dummy-img.jpg";
     var dummyMultiUserImage = "build/images/users/multi-user.jpg";

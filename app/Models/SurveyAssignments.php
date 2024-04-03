@@ -217,16 +217,12 @@ class SurveyAssignments extends Model
     */
     public static function checkSurveyAssignmentUntilYesterday($surveyId)
     {
-        // TODO
-        // Attention to biweekly, weekly, monthly and annual if necessary change to losted/bypass
-
-
         $yesterday = Carbon::yesterday()->format('Y-m-d');
 
         // Get all survey assignments that were not completed by yesterday
         $assignments = self::where('survey_id', $surveyId)
-                            ->whereDate('created_at', '<=', $yesterday)
-                            ->get();
+                        ->whereDate('created_at', '<=', $yesterday)
+                        ->get();
 
         foreach ($assignments as $assignment) {
             // If the assignment is already completed or in auditing, but not completed by the auditor
@@ -236,7 +232,7 @@ class SurveyAssignments extends Model
                     $assignment->surveyor_status = 'completed';
                 }
             }
-            // If neither the surveyor nor the auditor has completed their task
+            // If neither the surveyor and the auditor has completed their task
             else if ($assignment->auditor_status !== 'completed') {
                 $assignment->auditor_status = 'bypass';
                 $assignment->surveyor_status = 'losted';
@@ -697,6 +693,7 @@ class SurveyAssignments extends Model
             $assignmentCreatedAt = Carbon::parse($assignmentCreatedAt);
         }
 
+        /*
         switch ($recurring) {
             case 'once':
             case 'daily':
@@ -718,6 +715,9 @@ class SurveyAssignments extends Model
                 // If the recurrence pattern is unrecognized, return null
                 return null;
         }
+        */
+
+        return $assignmentCreatedAt;
     }
 
     public static function getSurveyAssignmentDeadlineScheduled($recurring, $startAt)

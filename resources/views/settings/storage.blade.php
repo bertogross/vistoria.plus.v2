@@ -50,11 +50,11 @@
                             <table class="table align-middle table-nowrap">
                                 <thead class="table-active">
                                     <tr class="text-uppercase">
+                                        <th scope="col" class="text-center" width="30"></th>
                                         <th scope="col" width="135"></th>
                                         <th scope="col"></th>
                                         <th scope="col">Peso</th>
                                         <th scope="col">Data</th>
-                                        <th scope="col" class="text-center" width="30"></th>
                                     </tr>
                                 </thead>
                                 <tbody id="file-list">
@@ -63,6 +63,9 @@
                                         $attachmentId = App\Models\Attachments::getAttachmentIdByPath($file['path']);
                                     @endphp
                                     <tr id="element-attachment-{{$attachmentId}}">
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-outline-dark ri-delete-bin-2-line btn-delete-photo" data-attachment-id="{{$attachmentId}}" data-attachment-path="{{$file['path']}}"></button>
+                                        </td>
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 fs-17 me-2">
@@ -75,9 +78,6 @@
                                         <td>{{ $file['name'] }}</td>
                                         <td class="filelist-size">{{ number_format($file['size'] / 1024 / 1024, 2) }} MB</td>
                                         <td class="filelist-create">{{ date('d/m/Y', $file['lastModified']) }}</td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-outline-light ri-delete-bin-2-line btn-delete-photo" data-attachment-id="{{$attachmentId}}" data-attachment-path="{{$file['path']}}"></button>
-                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>

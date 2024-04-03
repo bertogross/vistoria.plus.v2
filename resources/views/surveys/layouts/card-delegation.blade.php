@@ -23,9 +23,11 @@
                             $userCompanyId = $value['company_id'] ?? null;
                             $companyName = $userCompanyId ? getCompanyNameById($userCompanyId) : '';
                         @endphp
-                        <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Vistoria: {{ $surveyorsName }} : {{ $companyName }}">
-                            {!!snippetAvatar($surveyorsAvatar, $surveyorsName, 'rounded-circle avatar-xxs')!!}
-                        </a>
+                        @if ($userId)
+                            <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item ms-2 {{ $swapData && $userCompanyId != $companyId ? 'd-none' : '' }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Vistoria: {{ $surveyorsName }} : {{ $companyName }}">
+                                {!!snippetAvatar($surveyorsAvatar, $surveyorsName, 'rounded-circle avatar-xxs')!!}
+                            </a>
+                        @endif
                     @endforeach
                 @endif
             </div>
@@ -42,9 +44,11 @@
                             $userCompanyId = $value['company_id'] ?? null;
                             $companyName = $userCompanyId ? getCompanyNameById($userCompanyId) : '';
                         @endphp
-                        <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Auditoria: {{ $auditorName }} : {{ $companyName }}">
-                            {!!snippetAvatar($auditorAvatar, $auditorName, 'rounded-circle avatar-xxs')!!}
-                        </a>
+                        @if ($userId)
+                            <a href="{{ route('profileShowURL', $userId) }}" class="avatar-group-item ms-2 {{ $swapData && $userCompanyId != $companyId ? 'd-none' : '' }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Auditoria: {{ $auditorName }} : {{ $companyName }}">
+                                {!!snippetAvatar($auditorAvatar, $auditorName, 'rounded-circle avatar-xxs')!!}
+                            </a>
+                        @endif
                     @endforeach
                 @endif
             </div>

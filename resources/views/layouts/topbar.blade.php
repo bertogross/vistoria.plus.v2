@@ -235,7 +235,14 @@
                                                         {!! $dataBs !!}
                                                         data-bs-html="true"
                                                         data-bs-title="Status da Conexão"
-                                                        data-bs-content="<strong class='text-warning'>Revogado</strong><br><br>Você revogou seu acesso.<br><br>Para reconectar acesse Configurações Gerais >> Minhas Conexões"></span>
+                                                        data-bs-content="<strong class='text-primary'>Revogado</strong><br><br>Você precisa aceitar o convite.<br><br>Para conectar acesse Configurações Gerais >> Minhas Conexões"></span>
+                                                        @break
+                                                    @case('wainting')
+                                                        <span class="position-absolute text-warning float-end me-3 end-0 ri-question-line align-middle mt-n2 fs-22"
+                                                        {!! $dataBs !!}
+                                                        data-bs-html="true"
+                                                        data-bs-title="Status da Conexão"
+                                                        data-bs-content="<strong class='text-warning'>Aguardando</strong><br><br>Você revogou seu acesso.<br><br>Para reconectar acesse Configurações Gerais >> Minhas Conexões"></span>
                                                         @break
                                                     @default
                                                         <span class="position-absolute text-success float-end me-3 end-0 ri-checkbox-circle-line align-middle mt-n2 fs-22"

@@ -5,14 +5,14 @@
     @if(isset($invoices) && is_object($invoices) || is_object($upcoming))
         <div class="table-responsive">
             <table class="table table-hover table-bordered table-striped table-compact">
-                <thead class="table-light">
-                    <th class="d-none text-uppercase">ID</th>
-                    <th class="text-uppercase">Decrição</th>
-                    <th class="text-uppercase">Vencimento</th>
-                    <th class="text-center text-uppercase">Status</th>
-                    <th class="text-uppercase">Período de Atividade</th>
-                    <th></th>
-                    <th></th>
+                <thead class="table-light text-uppercase">
+                    <th class="d-none">ID</th>
+                    <th>Decrição</th>
+                    <th>Vencimento</th>
+                    <th class="text-center" width="110">Status</th>
+                    <th width="200">Período de Atividade</th>
+                    <th width="100"></th>
+                    <th width="110"></th>
                 </thead>
                 <tbody>
                     @if (!empty($upcoming) && isset($upcoming) && is_object($upcoming) && count($upcoming->lines->data) > 0)

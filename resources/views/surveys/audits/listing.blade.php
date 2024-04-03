@@ -24,7 +24,7 @@
             <li class="nav-item" role="presentation">
                 <a class="nav-link active" data-bs-toggle="tab" href="#nav-border-justified-done" role="tab" aria-selected="true">
                     Auditorias
-                    {!! $dataDone ? '<span class="badge border border-dark text-body ms-2">'.count($dataDone).'</span>' : '' !!}
+                    {!! $dataDone && count($dataDone) > 0 ? '<span class="badge border border-dark text-body ms-2">'.count($dataDone).'</span>' : '' !!}
                 </a>
             </li>
             <li class="nav-item" role="presentation">

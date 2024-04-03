@@ -59,15 +59,11 @@
                         <div class="team-content">
                             <h5 class="fs-16 mb-1 text-uppercase">{{$name}}</h5>
                             <h6 class="fs-11 mb-1 text-muted mb-3">{{$email}}</h6>
-                            <p class="text-muted member-designation mb-0 fw-bold" data-bs-toggle="tooltip" data-bs-placement="top" title="Nível do usuário">
+                            <p class="text-muted member-designation mb-2 fw-bold" data-bs-toggle="tooltip" data-bs-placement="top" title="Nível do usuário">
                                 {{$roleName}}
                             </p>
-                            <p class="text-muted mb-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Status do usuário">
-                                @if( isset($status) && $status == 'active')
-                                    <span class="text-success">Ativo</span>
-                                @else
-                                    <span class="text-danger">Inoperante</span>
-                                @endif
+                            <p class="text-muted mb-0" title="Status do usuário">
+                                {!! User::statusTranslationLabel($status, false) !!}
                             </p>
                             {{--
                             {!! $user->last_login ? '<p class="small text-muted mb-0">Último Login: '.date('d/m/Y H:i', strtotime($user->last_login)).'</p>' : '' !!}

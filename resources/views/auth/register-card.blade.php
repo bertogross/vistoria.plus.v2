@@ -18,20 +18,24 @@
                 <div class="mb-3">
                     <label for="new_useremail" class="form-label">E-mail</label>
                     <input type="email"  class="form-control @error('register_email') is-invalid @enderror" name="register_email" value="{{ isset($guestUserEmail) ? $guestUserEmail : old('register_email') }}" id="new_useremail" placeholder="Informe seu e-mail" maxlength="150" required autofocus>
+                    {{--
                     @error('register_email')
                         <span class="invalid-feedback" role="alert">
                             <strong>{!! $message !!}</strong>
                         </span>
                     @enderror
+                    --}
                 </div>
                 <div class="mb-3">
                     <label for="new_username" class="form-label">Nome</label>
                     <input type="text" class="form-control @error('register_name') is-invalid @enderror" name="register_name" value="{{ old('register_name') }}" id="new_username" placeholder="Informe seu nome" maxlength="100" required>
+                    {{--
                     @error('register_name')
                         <span class="invalid-feedback" role="alert">
                             <strong>{!! $message !!}</strong>
                         </span>
                     @enderror
+                    --}
                 </div>
 
                 <div class="mb-3">

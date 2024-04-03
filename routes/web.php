@@ -30,7 +30,8 @@ use App\Http\Controllers\{
     ClarifaiImageController,
     ScenexImageController,
     //PostmarkappController,
-    StripeController
+    StripeController,
+    ChatController
 };
 
 /*
@@ -44,12 +45,15 @@ use App\Http\Controllers\{
 |
 */
 
+// Default Laravel authentication routes
 Auth::routes();
+
 //Language Translation
 Route::get('index/{locale}', [App\Http\Controllers\HomeController::class, 'lang']);
 
 // Auth group
 Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])->group(function () {
+     // Routes accessible to authenticated users
     Route::get('/', [SurveysController::class, 'index'])->name('root');
     //Route::get('/', [HomeController::class, 'root'])->name('root');
 
@@ -75,6 +79,7 @@ Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])-
 
     // Surveys Routes
     Route::prefix('surveys')->group(function () {
+        // Routes related to surveys
         Route::get('/', [SurveysController::class, 'index'])->name('surveysIndexURL');
         Route::get('/create', [SurveysController::class, 'create'])->name('surveysCreateURL');
             Route::get('/create/reload-users-tab/{id?}', [SurveysController::class, 'surveyReloadUsersTab'])->name('surveyReloadUsersTabURL');
@@ -134,6 +139,7 @@ Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])-
 
     // Admin Settings
     Route::middleware(['admin'])->group(function () {
+        // Routes accessible only to admins
         Route::prefix('settings')->group(function () {
             Route::get('/', [SettingsAccountController::class, 'index'])->name('settingsIndexURL');
             Route::get('/account/{tab?}', [SettingsAccountController::class, 'show'])->name('settingsAccountShowURL');
@@ -176,6 +182,7 @@ Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])-
 
     // File Upload Routes
     Route::prefix('upload')->group(function () {
+        // Routes for file uploads
         Route::post('/avatar', [UserUploadController::class, 'uploadAvatar'])->name('uploadAvatarURL');
         Route::post('/cover', [UserUploadController::class, 'uploadCover'])->name('uploadCoverURL');
         Route::post('/logo', [UserUploadController::class, 'uploadLogo'])->name('uploadLogoURL');
@@ -186,9 +193,16 @@ Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])-
         Route::delete('/delete/attachment', [AttachmentsController::class, 'deleteAttachmentByPath'])->name('deleteAttachmentByPathURL');
     });
 
+    // Chat Routes
+    Route::prefix('chat')->group(function () {
+        // Routes related to surveys
+        Route::get('/', [ChatController::class, 'index'])->name('chatIndexURL');
+        Route::post('/send', [ChatController::class, 'sendMessage'])->name('sendChatMessageURL');
+    });
 
 });
 
+// Routes accessible to all users
 Route::get('/unauthorized', function () {
     return view('errors.unauthorized');
 })->name('unauthorized');
@@ -204,6 +218,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Reset password routes
 Route::prefix('forgot-password')->group(function () {
+    // Password reset routes
     Route::get('/email', function () {
         return view('auth.passwords.email');
     })->middleware('guest')->name('passwordRequestFormURL');
@@ -234,10 +249,10 @@ Route::get('/offline', function () {
 
 //Route::get('/send-email', [PostmarkappController::class, 'sendEmail']);
 
+// Catch-All Route
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);
 });
 
-// Catch-All Route
+// Route to handle all other routes
 Route::get('{any}', [HomeController::class, 'index'])->where('any', '.*')->name('index');
-

@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listeners for each 'btn-assignment-auditor-action' to change task status from current to the next
     // This Button are in resources\views\surveys\layouts\profile-surveyors-box.blade.php
     const assignmentActionAuditorButtons = document.querySelectorAll('.btn-assignment-auditor-action');
-    if(assignmentActionAuditorButtons){
+    if(assignmentActionAuditorButtons && formAssignmentAuditorURL && changeAssignmentAuditorStatusURL){
         assignmentActionAuditorButtons.forEach(function(button) {
             button.addEventListener('click', function(event) {
                 event.preventDefault();

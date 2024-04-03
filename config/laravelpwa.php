@@ -1,17 +1,20 @@
 <?php
-
+//https://github.com/silviolleite/laravel-pwa
 return [
     'name' => 'LaravelPWA',
     'manifest' => [
         'name' => env('APP_NAME', 'My PWA App'),
         'short_name' => env('APP_NAME', 'My PWA App'),
         'description' => 'Funcionalidades que irão ajudar em suas vistorias',
-        'start_url' => '/',
-        'background_color' => '#1A1D21',
-        'theme_color' => '#1A1D21',
+        'start_url' => env('APP_URL') . '/',
+        'id' => '/',
+        'scope' => '/',
+        'background_color' => '#563CFF',
+        'theme_color' => '#563CFF',
         'display' => 'standalone',
-        'orientation'=> 'portrait',
-        'status_bar'=> 'black',
+        'orientation' => 'any',
+        'status_bar' => 'black',
+        'categories' => 'busines',
         'icons' => [
             '72x72' => [
                 'path' => '/build/images/favicons/icon-72x72.png',
@@ -37,17 +40,17 @@ return [
                 'path' => '/build/images/favicons/icon-192x192.png',
                 'purpose' => 'any'
             ],
+            '196x196' => [
+                'path' => '/build/images/favicons/icon-196x196.png',
+                'purpose' => 'maskable'
+            ],
             '384x384' => [
                 'path' => '/build/images/favicons/icon-384x384.png',
                 'purpose' => 'any'
             ],
             '512x512' => [
-                'path' => '/build/images/favicons/icon-384x384.png',
-                'purpose' => 'maskable'
-            ],
-            '512x512' => [
                 'path' => '/build/images/favicons/icon-512x512.png',
-                'purpose' => 'any'
+                'purpose' => 'maskable'
             ],
         ],
         'splash' => [
@@ -62,13 +65,43 @@ return [
             '1668x2388' => '/build/images/webview/splash-1668x2388.png',
             '2048x2732' => '/build/images/webview/splash-2048x2732.png',
         ],
+        /*'screenshots' => [
+            '1280x800' => [
+                'path' => '/build/images/webview/screenshot-1280x800.png',
+                'platform' => 'wide'
+            ],
+            '800x1280' => [
+                'path' => '/build/images/webview/screenshot-800x1280.png',
+                'platform' => 'wide'
+            ],
+            '750x1334' => [
+                'path' => '/build/images/webview/screenshot-750x1334.png',
+                'platform' => 'wide'
+            ],
+
+        ],*/
+        'screenshots' => [
+            [
+                'src' => '/build/images/webview/screenshot-1280x800.png',
+                'sizes' => '1280x800',
+                'type' => 'image/png'
+            ],
+            [
+                'src' => '/build/images/webview/screenshot-800x1280.png',
+                'sizes' => '800x1280'
+            ],
+            [
+                'src' => '/build/images/webview/screenshot-750x1334.png',
+                'sizes' => '750x1334'
+            ]
+        ],
         /*'shortcuts' => [
             [
                 'name' => 'Shortcut Link 1',
                 'description' => 'Shortcut Link 1 Description',
                 'url' => '/shortcutlink1',
                 'icons' => [
-                    "src" => "/images/favicons/icon-72x72.png",
+                    "src" => "/images/favicons/icon-72x72.png',
                     "purpose" => "any"
                 ]
             ],

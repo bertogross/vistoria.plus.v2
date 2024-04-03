@@ -71,6 +71,7 @@
                                     <div id="accordion-templates-label">
                                         <p class="text-body mb-4">Componha seu Modelo de Checklist.<br>Você poderá configurar seu próprio formulário cadastrando seus Termos e Tópicos inicializando com um dos Modelos pré-configurados.</p>
 
+                                        {{--
                                         <div class="dropstart float-end mt-n3">
                                             <button type="button" class="btn btn-sm fs-3 pe-0 me-n2" data-bs-toggle="dropdown" aria-expanded="true" data-bs-auto-close="outside" title="Opções"><i class="ri-more-2-line text-theme"></i></button>
                                             <ul class="dropdown-menu">
@@ -79,6 +80,8 @@
                                                 </li>
                                             </ul>
                                         </div>
+                                        --}}
+                                        <a class="btn btn-sm btn-outline-theme mt-n3 float-end" id="btn-start-empty-template" data-bs-toggle="tooltip" data-bs-placement="top" title="Nesta opção nenhum modelo será carregado e você terá a liberade de criar os Termos e Tópicos da forma que desejar.">Compor meu modelo</a>
 
                                         <label for="warehouse" class="form-label">Selecione um Modelo:</label>
                                     </div>

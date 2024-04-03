@@ -126,16 +126,15 @@ class SettingsUserController extends Controller
 
                 switch ($getQuestUserStatus) {
                     case 'inactive':
-                        $message .= '&#x2022; Você poderá ativar acessando seu painel em <u><a href="'.route('settingsAccountShowURL').'/tab=users">' . route('settingsAccountShowURL') . '/tab=users</a></u>';
+                        $message .= '<span class="text-warning fs-14">Você poderá ativar acessando seu painel em <u><a href="'.route('settingsAccountShowURL').'/tab=users">' . route('settingsAccountShowURL') . '/tab=users</a></u></span>';
                         break;
                     case 'waiting':
-                        $message .= '&#x2022; Este usuário ainda não aceitou seu convite.';
+                        $message .= '<span class="text-warning fs-14">Este usuário ainda não aceitou seu convite.</span>';
                         break;
                     case 'revoked':
-                        $message .= '&#x2022; Este usuário revogou o acesso. Somente ' . $guestUserName . ' poderá reativar.';
+                        $message .= '<span class="text-warning fs-14">Este usuário revogou o acesso. Somente ' . $guestUserName . ' poderá reativar.</span>';
                         break;
                 }
-
             }else{
                 $message = 'O usuário de e-mail '.$guestUserEmail.' (<strong>'.$guestUserName.'</strong>) já possui uma conexão com seu ' . env('APP_NAME') . '.<br><br>';
             }

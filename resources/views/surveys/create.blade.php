@@ -48,9 +48,9 @@
             <div class="modal-header p-3 bg-soft-info">
                 <h5 class="modal-title">
                     @if($surveyId)
-                        Edição de: <span class="text-theme">{{ limitChars(getSurveyNameById($surveyId), 30) }}</span>
+                        Edição de: <span class="text-theme">{{ limitChars(getSurveyNameById($surveyId), 80) }}</span>
                     @else
-                        Registrando Checklist
+                        Novo Checklist
                     @endif
                 </h5>
                 <button type="button" class="btn-close btn-destroy" data-bs-dismiss="modal" aria-label="Close"></button>

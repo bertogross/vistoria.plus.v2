@@ -200,11 +200,36 @@ class User extends Authenticatable
         return $html;
     }
 
-
     public static function findUserByEmail($email)
     {
         return User::where('email', $email)->first();
     }
+
+    public static function statusTranslationLabel($status, $icon = true)
+    {
+        switch ($status) {
+            case 'active':
+                $riIcon = $icon ? '<i class="ri-checkbox-circle-line fs-17 align-middle me-1"></i>' : '';
+                return '<span class="text-success">'.$riIcon.'Ativo</span>';
+                break;
+            case 'inactive':
+                $riIcon = $icon ? '<i class="ri-close-circle-line fs-17 align-middle me-1"></i>' : '';
+                return '<span class="text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Inoperante pois foi por você desativado">'.$riIcon.'Inativo</span>';
+                break;
+            case 'revoked':
+                $riIcon = $icon ? '<i class="ri-alert-line fs-17 align-middle me-1"></i>' : '';
+                return '<span class="text-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Quando o usuário revogou a conexão">'.$riIcon.'Desconectado</span>';
+                break;
+            case 'waiting':
+                $riIcon = $icon ? '<i class="ri-information-line fs-17 align-middle me-1"></i>' : '';
+                return '<span class="text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Aguardando o aceite de seu convite">'.$riIcon.'Aguardando</span>';
+                break;
+            default:
+                $riIcon = $icon ? '<i class="ri-question-line fs-17 align-middle me-1"></i>' : '';
+                return '<span class="text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Status desconhecido">'.$riIcon.'Desconhecido</span>';
+        }
+    }
+
 
     /**
      * Send the password reset notification.

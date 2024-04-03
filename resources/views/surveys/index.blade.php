@@ -96,7 +96,7 @@
         @if( auth()->user()->hasAnyRole(User::ROLE_ADMIN) )
             <div class="col-auto layout-rightside-col d-block">
                 <div class="overlay"></div>
-                <div class="layout-rightside pb-0">
+                <div class="layout-rightside pb-2">
 
                     <div class="card bg-body border-1 border-light rounded-2 h-100 mb-0">
                         <div class="card-header">

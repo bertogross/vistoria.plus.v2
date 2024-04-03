@@ -80,36 +80,7 @@
                             </td>
                             --}}
                             <td>
-                                @switch($status)
-                                    @case('active')
-                                        <span class="text-success">
-                                            <i class="ri-checkbox-circle-line fs-17 align-middle"></i> Ativo
-                                        </span>
-                                        @break
-
-                                    @case('inactive')
-                                        <span class="text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Inoperante pois foi por você desativado">
-                                            <i class="ri-close-circle-line fs-17 align-middle"></i> Inativo
-                                        </span>
-                                        @break
-
-                                    @case('revoked')
-                                        <span class="text-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Quando o usuário revogou a conexão">
-                                            <i class="ri-alert-line fs-17 align-middle"></i> Desconectado
-                                        </span>
-                                        @break
-
-                                    @case('waiting')
-                                        <span class="text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Aguardando o aceite de seu convite">
-                                            <i class="ri-information-line fs-17 align-middle"></i> Aguardando
-                                        </span>
-                                        @break
-
-                                    @default
-                                        <span class="text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Aguardando o aceite de seu convite">
-                                            <i class="ri-information-line fs-17 align-middle"></i> Aguardando
-                                        </span>
-                                @endswitch
+                                {!! User::statusTranslationLabel($status, true) !!}
                             </td>
                             {{--
                             <td>

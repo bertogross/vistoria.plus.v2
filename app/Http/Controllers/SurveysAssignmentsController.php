@@ -622,7 +622,8 @@ class SurveysAssignmentsController extends Controller
         $getUserData = getUserData($designatedUserId);
 
         $designatedUserName = $getUserData ? limitChars($getUserData->name, 20) : '';
-        $designatedUserAvatar = $getUserData ? $getUserData->avatar : '';
+        //$designatedUserAvatar = $getUserData ? $getUserData->avatar : '';
+        $designatedUserAvatar = snippetAvatar($getUserData->avatar, $getUserData->name, 'img-fluid rounded-circle avatar-xxs');
         $designatedUserProfileURL = route('profileShowURL', $designatedUserId);
 
         return [
@@ -635,7 +636,8 @@ class SurveysAssignmentsController extends Controller
             'assignmentStatus' => $assignmentStatus,
             'designatedUserId' => $designatedUserId,
             'designatedUserName' => $designatedUserName,
-            'designatedUserAvatar' => checkUserAvatar($designatedUserAvatar),
+            //'designatedUserAvatar' => checkUserAvatar($designatedUserAvatar),
+            'designatedUserAvatar' => $designatedUserAvatar,
             'designatedUserProfileURL' => $designatedUserProfileURL,
             'label' => $label,
             'percentage' => $percentage,

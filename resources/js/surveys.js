@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Event listeners for each 'Edit' buttonS
+    /** @type {*} */
     const editButtons = document.querySelectorAll('.btn-surveys-edit');
     if(editButtons){
         editButtons.forEach(function(button) {
@@ -466,7 +466,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     */
-
     /*
     function surveyCheckAllFormCheckInputs(origin = null) {//
         // Select all elements with the .form-check-input class
@@ -564,6 +563,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
         companyCheckboxes.forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
+                let card = this.closest('.card'); // Find the closest parent .card element
+                if (card) {
+                    let cardBody = card.querySelector('.card-body'); // Find the .card-body within this card
+                    if (cardBody) {
+                        // Check if the checkbox is checked
+                        if (this.checked) {
+                            // If checked, remove the opacity class
+                            cardBody.classList.remove('opacity-25');
+                        } else {
+                            // If unchecked, add the opacity class
+                            cardBody.classList.add('opacity-25');
+                        }
+                    }
+                }
+
                 // Use the checkbox value to identify the corresponding column
                 let companyId = this.value;
                 let column = document.getElementById(`distributed-tab-company-${companyId}`);
@@ -591,7 +605,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     const surveyorRadios = column.querySelectorAll('.form-check-input-users');
                     surveyorRadios.forEach(function(radio) {
                         //radio.disabled = !checkbox.checked; // Disable if company is unchecked, enable if checked
-                        radio.checked = checkbox.checked; // Synchronize checked state immediately
+                        //radio.checked = checkbox.checked; // Synchronize checked state immediately
+
+                        // Force the Checked State
+                        if (radio.checked) {
+                            radio.checked = true;
+                            // Trigger the click event programmatically
+                            radio.click();
+                            console.log(radio);
+                        }
                     });
                 }
             }
@@ -599,11 +621,28 @@ document.addEventListener('DOMContentLoaded', function() {
             // Prevent checking surveyor radio buttons if the corresponding company checkbox is not checked.
             document.addEventListener('click', function(event) {
                 if (event.target.classList.contains('form-check-input-users')) {
-                    const companyId = event.target.name.match(/\d+/)[0]; // Assuming the name attribute contains the company ID.
+                    const companyId = event.target.name.match(/\d+/)[0]; // Get the company ID.
                     const companyCheckbox = document.querySelector(`.form-check-input-companies[value="${companyId}"]`);
 
                     if (companyCheckbox && !companyCheckbox.checked) {
-                        console.log('Company not checked - preventing check');
+                        //console.log('Company not checked - preventing check');
+
+                        toastAlert('Necessário ativar a Unidade', 'warning');
+
+                        // Find the closest ancestor with the 'form-switch' class
+                        const formSwitch = companyCheckbox.closest('.form-switch');
+
+                        // Check if the formSwitch element exists
+                        if (formSwitch) {
+                            // Add the 'blink text-warning' classes to the formSwitch element
+                            formSwitch.classList.add('blink', 'text-warning');
+
+                            // Set a timeout to remove the 'blink text-warning' classes after 5 seconds
+                            setTimeout(function() {
+                                formSwitch.classList.remove('blink', 'text-warning');
+                            }, 5000);
+                        }
+
                         event.preventDefault(); // Prevent the radio button from being checked.
                         return false; // For older browsers.
                     }
@@ -612,34 +651,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         });
     }
-
     // Attach it to the window object to get from another file (similar export)
     //window.surveyCheckAllFormCheckInputs = surveyCheckAllFormCheckInputs;
 
-    /*function surveyReloadUsersTab() {
-        var loadUsersTabDiv = document.getElementById('load-users-tab');
-
-        if (loadUsersTabDiv && surveyReloadUsersTabURL) {
-            var surveyId = loadUsersTabDiv.getAttribute('data-survey-id') || ''; // Fallback to empty string if attribute not found
-
-            var xhr = new XMLHttpRequest();
-            var fullUrl = surveyId ? surveyReloadUsersTabURL + '/' + surveyId : surveyReloadUsersTabURL; // Append surveyId if present
-            xhr.open('GET', fullUrl, true);
-            xhr.setRequestHeader('Cache-Control', 'no-cache'); // Set the Cache-Control header to no-cache
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    loadUsersTabDiv.innerHTML = xhr.responseText;
-
-                    setTimeout(() => {
-                        surveyCheckAllFormCheckInputs();
-                        console.log('surveyCheckAllFormCheckInputs');
-                    }, 5000);
-
-                }
-            };
-            xhr.send();
-        }
-    }*/
     async function surveyReloadUsersTab(origin = null) {
         const loadUsersTabDiv = document.getElementById('load-users-tab');
 
@@ -667,6 +681,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         surveyCheckAllFormCheckInputs(origin);
 
                         bsPopoverTooltip();
+
                     }
                 } else {
                     // Handle HTTP error (response.ok is false)
@@ -844,7 +859,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="d-flex align-items-center">
                                         <div class="avatar-xs flex-shrink-0 me-2">
                                             <a href="${activity.designatedUserProfileURL}" class="text-body d-block" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Visualizar todas as Tarefas delegadas a ${activity.designatedUserName}">
-                                                <img src="${activity.designatedUserAvatar}" alt="avatar" class="img-fluid rounded-circle">
+                                                ${activity.designatedUserAvatar}
                                             </a>
                                         </div>
                                         <div class="flex-grow-1">

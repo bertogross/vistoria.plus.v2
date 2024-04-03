@@ -1,10 +1,12 @@
 @php
     use App\Models\UserConnections;
+    use App\Models\Survey;
 @endphp
 @foreach ($getActiveCompanies as $company)
     @php
         $colVisibility = 'style="display: block;"';
         if($surveyId && $data && ( $countTodayResponses > 0 || $countAllResponses > 0 )){
+
             if(!in_array(intval($company->id), $selectedCompanies)){
                 $colVisibility = 'style="display: none;"';
             }
@@ -14,7 +16,7 @@
         <div class="card bg-body">
             <div class="card-header bg-body text-uppercase fw-bold text-theme">
 
-                @if ($countTodayResponses > 0 || $countAllResponses > 0)
+                @if ( ( isset($countTodayResponses) && $countTodayResponses > 0 ) || ( isset($countAllResponses) && $countAllResponses > 0 ) )
                     {{ empty($company->name) ? e($company->name) : e($company->name) }}
                     <input
                         class="form-check-input form-check-input-companies wizard-switch-control"
@@ -38,7 +40,7 @@
                     </div>
                 @endif
             </div>
-            <div class="card-body">
+            <div class="card-body {{ !$surveyId ? 'opacity-25' : '' }}">
                 <ul class="list-unstyled vstack gap-2 mb-0">
                     @foreach ($users as $user)
                         @php
@@ -83,7 +85,7 @@
                                 <div class="form-check form-switch form-switch-{{in_array($userStatus, ['inactive', 'revoked']) ? 'danger' : 'success'}} form-switch-md d-flex align-items-center">
                                     <input
                                         id="surveyor-user-{{ $company->id.$userId }}"
-                                        class="form-check-input form-check-input-users me-3 wizard-switch-control  {{$isDelegated && in_array($userStatus, ['inactive', 'revoked']) ? 'checked-blink' : ''}}"
+                                        class="form-check-input form-check-input-users me-3 wizard-switch-control {{$isDelegated && in_array($userStatus, ['inactive', 'revoked']) ? 'checked-blink' : ''}}"
                                         type="radio"
                                         name="surveyor[{{$company->id}}]"
                                         {{ $isDelegated ? 'checked' : '' }}

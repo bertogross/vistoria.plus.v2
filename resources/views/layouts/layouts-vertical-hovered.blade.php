@@ -5,7 +5,7 @@
     <head>
         <meta charset="utf-8" />
         <title>@yield('title') | {{appName()}}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
         {{--
         <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -17,12 +17,8 @@
         <meta content="{{ appDescription() }}" name="description" />
         <meta property="og:image" content="{{ URL::asset('build/images/logo-sm.png') }}">
         <meta name="author" content="{{appName()}}" />
-        <meta name="theme-color" content="#1a1d21" />
-        <meta name="mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <!-- App favicon -->
-        <link rel="icon" type="image/png" href="{{ URL::asset('build/images/logo-sm.png') }}">
         <link rel="shortcut icon" href="{{ URL::asset('build/images/favicons/favicon.ico')}}">
 
         @laravelPWA

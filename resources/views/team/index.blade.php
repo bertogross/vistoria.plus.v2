@@ -99,6 +99,7 @@
         var surveysShowURL = "{{ route('surveysShowURL') }}";
         var surveysStoreOrUpdateURL = "{{ route('surveysStoreOrUpdateURL') }}";
         var listingAssignmentActivitiesURL = "{{ route('listingAssignmentActivitiesURL') }}";
+        var formAssignmentSurveyorURL = "{{ route('formAssignmentSurveyorURL') }}";
     </script>
     <script src="{{ URL::asset('build/js/surveys.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 @endsection

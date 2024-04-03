@@ -259,9 +259,10 @@ class SurveysController extends Controller
         }
 
         $data = Survey::findOrFail($id);
+        $surveyId = $data->id;
         /*
         $data = Survey::query();
-        $data->where('id', $id);
+        $data->where('id', $surveyId);
         $data->where('user_id', $currentUserId);
         */
 
@@ -286,8 +287,8 @@ class SurveysController extends Controller
         //$queryTemplates->where('user_id', $currentUserId);
         $templates = $queryTemplates->orderBy('title')->get();// ->paginate(50)
 
-        $countAllResponses = Survey::countSurveyAllResponses($id);
-        $countTodayResponses = Survey::countSurveyAllResponsesFromToday($id);
+        $countAllResponses = Survey::countSurveyAllResponses($surveyId);
+        $countTodayResponses = Survey::countSurveyAllResponsesFromToday($surveyId);
 
         return view('surveys.edit', compact(
                 'data',
@@ -638,6 +639,7 @@ class SurveysController extends Controller
                 'selectedCompanies',
                 'getActiveCompanies',
                 'users',
+                'countAllResponses',
                 'countTodayResponses'
             )
         );

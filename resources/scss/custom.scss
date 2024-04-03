@@ -968,6 +968,7 @@ table.dataTable.fixedHeader-floating, table.dataTable.fixedHeader-locked {
 }
 .tasks-wrapper-survey {
     max-height: calc(100vh - 340px);
+    min-height: 100%;
 }
 
 @media (max-width: 767.98px) {

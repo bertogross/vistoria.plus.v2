@@ -18,20 +18,40 @@ use Illuminate\Support\Facades\Storage;
 // Set the locale to Brazilian Portuguese
 Carbon::setLocale('pt_BR');
 
+/**
+ * Returns the name of the application.
+ *
+ * @return string The name of the application.
+ */
 if (!function_exists('appName')) {
     function appName(){
         return env('APP_NAME');
     }
 }
 
+/**
+ * Returns the description of the application.
+ *
+ * @return string The description of the application.
+ */
 if (!function_exists('appDescription')) {
     function appDescription(){
         return 'Garantindo Excelência Operacional';
     }
 }
 
+/**
+ * Sends an email using Postmark API.
+ * usage example  : appSendEmail('bertogross@gmail.com', 'customer name here', 'subject here', 'content here with <strong>strong</strong>', 'welcome');
+ *
+ * @param string $to The recipient's email address.
+ * @param string $name The recipient's name.
+ * @param string $subject The subject of the email.
+ * @param string $content The content of the email.
+ * @param string $template (Optional) The template to use for the email. Default is 'default'.
+ * @return bool True if the email was sent successfully, false otherwise.
+ */
 if (!function_exists('appSendEmail')) {
-    // usage example  : appSendEmail('bertogross@gmail.com', 'customer name here', 'subject here', 'content here with <strong>strong</strong>', 'welcome');
     function appSendEmail($to, $name, $subject, $content, $template = 'default'){
         try{
             return PostmarkappController::sendEmail($to, $name, $subject, $content, $template);
@@ -73,6 +93,12 @@ if (!function_exists('appSendEmail')) {
         return is_string($getUsers) ? json_decode($getUsers, true) : $getUsers;
     }
 }*/
+
+/**
+ * Retrieves user models for the current account and connected users.
+ *
+ * @return \App\Models\User[] The collection of user models.
+ */
 if( !function_exists('getUsers') ){
     function getUsers() {
         $userIds = [];
@@ -105,6 +131,13 @@ if( !function_exists('getUsers') ){
     }
 }
 
+/**
+ * Retrieves the role of a user by their ID and account ID.
+ *
+ * @param int $userId The ID of the user.
+ * @param int $accountId The ID of the account.
+ * @return int|null The role of the user.
+ */
 if (!function_exists('getUserRoleById')) {
     function getUserRoleById($userId, $accountId){
 
@@ -119,6 +152,12 @@ if (!function_exists('getUserRoleById')) {
     }
 }
 
+/**
+ * Retrieves users by their role.
+ *
+ * @param int $role The role of the users.
+ * @return \Illuminate\Support\Collection|null The collection of users with the specified role, or null if no role is provided.
+ */
 if (!function_exists('getUsersByRole')) {
     function getUsersByRole($role){
         if($role){
@@ -137,7 +176,13 @@ if (!function_exists('getUsersByRole')) {
     }
 }
 
-
+/**
+ * Retrieves the connection status of a user by their ID and account ID.
+ *
+ * @param int $userId The ID of the user.
+ * @param int $accountId The ID of the account.
+ * @return string|null The connection status of the user.
+ */
 if (!function_exists('getUserConnectionStatusById')) {
     function getUserConnectionStatusById($userId, $accountId){
 
@@ -152,7 +197,12 @@ if (!function_exists('getUserConnectionStatusById')) {
     }
 }
 
-// Get users from vpOnboard table
+/**
+ * Retrieves user data from vpOnboard table.
+ *
+ * @param int|null $userId The ID of the user. If null, retrieves data for the authenticated user.
+ * @return mixed The user data.
+ */
 if( !function_exists('getUserData') ){
     function getUserData($userId = null) {
         if(!$userId){
@@ -165,6 +215,12 @@ if( !function_exists('getUserData') ){
     }
 }
 
+/**
+ * Retrieves the disk quota for a user.
+ *
+ * @param int|null $connectionId The ID of the user. If null, retrieves data for the authenticated user.
+ * @return int The disk quota for the user.
+ */
 if( !function_exists('getDiskQuota') ){
     function getDiskQuota($connectionId = null) {
         if(!$connectionId){
@@ -177,6 +233,12 @@ if( !function_exists('getDiskQuota') ){
     }
 }
 
+/**
+ * Checks the free disk space for a user.
+ *
+ * @param int|null $connectionId The ID of the user. If null, retrieves data for the authenticated user.
+ * @return array An array containing disk space information.
+ */
 if( !function_exists('checkFreeDiskSpace') ){
     function checkFreeDiskSpace($connectionId = null) {
         $currentUserId = auth()->id();
@@ -222,11 +284,14 @@ if( !function_exists('checkFreeDiskSpace') ){
             'percentageUsed' => number_format($percentageUsed, 5)
         ];
     }
-
 }
 
-
-
+/**
+ * Retrieves the user's avatar.
+ *
+ * @param int|null $userId The ID of the user. If null, retrieves data for the authenticated user.
+ * @return string The URL of the user's avatar image.
+ */
 if( !function_exists('getUserAvatar') ){
     function getUserAvatar($userId = null) {
         $user = getUserData($userId);
@@ -245,6 +310,12 @@ if( !function_exists('getUserAvatar') ){
     }
 }
 
+/**
+ * Checks if the user's avatar exists.
+ *
+ * @param string|null $avatar The avatar image path.
+ * @return string The URL of the user's avatar image.
+ */
 if( !function_exists('checkUserAvatar') ){
     function checkUserAvatar($avatar = null) {
         $path = $avatar ? 'storage/' . $avatar : null;
@@ -257,6 +328,15 @@ if( !function_exists('checkUserAvatar') ){
     }
 }
 
+/**
+ * Generates a snippet for the user's avatar or initials.
+ *
+ * @param string|null $avatar The avatar image path.
+ * @param string|null $name The user's name.
+ * @param string $class The CSS class for the avatar.
+ * @param string|bool $style The CSS style for the avatar.
+ * @return string The HTML snippet for the avatar.
+ */
 if( !function_exists('snippetAvatar') ){
     function snippetAvatar($avatar = null, $name = null, $class = 'rounded-circle avatar-xxs', $style = false) {
         $path = $avatar ? 'storage/' . $avatar : null;
@@ -383,6 +463,12 @@ if( !function_exists('snippetAvatar') ){
     }
 }
 
+/**
+ * Retrieves the user's cover image URL.
+ *
+ * @param int|null $userId The ID of the user.
+ * @return string The URL of the user's cover image.
+ */
 if( !function_exists('getUserCover') ){
     function getUserCover($userId = null) {
         $user = getUserData($userId);
@@ -401,6 +487,12 @@ if( !function_exists('getUserCover') ){
     }
 }
 
+/**
+ * Checks and retrieves the user's cover image URL.
+ *
+ * @param string|null $cover The cover image path.
+ * @return string The URL of the user's cover image.
+ */
 if( !function_exists('checkUserCover') ){
     function checkUserCover($cover = null) {
         $path = $cover ? 'storage/' . $cover : null;
@@ -413,13 +505,25 @@ if( !function_exists('checkUserCover') ){
     }
 }
 
-// Retrieve a user's meta value based on the given key.
+/**
+ * Retrieve a user's meta value based on the given key.
+ *
+ * @param int $userId The user ID.
+ * @param string $key The metadata key.
+ * @return mixed The value of the user metadata.
+ */
 if (!function_exists('getUserMeta')) {
     function getUserMeta($userId, $key) {
         return UserMeta::getUserMeta($userId, $key);
     }
 }
 
+/**
+ * Retrieves the current connection ID associated with the given user ID.
+ *
+ * @param int|bool $userId The user ID. Defaults to the authenticated user's ID.
+ * @return int The current connection ID.
+ */
 if (!function_exists('getCurrentConnectionByUserId')) {
     function getCurrentConnectionByUserId($userId = false) {
         if(!$userId){
@@ -431,24 +535,45 @@ if (!function_exists('getCurrentConnectionByUserId')) {
     }
 }
 
+/**
+ * Retrieves the guest connections.
+ *
+ * @return Illuminate\Support\Collection The guest connections.
+ */
 if (!function_exists('getGuestConnections')) {
     function getGuestConnections() {
         return UserConnections::getGuestConnections();
     }
 }
 
+/**
+ * Retrieves the host connections.
+ *
+ * @return Illuminate\Support\Collection The host connections.
+ */
 if (!function_exists('getHostConnections')) {
     function getHostConnections() {
         return UserConnections::getHostConnections();
     }
 }
 
+/**
+ * Retrieves the IDs of guests connected on the host ID.
+ *
+ * @param int $hostId The host ID.
+ * @return array The IDs of guests connected on the host ID.
+ */
 if (!function_exists('getGuestIdsConnectedOnHostId')) {
     function getGuestIdsConnectedOnHostId() {
         return UserConnections::getGuestIdsConnectedOnHostId();
     }
 }
 
+/**
+ * Retrieves the role name of the current connection user.
+ *
+ * @return string|null The role name of the current connection user.
+ */
 if (!function_exists('getCurrentConnectionUserRoleName')) {
     function getCurrentConnectionUserRoleName() {
         $user = auth()->user();
@@ -471,6 +596,11 @@ if (!function_exists('getCurrentConnectionUserRoleName')) {
     }
 }
 
+/**
+ * Retrieves the name of the current connection.
+ *
+ * @return string|null The name of the current connection.
+ */
 if (!function_exists('getCurrentConnectionName')) {
     function getCurrentConnectionName() {
         $userId = auth()->id();
@@ -482,6 +612,12 @@ if (!function_exists('getCurrentConnectionName')) {
     }
 }
 
+/**
+ * Retrieves the name of the connection by its ID.
+ *
+ * @param int|null $connectionId The ID of the connection.
+ * @return string|null The name of the connection.
+ */
 if (!function_exists('getConnectionNameById')) {
     function getConnectionNameById($connectionId = null) {
         if(!$connectionId){
@@ -509,7 +645,12 @@ if (!function_exists('getConnectionNameById')) {
     }
 }
 
-// Format a phone number to the pattern (XX) X XXXX-XXXX.
+/**
+ * Formats a phone number to the pattern (XX) X XXXX-XXXX.
+ *
+ * @param string $phoneNumber The phone number to format.
+ * @return string The formatted phone number.
+ */
 if (!function_exists('formatPhoneNumber')) {
     function formatPhoneNumber($phoneNumber) {
         // Remove all non-numeric characters from the phone number.
@@ -520,7 +661,12 @@ if (!function_exists('formatPhoneNumber')) {
     }
 }
 
-// Get Subscription data
+/**
+ * Retrieves subscription data for a specified user.
+ *
+ * @param int|null $connectionId The ID of the user. Defaults to the authenticated user's ID if not provided.
+ * @return array|null The subscription data array if found, or null if not found.
+ */
 if (!function_exists('getSubscriptionData')) {
     function getSubscriptionData($connectionId = null) {
         if(!$connectionId){
@@ -537,6 +683,11 @@ if (!function_exists('getSubscriptionData')) {
     }
 }
 
+/**
+ * Retrieves the subscription label for the authenticated user.
+ * If the user is an admin and a label exists, it displays a badge with subscription information.
+ * If the user does not have a subscription, it prompts to upgrade to a pro account.
+ */
 if (!function_exists('subscriptionLabel')) {
     function subscriptionLabel(){
         $subscriptionData = getSubscriptionData();
@@ -564,7 +715,13 @@ if (!function_exists('subscriptionLabel')) {
     }
 }
 
-// Logic to get the ID of the current database connection
+/**
+ * Extracts the ID of the current database connection from the provided database connection string.
+ * The function assumes that the database names follow a pattern like vpApp1, vpApp2, etc., and IDs are numerical.
+ *
+ * @param string $databaseConnection The name of the database connection.
+ * @return int The extracted ID of the database connection.
+ */
 if (!function_exists('extractDatabaseId')) {
     function extractDatabaseId($databaseConnection) {
         // This depends on how you have structured your database names and IDs
@@ -575,7 +732,11 @@ if (!function_exists('extractDatabaseId')) {
     }
 }
 
-// Get active companies from the companies table.
+/**
+ * Retrieves active companies from the companies table.
+ *
+ * @return array An array of active company records.
+ */
 if (!function_exists('getActiveCompanies')) {
     function getActiveCompanies() {
         return DB::connection('vpAppTemplate')
@@ -587,7 +748,11 @@ if (!function_exists('getActiveCompanies')) {
     }
 }
 
-// Get active companies IDs from the companies table.
+/**
+ * Retrieves IDs of active companies from the companies table.
+ *
+ * @return array An array of active company IDs.
+ */
 if (!function_exists('getActiveCompanieIds')) {
     function getActiveCompanieIds() {
         return DB::connection('vpAppTemplate')
@@ -599,7 +764,12 @@ if (!function_exists('getActiveCompanieIds')) {
     }
 }
 
-// Get the company alias based on the company ID
+/**
+ * Retrieves the company name based on the company ID.
+ *
+ * @param int $companyId The ID of the company.
+ * @return string|null The name of the company, or null if not found.
+ */
 if (!function_exists('getCompanyNameById')) {
     function getCompanyNameById($companyId){
         if($companyId){
@@ -616,7 +786,11 @@ if (!function_exists('getCompanyNameById')) {
     }
 }
 
-// Get active departments from the wlsm_departments table.
+/**
+ * Retrieves active departments from the wlsm_departments table.
+ *
+ * @return array|null Array of active departments, or null if not found.
+ */
 if (!function_exists('getActiveDepartments')) {
     function getActiveDepartments() {
         $getActiveDepartments = DB::connection('vpAppTemplate')
@@ -630,7 +804,12 @@ if (!function_exists('getActiveDepartments')) {
     }
 }
 
-// Get active wharehouse terms.
+/**
+ * Retrieves active warehouse terms based on the provided tracking ID.
+ *
+ * @param int $trackingId The tracking ID for the warehouse terms.
+ * @return array An array containing the active warehouse terms.
+ */
 if (!function_exists('getWarehouseTerms')) {
     function getWarehouseTerms($trackingId) {
         $data = [];
@@ -687,22 +866,33 @@ if (!function_exists('getWarehouseTerms')) {
     }
 }
 
+/**
+ * Retrieves active warehouse trackings.
+ *
+ * @return array An array containing the active warehouse trackings.
+ */
 if (!function_exists('getWarehouseTrakings')) {
     function getWarehouseTrakings() {
         try {
-            // If you have a model, you can use it like Warehouse::on('vpWarehouse')->get();
             return DB::connection('vpWarehouse')
                 ->table('survey_trackings')
                 ->where('status', 1)
                 ->get()
                 ->toArray();
         } catch (\Exception $e) {
-            // Handle exceptions, log errors, or return a default value as needed
+            \Log::error('getWarehouseTrakings: ' . $e->getMessage());
+
             return [];
         }
     }
 }
 
+/**
+ * Retrieves the count of warehouse terms associated with a tracking ID.
+ *
+ * @param int $trackingId The ID of the warehouse tracking.
+ * @return int The count of warehouse terms associated with the specified tracking ID.
+ */
 if (!function_exists('getWarehouseTermsCount')) {
     function getWarehouseTermsCount($trackingId) {
         try {
@@ -712,13 +902,19 @@ if (!function_exists('getWarehouseTermsCount')) {
                 ->where('tracking_id', $trackingId)
                 ->count();
         } catch (\Exception $e) {
-            // Handle exceptions, log errors, or return a default value as needed
+            \Log::error('getWarehouseTermsCount: ' . $e->getMessage());
+
             return 0;
         }
     }
 }
 
-// Get the term name based on the ID
+/**
+ * Retrieves the term name based on the ID.
+ *
+ * @param int $termId The ID of the term.
+ * @return string|null The name of the term, or null if not found.
+ */
 if (!function_exists('getWarehouseTermNameById')) {
     function getWarehouseTermNameById($termId){
         $termId = intval($termId);
@@ -732,6 +928,12 @@ if (!function_exists('getWarehouseTermNameById')) {
     }
 }
 
+/**
+ * Retrieves the value of a setting based on the provided key.
+ *
+ * @param string $key The key of the setting.
+ * @return mixed|null The value of the setting, or null if not found.
+ */
 if (!function_exists('getSettings')) {
     function getSettings($key) {
 
@@ -751,6 +953,11 @@ if (!function_exists('getSettings')) {
     }
 }
 
+/**
+ * Retrieves the URL of the company logo stored in settings.
+ *
+ * @return string|null The URL of the company logo, or null if not found.
+ */
 if (!function_exists('getCompanyLogo')) {
     function getCompanyLogo(){
         $settingsLogo = getSettings('logo');
@@ -759,6 +966,11 @@ if (!function_exists('getCompanyLogo')) {
     }
 }
 
+/**
+ * Retrieves the name of the company stored in settings.
+ *
+ * @return string|null The name of the company, or null if not found.
+ */
 if (!function_exists('getCompanyName')) {
     function getCompanyName(){
         // Use the 'getSettings' function which uses a cached version of settings
@@ -766,6 +978,11 @@ if (!function_exists('getCompanyName')) {
     }
 }
 
+/**
+ * Retrieves the Google token stored in settings.
+ *
+ * @return string|null The Google token, or null if not found.
+ */
 if (!function_exists('getGoogleToken')) {
     function getGoogleToken(){
         // Use the 'getSettings' function which uses a cached version of settings
@@ -773,6 +990,11 @@ if (!function_exists('getGoogleToken')) {
     }
 }
 
+/**
+ * Retrieves the Dropbox token stored in settings.
+ *
+ * @return string|null The Dropbox token, or null if not found.
+ */
 if (!function_exists('getDropboxToken')) {
     function getDropboxToken(){
         // Use the 'getSettings' function which uses a cached version of settings
@@ -780,6 +1002,12 @@ if (!function_exists('getDropboxToken')) {
     }
 }
 
+/**
+ * Generates a status badge based on the provided status.
+ *
+ * @param string $status The status value ('active', 'trash', 'disabled').
+ * @return string The HTML code for the status badge.
+ */
 if (!function_exists('statusBadge')) {
     function statusBadge($status) {
         switch ($status) {
@@ -795,6 +1023,12 @@ if (!function_exists('statusBadge')) {
     }
 }
 
+/**
+ * Extracts only numeric digits from the given string.
+ *
+ * @param string|null $number The input string containing numeric and non-numeric characters.
+ * @return int The extracted numeric value from the input string.
+ */
 if (!function_exists('onlyNumber')) {
     function onlyNumber($number = null) {
         if($number){
@@ -805,7 +1039,13 @@ if (!function_exists('onlyNumber')) {
     }
 }
 
-// Format a number as Brazilian Real
+/**
+ * Formats the given number as Brazilian Real currency.
+ *
+ * @param mixed $number The number to be formatted.
+ * @param int $decimalPlaces The number of decimal places to round to (default is 2).
+ * @return string The formatted Brazilian Real currency string.
+ */
 if (!function_exists('brazilianRealFormat')) {
     function brazilianRealFormat($number, $decimalPlaces = 2): string {
         $result = 'R$ 0,00';
@@ -817,6 +1057,12 @@ if (!function_exists('brazilianRealFormat')) {
     }
 }
 
+/**
+ * Returns the name of the day of the week in Portuguese for the given date.
+ *
+ * @param string $date The date string in any valid format supported by Carbon.
+ * @return string|null The name of the day of the week in Portuguese or null if $date is empty.
+ */
 if (!function_exists('dayOfTheWeek')) {
     function dayOfTheWeek($date) {
         if($date){
@@ -833,6 +1079,12 @@ if (!function_exists('dayOfTheWeek')) {
     }
 }
 
+/**
+ * Formats the given file size into a human-readable format.
+ *
+ * @param int $size The size of the file in bytes.
+ * @return string The formatted size with appropriate unit (Bytes, KB, MB, GB, TB).
+ */
 if (!function_exists('formatSize')) {
     function formatSize($size) {
         if($size){
@@ -845,6 +1097,13 @@ if (!function_exists('formatSize')) {
     }
 }
 
+/**
+ * Formats the given number into a human-readable format with specified decimal places and thousand separator.
+ *
+ * @param float|int|string $number The number to format.
+ * @param int $decimalPlaces The number of decimal places.
+ * @return string The formatted number.
+ */
 if (!function_exists('numberFormat')) {
     function numberFormat($number, $decimalPlaces = 0) {
         if($number){
@@ -855,6 +1114,12 @@ if (!function_exists('numberFormat')) {
     }
 }
 
+/**
+ * Converts a string representation of a number with decimal and thousand separators into a numeric value.
+ *
+ * @param string $number The string representation of the number.
+ * @return float The numeric value.
+ */
 if (!function_exists('convertToNumeric')) {
     function convertToNumeric($number) {
         if($number){
@@ -864,6 +1129,12 @@ if (!function_exists('convertToNumeric')) {
     }
 }
 
+/**
+ * Retrieves the name of a term by its ID from the survey_terms table.
+ *
+ * @param int|null $termId The ID of the term.
+ * @return string|null The name of the term or null if not found.
+ */
 if (!function_exists('getTermNameById')) {
     function getTermNameById($termId) {
         $term = $termId ? SurveyTerms::find($termId) : null;
@@ -872,6 +1143,12 @@ if (!function_exists('getTermNameById')) {
     }
 }
 
+/**
+ * Retrieves the name of a survey by its ID from the surveys table.
+ *
+ * @param int|null $surveyId The ID of the survey.
+ * @return string|null The name of the survey or null if not found.
+ */
 if (!function_exists('getSurveyNameById')) {
     function getSurveyNameById($surveyId) {
         $survey = $surveyId ? Survey::find($surveyId) : null;
@@ -880,6 +1157,12 @@ if (!function_exists('getSurveyNameById')) {
     }
 }
 
+/**
+ * Retrieves survey data by its ID from the surveys table.
+ *
+ * @param int|null $surveyId The ID of the survey.
+ * @return \App\Models\Survey|null The survey model instance or null if not found.
+ */
 if (!function_exists('getSurveyDataById')) {
     function getSurveyDataById($surveyId) {
         $survey = $surveyId ? Survey::find($surveyId) : null;
@@ -888,6 +1171,12 @@ if (!function_exists('getSurveyDataById')) {
     }
 }
 
+/**
+ * Retrieves the title of a survey template by its ID from the survey_templates table.
+ *
+ * @param int|null $templateId The ID of the survey template.
+ * @return string|null The title of the survey template or null if not found.
+ */
 if (!function_exists('getSurveyTemplateNameById')) {
     function getSurveyTemplateNameById($templateId) {
         $template = $templateId ? SurveyTemplates::find($templateId) : null;
@@ -896,6 +1185,12 @@ if (!function_exists('getSurveyTemplateNameById')) {
     }
 }
 
+/**
+ * Retrieves the description of a survey template by its ID from the survey_templates table.
+ *
+ * @param int|null $templateId The ID of the survey template.
+ * @return string|null The description of the survey template or null if not found.
+ */
 if (!function_exists('getTemplateDescriptionById')) {
     function getTemplateDescriptionById($templateId) {
         $template = $templateId ? SurveyTemplates::find($templateId) : null;
@@ -904,6 +1199,12 @@ if (!function_exists('getTemplateDescriptionById')) {
     }
 }
 
+/**
+ * Retrieves the recurring status of a survey template by its ID from the survey_templates table.
+ *
+ * @param int|null $templateId The ID of the survey template.
+ * @return bool|null The recurring status of the survey template or null if not found.
+ */
 if (!function_exists('getTemplateRecurringById')) {
     function getTemplateRecurringById($templateId) {
         $template = $templateId ? SurveyTemplates::find($templateId) : null;
@@ -912,7 +1213,12 @@ if (!function_exists('getTemplateRecurringById')) {
     }
 }
 
-// Get the value of a specific cookie by its name
+/**
+ * Retrieves the value of a specific cookie by its name.
+ *
+ * @param string $cookieName The name of the cookie.
+ * @return string|null The value of the cookie or null if not found.
+ */
 if (!function_exists('getCookie')) {
     function getCookie($cookieName) {
         $cookieValue = isset($_COOKIE[$cookieName]) ? $_COOKIE[$cookieName] : null;
@@ -922,14 +1228,25 @@ if (!function_exists('getCookie')) {
     }
 }
 
-//Max length (limit chars)
+/**
+ * Limits the characters in a string to a specified length.
+ *
+ * @param string $text The input string.
+ * @param int $number The maximum number of characters.
+ * @return string The truncated string.
+ */
 if (!function_exists('limitChars')) {
     function limitChars($text = '', $number = 50) {
         return !empty(trim($text)) ? \Illuminate\Support\Str::limit($text, $number) : '';
     }
 }
 
-// Get the progress bar class based on the completion percentage
+/**
+ * Determines the progress bar class based on the completion percentage.
+ *
+ * @param int|float $percentage The completion percentage.
+ * @return string The progress bar class.
+ */
 if (!function_exists('getProgressBarClass')) {
     function getProgressBarClass($percentage){
         if ($percentage >= 100) {
@@ -946,6 +1263,12 @@ if (!function_exists('getProgressBarClass')) {
     }
 }
 
+/**
+ * Determines the progress bar class based on the storage usage percentage.
+ *
+ * @param int|float $percentageUsed The storage usage percentage.
+ * @return string The progress bar class.
+ */
 if (!function_exists('getProgressBarClassStorage')) {
     function getProgressBarClassStorage($percentageUsed){
         if ($percentageUsed >= 100) {
@@ -962,7 +1285,12 @@ if (!function_exists('getProgressBarClassStorage')) {
     }
 }
 
-//Useful to see on the bottom left side fixed smotth fixed div
+/**
+ * Prints the given data using print_r if the application is in debug mode.
+ *
+ * @param mixed $data The data to print.
+ * @return void
+ */
 if(!function_exists('appPrintR')){
 	function appPrintR($data){
 		/*if( !empty($data) ){
@@ -970,7 +1298,7 @@ if(!function_exists('appPrintR')){
 				print_r( $data );
 			print '</code></pre>';
 		}*/
-        if( !empty($data) ){
+        if( env('APP_DEBUG') && !empty($data) ){
 			print '<pre>';
 				print_r( $data );
 			print '</pre>';
@@ -978,10 +1306,16 @@ if(!function_exists('appPrintR')){
 	}
 }
 
-//Useful to print inside the content body
+/**
+ * Prints the given data using var_export if the application is in debug mode.
+ * This function is useful for printing data inside the content body.
+ *
+ * @param mixed $data The data to print.
+ * @return void
+ */
 if(!function_exists('appPrintR2')){
 	function appPrintR2($data){
-		if( !empty($data) ){
+		if( env('APP_DEBUG') && !empty($data) ){
 			print '<pre class="language-markup" style="font-family: inherit; white-space: pre-wrap; color: #87DF01;">'.var_export( $data, true).'</pre>';
 		}
 	}
