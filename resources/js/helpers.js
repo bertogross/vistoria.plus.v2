@@ -165,18 +165,18 @@ export function sweetWizardAlert(message, urlToRedirect = false, icon = 'success
 
 export function showPreloader(show = true) {
     var preloader = document.getElementById("preloader");
-    if (preloader) {
-        preloader.style.opacity = show ? "0.5" : "0";
-        preloader.style.visibility = show ? "visible" : "hidden";
-    }
+        if (preloader) {
+            preloader.style.opacity = show ? "0.5" : "0";
+            preloader.style.visibility = show ? "visible" : "hidden";
 
-    if(!show){
-        preloader.style.visibility = "hidden";
-    }
+        if(!show){
+            preloader.style.visibility = "hidden";
+        }
 
-    setTimeout(function () {
-        preloader.style.visibility = "hidden";
-    }, 5000);
+        setTimeout(function () {
+            preloader.style.visibility = "hidden";
+        }, 5000);
+    }
 }
 
 export function printThis(){

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.master-without-nav')
 @section('title')
     @lang('translation.chat')
 @endsection
@@ -6,29 +6,30 @@
     <link rel="stylesheet" href="{{ URL::asset('build/libs/glightbox/css/glightbox.min.css') }}">
 @endsection
 @section('content')
-    <div class="chat-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
+    <div class="chat-wrapper d-lg-flex gap-1 p-1">
         <div class="chat-leftsidebar minimal-border">
             <div class="px-4 pt-4 mb-3">
+                <!--
                 <div class="d-flex align-items-start">
                     <div class="flex-grow-1">
                         <h5 class="mb-4">Chats</h5>
                     </div>
                     <div class="flex-shrink-0">
                         <div data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="bottom" title="Add Contact">
-
-                            <!-- Button trigger modal -->
                             <button type="button" class="btn btn-soft-success btn-sm material-shadow-none">
                                 <i class="ri-add-line align-bottom"></i>
                             </button>
                         </div>
                     </div>
                 </div>
+                -->
                 <div class="search-box">
-                    <input type="text" class="form-control bg-light border-light" placeholder="Search here...">
+                    <input type="text" class="form-control bg-light border-light" placeholder="Buscar por nome...">
                     <i class="ri-search-2-line search-icon"></i>
                 </div>
             </div> <!-- .p-4 -->
 
+            {{--
             <ul class="nav nav-tabs nav-tabs-custom nav-success nav-justified" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#chats" role="tab">
@@ -41,10 +42,12 @@
                     </a>
                 </li>
             </ul>
+            --}}
 
             <div class="tab-content text-muted">
                 <div class="tab-pane active" id="chats" role="tabpanel">
                     <div class="chat-room-list pt-3" data-simplebar>
+                        <!--
                         <div class="d-flex align-items-center px-4 mb-2">
                             <div class="flex-grow-1">
                                 <h4 class="mb-0 fs-11 text-muted text-uppercase">Direct Messages</h4>
@@ -53,21 +56,41 @@
                                 <div data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="bottom"
                                     title="New Message">
 
-                                    <!-- Button trigger modal -->
                                     <button type="button" class="btn btn-soft-success btn-sm shadow-none material-shadow">
                                         <i class="ri-add-line align-bottom"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
+                        -->
 
                         <div class="chat-message-list">
 
                             <ul class="list-unstyled chat-list chat-user-list" id="userList">
-
+                                @if ($users->isNotEmpty())
+                                    @foreach ($users as $key => $user)
+                                        <li data-name="direct-message">
+                                            <input id="contact-id-{{$user->id}}" name="user_chat" type="radio" value="{{$user->id}}" class="d-none">
+                                            <label for="contact-id-{{$user->id}}">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="flex-shrink-0 chat-user-img online align-self-center me-2 ms-0">
+                                                        <div class="avatar-xxs">
+                                                            <img src="{{checkUserAvatar($user->avatar)}}" class="rounded-circle img-fluid userprofile" alt="{{$user->name}}">
+                                                            <span class="user-status"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <p class="text-truncate mb-0">{{$user->name}}</p>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </li>
+                                    @endforeach
+                                @endif
                             </ul>
                         </div>
 
+                        {{--
                         <div class="d-flex align-items-center px-4 mt-4 pt-2 mb-2">
                             <div class="flex-grow-1">
                                 <h4 class="mb-0 fs-11 text-muted text-uppercase">Channels</h4>
@@ -84,19 +107,22 @@
                         </div>
 
                         <div class="chat-message-list">
-
                             <ul class="list-unstyled chat-list chat-user-list mb-0" id="channelList">
                             </ul>
                         </div>
+                        --}}
+
                         <!-- End chat-message-list -->
                     </div>
                 </div>
+                {{--
                 <div class="tab-pane" id="contacts" role="tabpanel">
                     <div class="chat-room-list pt-3" data-simplebar>
                         <div class="sort-contact">
                         </div>
                     </div>
                 </div>
+                --}}
             </div>
             <!-- end tab contact -->
         </div>
@@ -110,9 +136,8 @@
                     <!-- conversation user -->
                     <div class="position-relative">
 
-
                         <div class="position-relative" id="users-chat">
-                            <div class="p-3 user-chat-topbar">
+                            <div class="p-3 user-chat-topbar d-none">
                                 <div class="row align-items-center">
                                     <div class="col-sm-4 col-8">
                                         <div class="d-flex align-items-center">
@@ -203,12 +228,16 @@
                             </div>
                             <!-- end chat user head -->
                             <div class="chat-conversation p-3 p-lg-4 " id="chat-conversation" data-simplebar>
-                                <div id="elmLoader">
-                                    <div class="spinner-border text-primary avatar-sm" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                </div>
                                 <ul class="list-unstyled chat-conversation-list" id="users-conversation">
+
+                                    <li class="position-absolute top-50 start-50 translate-middle d-block">
+                                        <div class="text-center">
+                                            <img class="rounded-circle img-thumbnail" src="{{checkUserAvatar($currentUser->avatar)}}" width="100" height="100">
+                                        </div>
+                                        <div class="mt-2 text-center fs-20">
+                                            {{$currentUser->name}},<br>Olá!
+                                        </div>
+                                    </li>
 
                                 </ul>
                                 <!-- end chat-conversation-list -->
@@ -219,6 +248,7 @@
                             </div>
                         </div>
 
+                        {{--
                         <div class="position-relative" id="channel-chat">
                             <div class="p-3 user-chat-topbar">
                                 <div class="row align-items-center">
@@ -320,10 +350,11 @@
                                 Message copied
                             </div>
                         </div>
+                        --}}
 
                         <!-- end chat-conversation -->
 
-                        <div class="chat-input-section p-3 p-lg-4">
+                        <div class="chat-input-section p-3 p-lg-4 d-none">
 
                             <form id="chatinput-form" enctype="multipart/form-data">
                                 <div class="row g-0 align-items-center">
@@ -343,19 +374,18 @@
                                             Please Enter a Message
                                         </div>
                                         <input type="text" class="form-control chat-input bg-light border-light"
-                                            id="chat-input" placeholder="Type your message..." autocomplete="off">
+                                            id="chat-input" placeholder="Mensagem..." autocomplete="off">
                                     </div>
                                     <div class="col-auto">
                                         <div class="chat-input-links ms-2">
                                             <div class="links-list-item">
                                                 <button type="submit"
-                                                    class="btn btn-success chat-send waves-effect waves-light">
+                                                    class="btn btn-theme chat-send waves-effect waves-light">
                                                     <i class="ri-send-plane-2-fill align-bottom"></i>
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </form>
                         </div>
@@ -383,7 +413,7 @@
             </div>
         </div>
     </div>
-    <!-- end chat-wrapper -->
+    <!--end chat-wrapper-->
 
     <div class="offcanvas offcanvas-end border-0" tabindex="-1" id="userProfileCanvasExample">
         <!--end offcanvas-header-->
@@ -666,8 +696,7 @@
                     </div>
 
                     <div class="text-center mt-2">
-                        <button type="button" class="btn btn-danger">Load more <i
-                                class="ri-arrow-right-fill align-bottom ms-1"></i></button>
+                        <button type="button" class="btn btn-danger">Load more <i class="ri-arrow-right-fill align-bottom ms-1"></i></button>
                     </div>
                 </div>
             </div>
@@ -677,13 +706,16 @@
     <!--end offcanvas-->
 @endsection
 @section('script')
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-
     <script src="{{ URL::asset('build/libs/glightbox/js/glightbox.min.js') }}"></script>
-
-    <!-- fgEmojiPicker js -->
     <script src="{{ URL::asset('build/libs/fg-emoji-picker/fgEmojiPicker.js') }}"></script>
 
-    <!-- chat init js -->
-    <script src="{{ URL::asset('build/js/chat.js') }}"></script>
+    {{--
+    <script src="{{ URL::asset('build/libs/laravel-echo/echo.js') }}"></script>
+    <script src="{{ URL::asset('build/libs/pusher-js/web/pusher.min.js') }}"></script>
+    <script type="module">
+        const Echo = window.Echo;
+        const Pusher = window.Pusher;
+    </script>
+    --}}
+    <script src="{{ URL::asset('build/js/echo.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 @endsection

@@ -15,7 +15,9 @@
 
     $recurring = $data->recurring ?? '';
 
-    $startAt = !empty($data->start_at) ? date("d/m/Y", strtotime($data->start_at)) : '';
+    $surveyStartAt = !empty($data->start_at) ? date("d/m/Y", strtotime($data->start_at)) : '';
+
+    $recurringSubLabel = $data->start_at && $recurring == 'weekly' ? dayOfTheWeek($data->start_at) : '';
 
     $endIn = !empty($data->end_in) ? date("d/m/Y", strtotime($data->end_in)) : '';
 
@@ -256,7 +258,12 @@
 
                             <div id="steparrow-recurring-info" class="tab-pane fade" role="tabpanel" aria-labelledby="steparrow-recurring-info-tab">
                                 <div class="mb-3">
-                                    <label for="date-recurring-field" class="form-label">Tipo de Recorrência: {!! isset($getSurveyRecurringTranslations[$recurring]['label']) ? '<strong class="text-theme">' .$getSurveyRecurringTranslations[$recurring]['label']. '</strong>' : '' !!}</label>
+                                    <label for="date-recurring-field" class="form-label">
+                                        Tipo de Recorrência:
+                                        {!! isset($getSurveyRecurringTranslations[$recurring]['label']) ? '<small class="badge badge-border bg-light-subtle text-body text-uppercase">' .$getSurveyRecurringTranslations[$recurring]['label']. '</small>' : '' !!}
+                                        {!! $recurringSubLabel ? '<small class="badge badge-border bg-light-subtle text-body text-uppercase">' . $recurringSubLabel . '</small>' : '' !!}
+
+                                    </label>
                                     @if ( $data && $countAllResponses > 0 && !in_array($surveyStatus, ['new', 'scheduled']) )
                                         {!! $alertMessage1 !!}
                                         <input type="hidden" name="recurring" value="{{$recurring}}">
@@ -274,7 +281,7 @@
                                     <div class="row">
                                         <div class="col">
                                             <label for="date-recurring-start" class="form-label">Data Inicial:</label>
-                                            <input id="date-recurring-start" type="text" class="form-control flatpickr-input flatpickr-between wizard-input-control" {{ $countAllResponses > 0 && in_array($surveyStatus, ['started', 'stopped', 'completed', 'filed']) ? 'disabled readonly' : '' }} name="start_at" data-date-format="d/m/Y" value="{{ $startAt }}">
+                                            <input id="date-recurring-start" type="text" class="form-control flatpickr-input flatpickr-between wizard-input-control" {{ $countAllResponses > 0 && in_array($surveyStatus, ['started', 'stopped', 'completed', 'filed']) ? 'disabled readonly' : '' }} name="start_at" data-date-format="d/m/Y" value="{{ $surveyStartAt }}">
                                             @if ( $countAllResponses > 0 && in_array($surveyStatus, ['started', 'stopped', 'completed', 'filed']) )
                                                 <div class="form-text text-warning">O campo Data Inicial não poderá ser modificado pois esta rotina já foi inicializada.</div>
                                             @else

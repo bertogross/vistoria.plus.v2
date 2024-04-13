@@ -106,7 +106,6 @@ class SurveysAssignmentsController extends Controller
         ) );
     }
 
-    // Modal listing
     public function listingById(Request $request, $id = null)
     {
         if (!$id) {
@@ -145,7 +144,14 @@ class SurveysAssignmentsController extends Controller
 
     public function listingAll()
     {
-        // TODO
+        $surveyAssignmentData = SurveyAssignments::getSurveyAssignmentData();
+
+        $getSurveyAssignmentStatusTranslations = SurveyAssignments::getSurveyAssignmentStatusTranslations();
+
+        return view('surveys.assignment.listing', compact(
+            'surveyAssignmentData',
+            'getSurveyAssignmentStatusTranslations'
+        ) );
     }
 
     public function formAssignmentSurveyor(Request $request, $assignmentId)
@@ -646,7 +652,6 @@ class SurveysAssignmentsController extends Controller
             'updatedAt' => $assignment->updated_at->format('d/m/Y')
         ];
     }
-
 
 
 

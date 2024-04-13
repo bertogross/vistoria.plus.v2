@@ -505,16 +505,13 @@ class SurveyAssignments extends Model
                 ->where('id', $surveyId)
                 ->update([
                     'status' => 'started',
+                    'updated_at' => now(),
                 ]);
         }elseif($status == 'completed' && $currentAuditorStatus == 'waiting'){
             $columns['auditor_status'] = 'new';
+            $columns['updated_at'] = now();
         }
-        /*elseif($status == 'auditing'){
-            $columns['auditor_status'] = 'new';
-            $data->update($columns);
-        }*/
 
-        // new status
         $columns['surveyor_status'] = $status;
 
         $data->update($columns);
@@ -527,6 +524,8 @@ class SurveyAssignments extends Model
         $surveyorId = $data->surveyor_id;
         $surveyId = $data->survey_id;
         $companyId = $data->company_id;
+
+        $columns['updated_at'] = now();
 
         if($status == 'completed'){
             // If newStatus was 'completed', change the surveyor_status

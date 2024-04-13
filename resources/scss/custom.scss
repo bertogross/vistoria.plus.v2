@@ -998,3 +998,57 @@ table.dataTable.fixedHeader-floating, table.dataTable.fixedHeader-locked {
         }
     }
 }
+
+
+// for horizontal layout
+[data-layout="horizontal"]{
+    .chat-wrapper{
+        @media (min-width: 1025px) {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        @media (max-width: 991.98px) {
+            margin-top: 0 !important;
+        }
+    }
+
+    .chat-leftsidebar{
+        height: calc(100vh - 8px) !important;
+        @media (max-width: 991.98px) {
+            height: calc(100vh - 8px) !important;
+        }
+    }
+
+    .chat-conversation,
+    .chat-room-list{
+        height: calc(100vh - 169px) !important;
+        @media (max-width: 991.98px) {
+            height: calc(100vh - 169px) !important;
+        }
+    }
+
+    .chat-list {
+        > li {
+            &.active {
+                label {
+                    background-color: var(--vz-theme) !important;
+                    color:  var(--vz-white) !important;
+                }
+            }
+        }
+    }
+
+    .chat-list > li label {
+        display: block;
+        padding: 7px 24px;
+        margin-bottom: 0px;
+        color: var(--vz-body-color);
+        transition: all .4s;
+        font-family: var(--vz-font-family-secondary);
+        font-weight: var(--vz-font-weight-medium);
+        font-size: var(--vz-font-base);
+    }
+
+
+
+}

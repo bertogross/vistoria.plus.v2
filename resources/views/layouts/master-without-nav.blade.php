@@ -17,6 +17,7 @@
         <meta property="og:image" content="{{ URL::asset('build/images/logo-sm.png') }}">
         <meta name="author" content="{{appName()}}" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="current-user-id" content="{{ auth()->id() }}">
         <!-- App favicon -->
         <link rel="icon" type="image/png" href="{{ URL::asset('build/images/logo-sm.png') }}">
         <link rel="shortcut icon" href="{{ URL::asset('build/images/favicons/favicon.ico')}}">

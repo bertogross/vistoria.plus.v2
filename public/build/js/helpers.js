@@ -165,18 +165,18 @@ export function sweetWizardAlert(message, urlToRedirect = false, icon = 'success
 
 export function showPreloader(show = true) {
     var preloader = document.getElementById("preloader");
-    if (preloader) {
-        preloader.style.opacity = show ? "0.5" : "0";
-        preloader.style.visibility = show ? "visible" : "hidden";
-    }
+        if (preloader) {
+            preloader.style.opacity = show ? "0.5" : "0";
+            preloader.style.visibility = show ? "visible" : "hidden";
 
-    if(!show){
-        preloader.style.visibility = "hidden";
-    }
+        if(!show){
+            preloader.style.visibility = "hidden";
+        }
 
-    setTimeout(function () {
-        preloader.style.visibility = "hidden";
-    }, 5000);
+        setTimeout(function () {
+            preloader.style.visibility = "hidden";
+        }, 5000);
+    }
 }
 
 export function printThis(){
@@ -644,10 +644,35 @@ export function bsPopoverTooltip() {
         popovers.forEach(popover => popover.hide());
     }
 
-    // Event listener to hide tooltips and popovers after they are shown
-    document.querySelectorAll('[data-bs-toggle="tooltip"], [data-bs-toggle="popover"]').forEach(el => {
-        el.addEventListener('shown.bs.tooltip', () => setTimeout(hideAllTooltips, 5000));
-        el.addEventListener('shown.bs.popover', () => setTimeout(hideAllPopovers, 5000));
+    // Manage hiding with delay and user interaction
+    function setupHideWithDelay(element, hideFunction) {
+        let timeoutId;
+
+        const showEvents = ['mouseenter', 'focus'];
+        const hideEvents = ['mouseleave', 'blur'];
+
+        // Cancel hiding if user focuses/hovers
+        showEvents.forEach(event => {
+            element.addEventListener(event, () => {
+                clearTimeout(timeoutId);
+            });
+        });
+
+        // Schedule hiding when user leaves/stops focusing, with a delay
+        hideEvents.forEach(event => {
+            element.addEventListener(event, () => {
+                timeoutId = setTimeout(hideFunction, 2000);
+            });
+        });
+    }
+
+    // Apply the enhanced hiding function to tooltips and popovers
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+        setupHideWithDelay(el, hideAllTooltips);
+    });
+
+    document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+        setupHideWithDelay(el, hideAllPopovers);
     });
 }
 
@@ -900,6 +925,7 @@ export function allowUncheckRadioButtons(radioSelector = '.form-check-input') {
         }
     }, true); // Use capturing to ensure we get the event first
 }
+
 
 
 export function layouRightSide(){

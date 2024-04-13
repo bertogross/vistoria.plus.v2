@@ -80,7 +80,7 @@ class SurveysController extends Controller
             }
         }
 
-        $data = $query->orderBy('created_at', 'desc')->paginate(10);
+        $data = $query->orderBy('created_at', 'desc')->paginate(8);
 
         /*
         $data = $query->whereIn('status', ['new', 'scheduled', 'started', 'stopped'])->orderBy('created_at')->paginate(10);

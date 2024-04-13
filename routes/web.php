@@ -195,10 +195,13 @@ Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])-
 
     // Chat Routes
     Route::prefix('chat')->group(function () {
-        // Routes related to surveys
         Route::get('/', [ChatController::class, 'index'])->name('chatIndexURL');
-        Route::post('/send', [ChatController::class, 'sendMessage'])->name('sendChatMessageURL');
+
+        Route::post('/store-message', [ChatsController::class, 'store'])->name('chatStoreURL');
+        Route::post('/get-messages', [ChatsController::class, 'show'])->name('chatShowURL');
+        Route::post('/status-messages', [ChatsController::class, 'markAsRead'])->name('chatMarkAsReadURL');
     });
+
 
 });
 
