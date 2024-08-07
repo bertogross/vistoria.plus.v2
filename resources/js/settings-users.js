@@ -5,7 +5,8 @@ import {
     bsPopoverTooltip,
     showPreloader,
     injectScript,
-    multipleModal
+    multipleModal,
+    searchUser
 } from './helpers.js';
 
 import {
@@ -131,29 +132,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    // Search functionality for the user list
-    const searchInput = document.getElementById('searchMemberList');
-    if(searchInput){
-        searchInput.addEventListener('keyup', function() {
-            var searchTerm = this.value.toLowerCase();
-            var users = document.querySelectorAll('[data-search-user-id]');
-
-            if(users){
-                users.forEach(function(user) {
-                    var userName = user.getAttribute('data-search-user-name').toLowerCase();
-                    // var userRole = user.getAttribute('data-search-user-role').toLowerCase();
-
-                    //if (userName.includes(searchTerm) || userRole.includes(searchTerm)) {
-                    if (userName.includes(searchTerm)) {
-                        user.style.display = ''; // Show the user
-                    } else {
-                        user.style.display = 'none'; // Hide the user
-                    }
-                });
-            }
-        });
-    }
-
     // Attach event listeners for the modal form
     function attachModalEventListeners() {
 
@@ -274,3 +252,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
+document.addEventListener("DOMContentLoaded", searchUser);

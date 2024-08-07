@@ -24,7 +24,7 @@
                             <strong>{!! $message !!}</strong>
                         </span>
                     @enderror
-                    --}
+                    --}}
                 </div>
                 <div class="mb-3">
                     <label for="new_username" class="form-label">Nome</label>
@@ -35,7 +35,7 @@
                             <strong>{!! $message !!}</strong>
                         </span>
                     @enderror
-                    --}
+                    --}}
                 </div>
 
                 <div class="mb-3">

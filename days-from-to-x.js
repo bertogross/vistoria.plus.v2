@@ -4,8 +4,8 @@ function addDaysToDate(dateString, daysToAdd) {
     return date;
 }
 
-const initialDate = "2024-02-29";
-const daysToAdd = 175;
+const initialDate = "2024-03-05"; // Y-m-d
+const daysToAdd = 113;
 
 const resultDate = addDaysToDate(initialDate, daysToAdd);
 

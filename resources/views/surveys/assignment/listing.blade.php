@@ -75,7 +75,7 @@
                             @else
                                 href="{{route('assignmentShowURL', $assignmentId)}}"
                             @endif
-                            data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="{{ $surveyorStatus == 'new' ? 'Tarefa ainda não foi inicializada e por isso não há dados disponíveis' : 'Visualizar' }}" data-assignment-id="{{ $assignmentId }}" data-assignment-title="{{limitChars($title ?? '', 30) }}"></a>
+                            data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="{{ $surveyorStatus == 'new' ? 'Tarefa ainda não foi inicializada e por isso não há dados disponíveis' : 'Visualizar' }}" data-assignment-id="{{ $assignmentId }}" data-assignment-title="{{limitChars($title ?? '', 50) }}"></a>
                         </td>
                     </tr>
                 @endforeach

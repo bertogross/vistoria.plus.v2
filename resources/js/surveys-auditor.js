@@ -2,6 +2,7 @@ import {
     toastAlert,
     sweetAlert,
     sweetWizardAlert,
+    swalWithBootstrapButtons,
     lightbox,
     showPreloader,
     debounce,
@@ -11,6 +12,7 @@ import {
 } from './helpers.js';
 
 document.addEventListener('DOMContentLoaded', function() {
+    const swalWithBootstrap = swalWithBootstrapButtons();
 
     // Event listeners for each 'btn-assignment-auditor-action' to change task status from current to the next
     // This Button are in resources\views\surveys\layouts\profile-surveyors-box.blade.php
@@ -85,17 +87,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 var assignmentId = this.getAttribute("data-assignment-id");
                 assignmentId = parseInt(assignmentId);
 
-                Swal.fire({
+                swalWithBootstrap.fire({
                     title: 'Deseja realizar esta Auditoria?',
                     icon: 'question',
                     confirmButtonText: 'Sim',
-                        confirmButtonClass: 'btn btn-outline-secondary w-xs me-2',
                     cancelButtonText: 'Não',
-                        cancelButtonClass: 'btn btn-sm btn-outline-danger w-xs',
-                            showCancelButton: true,
+                        showCancelButton: true,
                     denyButtonText: 'Nunca',
-                        denyButtonClass: 'btn btn-outline-danger w-xs me-2',
-                            showDenyButton: false,
+                        showDenyButton: false,
                     buttonsStyling: false,
                     showCloseButton: false,
                     allowOutsideClick: false
@@ -148,18 +147,15 @@ document.addEventListener('DOMContentLoaded', function() {
                                     // TODO ?
                                     //sweetWizardAlert(sweetMessage, requestAssignmentAuditorURL + '/' + assignmentId, 'info', 'Deixar como está', 'Solicitar esta Tarefa');
                                 }else if(data.action == 'choice'){
-                                    Swal.fire({
+                                    swalWithBootstrap.fire({
                                         title: "Atenção",
                                         html: sweetMessage,
                                         icon: 'info',
                                         confirmButtonText: 'Abrir formulário e Auditar',
-                                            confirmButtonClass: 'btn btn-outline-secondary w-xs me-2',
                                         cancelButtonText: 'Deixar como está',
-                                            cancelButtonClass: 'btn btn-sm btn-outline-info w-xs',
-                                                showCancelButton: true,
+                                            showCancelButton: true,
                                         denyButtonText: 'Revogar',
-                                            denyButtonClass: 'btn btn-sm btn-outline-danger w-xs me-2',
-                                                showDenyButton: true,
+                                            showDenyButton: true,
                                         buttonsStyling: false,
                                         showCloseButton: false,
                                         allowOutsideClick: false
@@ -168,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                             if( currentSurveyorStatus == 'completed' ){
                                                 // redirect to form
                                                 var timerInterval;
-                                                Swal.fire({
+                                                swalWithBootstrap.fire({
                                                     title: 'Redirecionando...',
                                                     html: '',
                                                     timer: 1000,

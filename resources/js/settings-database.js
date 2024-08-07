@@ -2,11 +2,15 @@ import {
     toastAlert,
     toggleTableRows,
     monthsInPortuguese,
+    swalWithBootstrapButtons,
     bsPopoverTooltip
 } from './helpers.js';
 
 // Event listeners setup
 document.addEventListener('DOMContentLoaded', function() {
+    const swalWithBootstrap = swalWithBootstrapButtons();
+
+
     // A flag to track whether the execution is currently in progress or not.
     let isExecutionInProgress = false;
 
@@ -204,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .join('');
 
         // Display the month and year selection dialog using SweetAlert2
-        Swal.fire({
+        swalWithBootstrap.fire({
             title: 'Defina o Mês e Ano de início',
             html: `
                 <select id="month" class="form-select mb-2">

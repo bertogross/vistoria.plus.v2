@@ -24,14 +24,14 @@ use App\Http\Controllers\{
     SurveysAssignmentsController,
     SettingsApiKeysController,
     AttachmentsController,
-    DropboxController,
     CompaniesController,
     SettingsStorageController,
+    StripeController,
+    ChatsController,
     ClarifaiImageController,
     ScenexImageController,
-    //PostmarkappController,
-    StripeController,
-    ChatController
+    DropboxController,
+    //PostmarkappController
 };
 
 /*
@@ -62,6 +62,46 @@ Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])-
         return view('index');
     })->middleware('role.redirect');
     */
+
+    // Admin Settings
+    Route::middleware(['admin'])->group(function () {
+        // Routes accessible only to admins
+        Route::prefix('settings')->group(function () {
+            Route::get('/', [SettingsAccountController::class, 'index'])->name('settingsIndexURL');
+            Route::get('/account/{tab?}', [SettingsAccountController::class, 'show'])->name('settingsAccountShowURL');
+                Route::post('/account/update', [SettingsAccountController::class, 'updateAccount'])->name('settingsAccountUpdateURL');
+                Route::post('/account/user/update', [SettingsAccountController::class, 'updateUser'])->name('settingsAccountUserUpdateURL');
+
+            Route::get('/api-keys', [SettingsApiKeysController::class, 'index'])->name('settingsApiKeysURL');
+
+            //Route::get('/users', [SettingsUserController::class, 'index'])->name('settingsUsersIndexURL');
+            Route::post('/users/store', [SettingsUserController::class, 'store'])->name('settingsUsersStoreURL');
+                Route::post('/users/update/{id?}', [SettingsUserController::class, 'update'])->name('settingsUsersUpdateURL');
+                //Route::get('/users/form/{id?}/{origin?}', [SettingsUserController::class, 'getUserFormContent'])->name('getUserFormContentURL');
+                Route::post('/users/form', [SettingsUserController::class, 'getUserFormContent'])->name('getUserFormContentURL');
+
+            Route::get('/companies', [CompaniesController::class, 'index'])->name('settingsCompaniesIndexURL');
+            Route::post('/companies/update', [CompaniesController::class, 'storeOrUpdate'])->name('settingsCompaniesUpdateURL');
+
+            Route::get('/connections', [SettingsConnectionsController::class, 'index'])->name('settingsConnectionsIndexURL');
+            Route::post('/connection/revoke', [UserConnections::class, 'revokeConnection'])->name('revokeConnectionURL');
+            Route::post('/connection/decision', [UserConnections::class, 'acceptOrDeclineConnection'])->name('acceptOrDeclineConnectionURL');
+
+            Route::get('/storage', [SettingsStorageController::class, 'index'])->name('settingsStorageIndexURL');
+
+            Route::get('/dropbox', [DropboxController::class, 'index'])->name('DropboxIndexURL');
+            Route::get('/dropbox/browse/{path}', [DropboxController::class, 'browseFolder'])->name('DropboxBrowseFolderURL');
+
+            Route::post('/clarifai', [ClarifaiImageController::class, 'submit'])->name('ClarifaiSubmitURL');
+            Route::post('/scenex', [ScenexImageController::class, 'submit'])->name('ScenexSubmitURL');
+
+            Route::post('/stripe/subscription', [StripeController::class, 'createStripeSession'])->name('stripeSubscriptionURL');
+            Route::post('/stripe/cancel-subscription', [StripeController::class, 'cancelStripeSubscriptions'])->name('stripeCancelSubscriptionURL');
+            //Route::post('/stripe/subscription/details', [StripeController::class, 'updateStripeSubscriptionItem'])->name('stripeSubscriptionDetailsURL');
+            // Route::post('/stripe/cart/addon', [StripeController::class, 'addonCart'])->name('stripeCartAddonURL');
+
+        });
+    });
 
     Route::post('/connections/change', [UserConnections::class, 'changeConnection'])->name('changeConnectionURL');
 
@@ -137,48 +177,17 @@ Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])-
         Route::get('/audits/{id?}', [SurveysAuditController::class, 'index'])->name('surveysAuditIndexURL');
     });
 
-    // Admin Settings
-    Route::middleware(['admin'])->group(function () {
-        // Routes accessible only to admins
-        Route::prefix('settings')->group(function () {
-            Route::get('/', [SettingsAccountController::class, 'index'])->name('settingsIndexURL');
-            Route::get('/account/{tab?}', [SettingsAccountController::class, 'show'])->name('settingsAccountShowURL');
-                Route::post('/account/update', [SettingsAccountController::class, 'updateAccount'])->name('settingsAccountUpdateURL');
-                Route::post('/account/user/update', [SettingsAccountController::class, 'updateUser'])->name('settingsAccountUserUpdateURL');
-
-            Route::get('/api-keys', [SettingsApiKeysController::class, 'index'])->name('settingsApiKeysURL');
-
-            //Route::get('/users', [SettingsUserController::class, 'index'])->name('settingsUsersIndexURL');
-            Route::post('/users/store', [SettingsUserController::class, 'store'])->name('settingsUsersStoreURL');
-                Route::post('/users/update/{id?}', [SettingsUserController::class, 'update'])->name('settingsUsersUpdateURL');
-                //Route::get('/users/form/{id?}/{origin?}', [SettingsUserController::class, 'getUserFormContent'])->name('getUserFormContentURL');
-                Route::post('/users/form', [SettingsUserController::class, 'getUserFormContent'])->name('getUserFormContentURL');
-
-            Route::get('/companies', [CompaniesController::class, 'index'])->name('settingsCompaniesIndexURL');
-            Route::post('/companies/update', [CompaniesController::class, 'storeOrUpdate'])->name('settingsCompaniesUpdateURL');
-
-            Route::get('/connections', [SettingsConnectionsController::class, 'index'])->name('settingsConnectionsIndexURL');
-            Route::post('/connection/revoke', [UserConnections::class, 'revokeConnection'])->name('revokeConnectionURL');
-            Route::post('/connection/decision', [UserConnections::class, 'acceptOrDeclineConnection'])->name('acceptOrDeclineConnectionURL');
-
-            Route::get('/storage', [SettingsStorageController::class, 'index'])->name('settingsStorageIndexURL');
-
-            Route::get('/dropbox', [DropboxController::class, 'index'])->name('DropboxIndexURL');
-            Route::get('/dropbox/browse/{path}', [DropboxController::class, 'browseFolder'])->name('DropboxBrowseFolderURL');
-
-            Route::post('/clarifai', [ClarifaiImageController::class, 'submit'])->name('ClarifaiSubmitURL');
-            Route::post('/scenex', [ScenexImageController::class, 'submit'])->name('ScenexSubmitURL');
-
-            Route::post('/stripe/subscription', [StripeController::class, 'createStripeSession'])->name('stripeSubscriptionURL');
-            Route::post('/stripe/cancel-subscription', [StripeController::class, 'cancelStripeSubscriptions'])->name('stripeCancelSubscriptionURL');
-            //Route::post('/stripe/subscription/details', [StripeController::class, 'updateStripeSubscriptionItem'])->name('stripeSubscriptionDetailsURL');
-            // Route::post('/stripe/cart/addon', [StripeController::class, 'addonCart'])->name('stripeCartAddonURL');
-
-        });
-    });
-
     // Team Routes
     Route::get('/team', [TeamController::class, 'index'])->name('teamIndexURL');
+
+    // Chat Routes
+    Route::prefix('chat')->group(function () {
+        Route::get('/', [ChatsController::class, 'index'])->name('chatIndexURL');
+
+        Route::post('/store-message', [ChatsController::class, 'store'])->name('chatStoreURL');
+        Route::post('/retrieve-messages', [ChatsController::class, 'retrieve'])->name('chatRetrieveURL');
+        Route::post('/status-messages', [ChatsController::class, 'markAsRead'])->name('chatMarkAsReadURL');
+    });
 
     // File Upload Routes
     Route::prefix('upload')->group(function () {
@@ -193,17 +202,9 @@ Route::middleware(['auth', 'set-dynamic-db-connection', 'check.authorization'])-
         Route::delete('/delete/attachment', [AttachmentsController::class, 'deleteAttachmentByPath'])->name('deleteAttachmentByPathURL');
     });
 
-    // Chat Routes
-    Route::prefix('chat')->group(function () {
-        Route::get('/', [ChatController::class, 'index'])->name('chatIndexURL');
-
-        Route::post('/store-message', [ChatsController::class, 'store'])->name('chatStoreURL');
-        Route::post('/get-messages', [ChatsController::class, 'show'])->name('chatShowURL');
-        Route::post('/status-messages', [ChatsController::class, 'markAsRead'])->name('chatMarkAsReadURL');
-    });
-
 
 });
+
 
 // Routes accessible to all users
 Route::get('/unauthorized', function () {
@@ -257,5 +258,8 @@ Route::fallback(function () {
     return response()->view('errors.404', [], 404);
 });
 
+
+
 // Route to handle all other routes
 Route::get('{any}', [HomeController::class, 'index'])->where('any', '.*')->name('index');
+

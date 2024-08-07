@@ -83,43 +83,50 @@ export function toastAlert(message, type = 'success', duration = 3000, backdrop 
                 }
             });
         }, duration);
-
     //}, 100);
 }
 
+export function swalWithBootstrapButtons(){
+    return Swal.mixin({
+        customClass: {
+            confirmButton: "btn btn-outline-theme w-xs me-2",
+            cancelButton: "btn btn-sm btn-outline-info w-xs",
+            denyButton: "btn btn-sm btn-danger w-xs me-2",
+            closeButton: "btn btn-sm btn-outline-info w-xs"
+        },
+        buttonsStyling: false
+    });
+}
+
 export function sweetAlert(message = 'Um erro ocorreu', title = 'Atenção', icon = 'warning', buttonText = 'Ok'){
-    Swal.fire({
+    var swalWithBootstrap = swalWithBootstrapButtons();
+    swalWithBootstrap.fire({
         title: title,
         html: message,
         icon: icon,
         showConfirmButton: true,
-            confirmButtonClass: 'btn btn-outline-secondary',
             confirmButtonText: buttonText,
         showCloseButton: false,
-        buttonsStyling: false,
         allowOutsideClick: false
     });
 }
 
 export function sweetWizardAlert(message, urlToRedirect = false, icon = 'success', cancelButtonText = 'Continuar Editando', confirmButtonText = 'Prosseguir', Trigger = null){
-    Swal.fire({
+    var swalWithBootstrap = swalWithBootstrapButtons();
+    swalWithBootstrap.fire({
         title: message,
         icon: icon,
-        buttonsStyling: false,
         confirmButtonText: confirmButtonText,
-            confirmButtonClass: 'btn btn-outline-theme w-xs me-2',
         cancelButtonText: cancelButtonText,
-            cancelButtonClass: 'btn btn-sm btn-outline-info w-xs',
-                showCancelButton: true,
+            showCancelButton: true,
         denyButtonText: 'Não',
-            denyButtonClass: 'btn btn-sm btn-danger w-xs me-2',
-                showDenyButton: false,
+            showDenyButton: false,
         showCloseButton: false,
         allowOutsideClick: false
     }).then(function (result) {
         if (result.isConfirmed) {
             var timerInterval;
-            Swal.fire({
+            swalWithBootstrap.fire({
                 title: 'Redirecionando...',
                 html: '',
                 timer: 2000,
@@ -357,6 +364,19 @@ export function formatPhoneNumber() {
     });
 }
 
+// format dates
+export function formatDateTime(dateTime) {
+    return new Date(dateTime)
+        .toLocaleString("en-GB", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+        })
+        .replace(",", "");
+}
 
 export function onlyNumbers(number){
     if (number === null || number === undefined) {
@@ -1224,6 +1244,30 @@ export function copyThis() {
     }
 }
 
+export function searchUser(){
+    // Search functionality for the user list
+    const searchUserInput = document.getElementById('searchMemberList');
+    if(searchUserInput){
+        searchUserInput.addEventListener('keyup', function() {
+            var searchTerm = this.value.toLowerCase();
+            var users = document.querySelectorAll('[data-search-user-id]');
+
+            if(users){
+                users.forEach(function(user) {
+                    var userName = user.getAttribute('data-search-user-name').toLowerCase();
+                    // var userRole = user.getAttribute('data-search-user-role').toLowerCase();
+
+                    //if (userName.includes(searchTerm) || userRole.includes(searchTerm)) {
+                    if (userName.includes(searchTerm)) {
+                        user.style.display = ''; // Show the user
+                    } else {
+                        user.style.display = 'none'; // Hide the user
+                    }
+                });
+            }
+        });
+    }
+}
 
 // GLightbox Popup
 // https://github.com/biati-digital/glightbox

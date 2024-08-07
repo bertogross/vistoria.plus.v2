@@ -4,9 +4,6 @@
     @lang('translation.error')
 @endsection
 
-@section('body')
-<body>
-@endsection
 @section('content')
     <!-- auth-page wrapper -->
     <div class="auth-page-wrapper py-5 d-flex justify-content-center align-items-center min-vh-100">

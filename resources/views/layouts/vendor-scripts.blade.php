@@ -22,6 +22,7 @@
 <script src="{{ URL::asset('build/js/pwa.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
 <script src="{{ URL::asset('build/js/app.js') }}?v={{env('APP_VERSION')}}"></script>
 <script src="{{ URL::asset('build/js/app-custom.js') }}?v={{env('APP_VERSION')}}" type="module"></script>
+
 @php
     $HTTP_HOST = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
     $SUBDOMAIN = $HTTP_HOST ? strtok($HTTP_HOST, '.') : '';

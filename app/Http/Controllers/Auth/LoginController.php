@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Cookie;
@@ -43,6 +44,7 @@ class LoginController extends Controller
      */
     public function __construct()
     {
+        $this->redirectTo = URL::previous(); // Redirect to previous page after login
         $this->middleware('guest')->except('logout');
     }
 

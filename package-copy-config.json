@@ -1,8 +1,8 @@
 {
     "packagesToCopy": [
-        "@ckeditor/ckeditor5-build-classic",
         "@simonwep/pickr",
         "@tarekraafat/autocomplete.js",
+        "axios",
         "aos",
         "apexcharts",
         "bootstrap",
@@ -47,8 +47,8 @@
         "sweetalert2",
         "swiper",
         "toastify-js",
-        "pusher-js",
         "laravel-echo",
+        "pusher-js",
         "wnumb"
     ]
 }

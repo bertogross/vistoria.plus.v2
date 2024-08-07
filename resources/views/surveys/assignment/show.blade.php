@@ -93,30 +93,31 @@
             <div class="bg-warning-subtle">
                 <div class="card-body pb-4">
                     <h4 class="fw-semibold">
-                        <span class="text-theme">{{ $companyName }}</span> <i class="ri-arrow-right-s-fill align-bottom"></i> {{ limitChars($title ?? '', 100) }}
+                        {{ limitChars($title ?? '', 100) }}
                     </h4>
                     <div class="hstack gap-3 flex-wrap">
+                        <div class="text-muted" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" title="O tipo de recorrência">
+                            Recorrência: <span class="text-theme">{{ $recurringLabel }}</span>
+                        </div>
+                        <div class="vr"></div>
 
                         <div class="text-muted" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" title="A data limite para realizar esta tarefa">
-                            Prazo: {{ $deadline }}
+                            Prazo: <span class="text-theme">{{ $deadline }}</span>
                         </div>
-
-                        <div class="vr"></div>
-
-                        <div class="text-muted" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="left" title="O tipo de recorrência">
-                            Recorrência: {{ $recurringLabel }}
-                        </div>
-
                         <div class="vr"></div>
 
                         <div class="text-muted">
-                            Vistoria: <a href="{{ route('profileShowURL', $surveyorId) }}" class="text-muted" title="Acessar Perfil">{{$surveyorName}}</a>
+                            Unidade: <span class="text-theme">{{ $companyName }}</span>
                         </div>
-
                         <div class="vr"></div>
 
                         <div class="text-muted">
-                            Auditoria: <a href="{{ route('profileShowURL', $auditorId) }}" class="text-muted" title="Acessar Perfil">{{$auditorName}}</a>
+                            Vistoria: <a href="{{ route('profileShowURL', $surveyorId) }}" class="text-theme" title="Acessar Perfil">{{$surveyorName}}</a>
+                        </div>
+                        <div class="vr"></div>
+
+                        <div class="text-muted">
+                            Auditoria: <a href="{{ route('profileShowURL', $auditorId) }}" class="text-theme" title="Acessar Perfil">{{$auditorName}}</a>
                         </div>
                     </div>
                 </div><!-- end card body -->

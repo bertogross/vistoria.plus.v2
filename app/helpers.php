@@ -41,6 +41,18 @@ if (!function_exists('appDescription')) {
 }
 
 /**
+ * Return the user theme
+ *
+ * @return string The user theme
+ */
+if (!function_exists('userLayout')) {
+    function userLayout() {
+        return getUserMeta(auth()->id(), 'theme') ?? 'dark';
+    }
+}
+
+
+/**
  * Sends an email using Postmark API.
  * usage example  : appSendEmail('bertogross@gmail.com', 'customer name here', 'subject here', 'content here with <strong>strong</strong>', 'welcome');
  *
@@ -62,37 +74,6 @@ if (!function_exists('appSendEmail')) {
         }
     }
 }
-
-/*if (!function_exists('setDatabaseConnection')) {
-    function setDatabaseConnection(){
-        if (auth()->check()) {
-            $userId = auth()->id();
-            $currentConnectionId = getCurrentConnectionByUserId($userId);
-
-            if ($currentConnectionId) {
-                $databaseName = 'vpApp' . $currentConnectionId;
-
-                if (DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?", [$databaseName])) {
-                    config(['database.connections.vpAppTemplate.database' => $databaseName]);
-                }
-            }
-        }
-    }
-}*/
-
-// Get all users with status = 1, ordered by name
-/*if (!function_exists('getUsers')) {
-    function getUsers() {
-        $getUsers = DB::connection('vpAppTemplate')
-            ->table('users')
-            ->where('status', 1)
-            ->orderBy('name')
-            ->get();
-
-        $getUsers = $getUsers ?? null;
-        return is_string($getUsers) ? json_decode($getUsers, true) : $getUsers;
-    }
-}*/
 
 /**
  * Retrieves user models for the current account and connected users.
@@ -780,7 +761,7 @@ if (!function_exists('getCompanyNameById')) {
                 ->where('id', $companyId)
                 ->value('name');
 
-            return $companyName ?: null;
+            return $companyName ?? null;
         }
         return null;
     }

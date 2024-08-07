@@ -3,10 +3,13 @@ import {
     lightbox,
     showPreloader,
     bsPopoverTooltip,
+    swalWithBootstrapButtons,
     showButtonWhenInputChange
 } from './helpers.js';
 
 document.addEventListener('DOMContentLoaded', function() {
+    const swalWithBootstrap = swalWithBootstrapButtons();
+
     //Overwrite the native app initModeSetting function
     const lightDarkModeBtn = document.getElementById("btn-light-dark-mode");
     if (lightDarkModeBtn) {
@@ -81,60 +84,61 @@ document.addEventListener('DOMContentLoaded', function() {
                     event.preventDefault();
 
                     if (this.checked) {
-                    }
-                    const connectionId = this.value;
-                    if(!connectionId){
-                        toastAlert('Não foi possível executar esta solicitação', 'danger');
-                        return;
-                    }
+                        const connectionId = this.value;
+                        if(!connectionId){
+                            toastAlert('Não foi possível executar esta solicitação', 'danger');
+                            return;
+                        }
 
-                    showPreloader();
+                        showPreloader();
 
-                    try {
-                        // Sleep for X miliseconds
-                        let ms = 10;
-                        await new Promise(resolve => setTimeout(resolve, ms));
+                        try {
+                            // Sleep for X miliseconds
+                            let ms = 10;
+                            await new Promise(resolve => setTimeout(resolve, ms));
 
-                        const url = changeConnectionURL;
-                        const response = await fetch(url, {
-                            method: 'POST',
-                            body: JSON.stringify({ id: connectionId }),
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            const url = changeConnectionURL;
+                            const response = await fetch(url, {
+                                method: 'POST',
+                                body: JSON.stringify({ id: connectionId }),
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                }
+                            });
+
+                            if (!response.ok) {
+                                showPreloader(false);
+
+                                throw new Error('Network response was not ok: ' + response.statusText);
                             }
-                        });
 
-                        if (!response.ok) {
+                            const data = await response.json();
+
+                            if(data.success){
+                                toastAlert(data.message, 'info');
+
+                                setTimeout(() => {
+                                    //window.location.reload();
+                                    //location.reload(true);
+                                    window.location.href = '/';
+                                }, 500);
+                            }else{
+                                toastAlert(data.message, 'danger');
+
+                                showPreloader(false);
+                            }
+
+                            return;
+                        } catch (error) {
+                            toastAlert('Error: ' + error, 'danger');
+
                             showPreloader(false);
 
-                            throw new Error('Network response was not ok: ' + response.statusText);
+                            console.error('Error:', error);
                         }
-
-                        const data = await response.json();
-
-                        if(data.success){
-                            toastAlert(data.message, 'info');
-
-                            setTimeout(() => {
-                                //window.location.reload();
-                                //location.reload(true);
-                                window.location.href = '/';
-                            }, 500);
-                        }else{
-                            toastAlert(data.message, 'danger');
-
-                            showPreloader(false);
-                        }
-
-                        return;
-                    } catch (error) {
-                        toastAlert('Error: ' + error, 'danger');
-
-                        showPreloader(false);
-
-                        console.error('Error:', error);
                     }
+
                 });
             });
         });
@@ -150,18 +154,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 const hostName = this.getAttribute('data-host-name');
 
                 var profileLink = "<a href='"+profileShowURL+"/"+hostId+"'><u>"+hostName+"</u></a>";
-                Swal.fire({
+
+                swalWithBootstrap.fire({
                     title: 'Conexão',
                     html: 'Você recebeu um convite para colaborar com '+profileLink+'.<br>Você aceita a conexão?',
                     icon: 'question',
                     buttonsStyling: false,
                     confirmButtonText: 'Sim, conectar',
-                        confirmButtonClass: 'btn btn-success w-xs me-2',
                     cancelButtonText: 'Aguardar',
-                        cancelButtonClass: 'btn btn-sm btn-outline-warning w-xs',
                             showCancelButton: true,
                     denyButtonText: 'Recusar',
-                        denyButtonClass: 'btn btn-sm btn-danger w-xs me-2',
                             showDenyButton: true,
                     showCloseButton: false,
                     allowOutsideClick: false
@@ -356,7 +358,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (document.body.classList.contains("production")) {
         document.addEventListener('contextmenu', preventRightClick);
     }
-
 });
 
 document.querySelectorAll('.init-loader').forEach(function(link) {

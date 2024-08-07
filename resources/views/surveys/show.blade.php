@@ -56,6 +56,7 @@
     }
     asort($companiesAnalyticTermsData);
 
+    $connectionId = getUserMeta(auth()->id(), 'current_database_connection');
 @endphp
 @extends('layouts.master')
 @section('title')
@@ -73,11 +74,15 @@
         @endslot
         @slot('title')
             Análise do Checklist
-            <i class="ri-arrow-right-s-fill text-theme ms-2 me-2 align-bottom"></i>
-            <span class="text-muted" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Dados originados desta conta">{!!getCurrentConnectionName()!!}</span>
+
+            @if (auth()->id() != $connectionId)
+                <i class="ri-arrow-right-s-fill text-theme ms-2 me-2 align-bottom"></i>
+                <span class="text-muted" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Dados originados desta conta">{!!getCurrentConnectionName()!!}</span>
+            @endif
+
             <small class="d-none d-lg-inline-block d-xl-inline-block">
                 <i class="ri-arrow-drop-right-line text-theme ms-2 me-2 align-bottom"></i>
-                {{limitChars($surveyTitle ?? '', 30) }} #<span class="text-theme me-2">{{$surveyId}}</span>
+                {{limitChars($surveyTitle ?? '', 50) }} #<span class="text-theme me-2">{{$surveyId}}</span>
             </small>
         @endslot
     @endcomponent
@@ -174,18 +179,25 @@
                         <div class="card-body h-100" style="min-height: 56px;">
                             <div class="hstack gap-4 flex-wrap">
                                 <div data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="O tipo de repetição">
-                                    Recorrência: {{$recurringLabel}}
+                                    Recorrência: <span class="text-theme">{{$recurringLabel}}</span>
                                 </div>
                                 <div class="vr"></div>
 
                                 <div data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="A data da primeira interação">
-                                    Início: {{$startAt}}
+                                    Início: <span class="text-theme">{{$startAt}}</span>
                                 </div>
                                 <div class="vr"></div>
 
                                 <div data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="A data da última interação">
-                                    Fim: {{$endIn}}
+                                    Fim: <span class="text-theme">{{$endIn}}</span>
                                 </div>
+
+                                @if (count($filterCompanies) == 1)
+                                    <div class="vr"></div>
+                                    <div>
+                                        Unidade: <span class="text-theme">{{getCompanyNameById($filterCompanies[0])}}</span>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>

@@ -15,6 +15,8 @@ class User extends Authenticatable
 
     public $timestamps = true;
 
+    protected $connection = 'vpOnboard';
+
     /**
      * The attributes that are mass assignable.
      *

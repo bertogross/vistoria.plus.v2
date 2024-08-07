@@ -18,6 +18,7 @@ import {
 
 
 document.addEventListener('DOMContentLoaded', function() {
+    const xCSRFtoken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
     const btnCreate = document.getElementById('btn-surveys-create');
     if(btnCreate){
@@ -98,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // Laravel CSRF token
+                            'X-CSRF-TOKEN': xCSRFtoken // Laravel CSRF token
                         },
                         body: JSON.stringify({ id: surveyId })
                     })
@@ -127,18 +128,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 if( currentStatus && currentStatus == 'started' ){
-                    Swal.fire({
+                    var swalWithBootstrap  = swalWithBootstrapButtons();
+                    swalWithBootstrap .fire({
                         icon: 'warning',
                         title: "Tem certeza que deseja Interromper esta Tarefa?",
                         html: 'Interromper Tarefas em andamento terão suas respectivas atividades não completadas <strong>removidas</strong>. <br><br><strong class="text-warning small">Não será possível reverter remoções.</strong>',
                         confirmButtonText: "Sim, interromper",
-                            confirmButtonClass: 'btn btn-outline-danger w-xs me-2',
-                                showCloseButton: false,
+                        showCloseButton: false,
                         denyButtonText: `Deixar como está`,
-                            denyButtonClass: 'btn btn-sm btn-outline-info w-xs me-2',
-                                showDenyButton: true,
-                        cancelButtonClass: 'btn btn-sm btn-outline-primary w-xs',
-                            showCancelButton: false,
+                        showDenyButton: true,
+                        showCancelButton: false,
                         buttonsStyling: false,
                     }).then((result) => {
                         if (result.isConfirmed) {
@@ -668,7 +667,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: {
                         'Cache-Control': 'no-cache',
                         'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        'X-CSRF-TOKEN': xCSRFtoken
                     }
                 });
 
@@ -788,7 +787,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         body: formData,
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            'X-CSRF-TOKEN': xCSRFtoken
                         }
                     });
 
@@ -834,7 +833,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: {
                         'Cache-Control': 'no-cache',
                         'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        'X-CSRF-TOKEN': xCSRFtoken
                     }
                 })
                 .then(response => {
@@ -931,7 +930,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             method: 'GET',
                             headers: {
                                 'X-Requested-With': 'XMLHttpRequest',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                'X-CSRF-TOKEN': xCSRFtoken
                             }
                         });
 

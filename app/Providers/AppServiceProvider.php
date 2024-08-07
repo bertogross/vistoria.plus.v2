@@ -29,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
         //
         Schema::defaultStringLength(191);
 
+
         // see all database connections
         /*if (config('app.debug')) {
             DB::listen(function ($query) {

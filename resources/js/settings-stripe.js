@@ -1,9 +1,12 @@
 import {
     toastAlert,
-    showPreloader
+    showPreloader,
+    swalWithBootstrapButtons
 } from './helpers.js';
 
 document.addEventListener('DOMContentLoaded', function() {
+
+    const swalWithBootstrap = swalWithBootstrapButtons();
 
     // Update subscription (change subscription plan)
     document.addEventListener('click', function(event) {
@@ -49,9 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
 
                     var checkoutURL = data.stripe.url;
-                    /*Swal.fire({
-                        confirmButtonClass: 'btn btn-outline-theme text-uppercase d-none',
-                        buttonsStyling: false,
+                    /*swalWithBootstrap.fire({
                         icon: '',
                         title: '',
                         html: '<img src="' + assetURL + 'build/images/stripe/white-small.png" title="Stripe" width="100" class="mb-3"><br>Redirecionado para a página de pagamento...'
@@ -88,18 +89,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     'price_id': priceId
                 };
 
-                Swal.fire({
+                swalWithBootstrap.fire({
                     title: 'Cancelar assinatura?',
                     html: 'Com o cancelamento, os usuários conectados serão desativados.<br><br><span class="text-warning small fs-12">Você poderá reativar sua assinatura a qualquer momento.</span>',
                     icon: 'question',
                     confirmButtonText: 'Sim, cancelar',
-                        confirmButtonClass: 'btn btn-outline-secondary w-xs me-2',
                     cancelButtonText: 'Não',
-                        cancelButtonClass: 'btn btn-sm btn-outline-danger w-xs',
-                            showCancelButton: true,
+                        showCancelButton: true,
                     denyButtonText: 'Nunca',
-                        denyButtonClass: 'btn btn-outline-danger w-xs me-2',
-                            showDenyButton: false,
+                        showDenyButton: false,
                     buttonsStyling: false,
                     showCloseButton: false,
                     allowOutsideClick: false
@@ -206,9 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     var checkoutURL = data.stripe.url;
 
-                    //Swal.fire({
-                        //confirmButtonClass: 'btn btn-outline-theme text-uppercase d-none',
-                        //buttonsStyling: false,
+                    //swalWithBootstrap.fire({
                         //icon: '',
                         //title: '',
                         //html: '<img src="' + assetURL + 'build/images/stripe/white-small.png" title="Stripe" />/width="100" class="mb-3"><br>Redirecionado para a página de pagamento...'

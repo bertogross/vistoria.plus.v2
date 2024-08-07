@@ -1,7 +1,14 @@
+import axios from '../libs/axios/axios.min.js';
+window.axios = axios;
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-import Echo from '../libs/laravel-echo/echo.js';
-import Pusher from '../libs/pusher-js/web/pusher.js';
+import { Echo } from '../libs/laravel-echo/echo.js';
+import { Pusher } from '../libs/pusher-js/web/pusher.min.js';
 
+//const Echo = window.Echo;
+//const Pusher = window.Pusher;
+
+//window.Echo = Echo;
 window.Pusher = Pusher;
 
 const xCSRFtoken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
@@ -13,11 +20,11 @@ const xCSRFtoken = document.querySelector('meta[name="csrf-token"]').getAttribut
  */
 window.Echo = new Echo({
     broadcaster: "reverb",
-    key: import.meta.env.VITE_REVERB_APP_KEY,
-    wsHost: import.meta.env.VITE_REVERB_HOST,
-    wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
-    wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
-    forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? "https") === "https",
+    key: process.env.VITE_REVERB_APP_KEY,
+    wsHost: process.env.VITE_REVERB_HOST,
+    wsPort: process.env.VITE_REVERB_PORT ?? 9000,
+    wssPort: process.env.VITE_REVERB_PORT ?? 443,
+    forceTLS: (process.env.VITE_REVERB_SCHEME ?? "https") === "https",
     enabledTransports: ["ws", "wss"],
     encrypted: true,
     auth: {
@@ -30,9 +37,9 @@ window.Echo = new Echo({
 const currentUserId = parseInt(
     document .querySelector('meta[name="current-user-id"]').getAttribute("content")
 );
-const userList = document.querySelector('#userList input[name="user_chat"]');
 
 document.addEventListener("DOMContentLoaded", function () {
+    const userList = document.querySelector('#userList input[name="user_chat"]');
 
     //Check id the userList element is present.
     if (userList) {

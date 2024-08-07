@@ -4,9 +4,6 @@
     Não autorizado
 @endsection
 
-@section('body')
-<body>
-@endsection
 @section('content')
     @php
         $currentUserId = auth()->id();

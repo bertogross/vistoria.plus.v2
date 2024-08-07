@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-layout="twocolumn" data-layout-style="default"
     data-layout-position="fixed" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-layout-width="fluid">
     <head>
-        <meta charset="utf-8" />
+        <meta charset="utf-8">
         <title>@yield('title') | {{appName()}}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
@@ -13,9 +13,9 @@
         <meta http-equiv="Expires" content="1">
 
         <meta name="robots" content="noindex,nofollow,nopreview,nosnippet,notranslate,noimageindex,nomediaindex,novideoindex,noodp,noydir">
-        <meta content="{{ appDescription() }}" name="description" />
+        <meta content="{{ appDescription() }}" name="description">
         <meta property="og:image" content="{{ URL::asset('build/images/logo-sm.png') }}">
-        <meta name="author" content="{{appName()}}" />
+        <meta name="author" content="{{ appName() }}">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="current-user-id" content="{{ auth()->id() }}">
         <!-- App favicon -->

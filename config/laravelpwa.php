@@ -3,8 +3,8 @@
 return [
     'name' => 'LaravelPWA',
     'manifest' => [
-        'name' => env('APP_NAME', 'My PWA App'),
-        'short_name' => env('APP_NAME', 'My PWA App'),
+        'name' => env('APP_NAME', 'Vistoria +'),
+        'short_name' => env('APP_NAME', 'Vistoria +'),
         'description' => 'Funcionalidades que irão ajudar em suas vistorias',
         'start_url' => env('APP_URL') . '/',
         'id' => '/',

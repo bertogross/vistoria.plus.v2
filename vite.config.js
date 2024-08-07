@@ -8,10 +8,21 @@ const folder = {
     src: "resources/", // source files
     src_assets: "resources/", // source assets files
     dist: "public/", // build files
-    dist_assets: "public/build/", //build assets files
+    dist_assets: "public/build/", // build assets files
 };
 
+/*
+const viteEnv = {};
+Object.keys(process.env).forEach(key => {
+    if (key.startsWith('VITE_')) {
+        viteEnv[key] = process.env[key];
+        //viteEnv[`import.meta.env.${key}`] = process.env[key]
+    }
+});
+*/
+
 export default defineConfig({
+    //define: viteEnv,
     build: {
         manifest: true,
         rtl: true,
@@ -95,10 +106,10 @@ export default defineConfig({
                             )
                         )
                             ? path.join(
-                                  __dirname,
-                                  "node_modules",
-                                  packageName + "/dist"
-                              )
+                                __dirname,
+                                "node_modules",
+                                packageName + "/dist"
+                            )
                             : path.join(__dirname, "node_modules", packageName);
 
                         try {
@@ -118,5 +129,5 @@ export default defineConfig({
                 }
             },
         }
-    ],
+    ]
 });

@@ -2,10 +2,10 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-layout="horizontal" data-layout-style=""
     data-layout-position="fixed" data-topbar="light">
     <head>
-        <meta charset="utf-8" />
+        <meta charset="utf-8">
         <title> @yield('title')| Velzon - Admin & Dashboard Template</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <meta content="Eficiência operacional com menos trabalho" name="description" />
+        <meta content="Eficiência operacional com menos trabalho" name="description">
         <meta content="Upididu" name="author" />
         <!-- App favicon -->
         <link rel="shortcut icon" href="{{ URL::asset('build/images/favicons/favicon.ico')}}">

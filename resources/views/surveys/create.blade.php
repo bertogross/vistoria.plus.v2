@@ -9,18 +9,12 @@
     $surveyId = $data && $data->id ? $data->id : '';
     $templateId = $data && $data->template_id ? $data->template_id : '';
     $title = $data->title ?? '';
-
     $startDate = $data ? $data->start_date : null;
         $startDate = $startDate ? date("d/m/Y", strtotime($startDate)) : date('d/m/Y');
-
     $recurring = $data->recurring ?? '';
-
-    $surveyStartAt = !empty($data->start_at) ? date("d/m/Y", strtotime($data->start_at)) : '';
-
-    $recurringSubLabel = $data->start_at && $recurring == 'weekly' ? dayOfTheWeek($data->start_at) : '';
-
-    $endIn = !empty($data->end_in) ? date("d/m/Y", strtotime($data->end_in)) : '';
-
+    $surveyStartAt = $data && $data->start_at ? date("d/m/Y", strtotime($data->start_at)) : '';
+    $recurringSubLabel = $data && $data->start_at && $recurring == 'weekly' ? dayOfTheWeek($data->start_at) : '';
+    $endIn = $data && $data->end_in ? date("d/m/Y", strtotime($data->end_in)) : '';
     $surveyStatus = $data->status ?? '';
 
     $alertMessage0 = $data && $countAllResponses > 0 ? '<div class="alert alert-danger alert-dismissible alert-label-icon label-arrow fade show mt-2 mb-3" role="alert">

@@ -106,7 +106,6 @@ class RegisterController extends Controller
                                 <button type="button" class="btn btn-sm btn-dark h-100 copy-btn" title="Clique para copiar as credenciais de acesso"><i class="ri-file-copy-line"></i></button>
                             </div>
                         </div>
-
                     </div>
                 </div>';
 

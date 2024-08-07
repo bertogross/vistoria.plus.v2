@@ -4,9 +4,6 @@
     @lang('translation.error')
 @endsection
 
-@section('body')
-<body>
-@endsection
 @section('content')
 
         <!-- auth-page wrapper -->

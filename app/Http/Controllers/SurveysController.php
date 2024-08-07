@@ -416,6 +416,9 @@ class SurveysController extends Controller
 
             $surveyId = $survey->id;
 
+            $currentStartAt = $survey->start_at ?? $startAt;
+            $surveyStatus = $survey->status;
+
             // Prevent from cracker to change if Responses is populated
             $countResponses = Survey::countSurveyAllResponses($id);
             $countTodayResponses = Survey::countSurveyAllResponsesFromToday($id);
@@ -430,8 +433,6 @@ class SurveysController extends Controller
                 $validatedData['companies'] = $companies;
             }
 
-            $surveyStatus = $survey->status;
-
             if( in_array($surveyStatus, ['new', 'scheduled']) ){
                 // Authorize template overwrite the existent
                 $validatedData['template_data'] = $templateData;
@@ -439,10 +440,10 @@ class SurveysController extends Controller
 
             if ( in_array($surveyStatus, ['started', 'stopped', 'completed', 'filed']) ){
                 //if is not tasks in progress, user can change the date
-                if(!$countResponses){
-                    $validatedData['start_at'] = $startAt ?? null;
+                if($countResponses > 0){
+                    $validatedData['start_at'] = $currentStartAt ?? $startAt;
                 }else{
-                    $validatedData['start_at'] = $survey->start_at ?? $startAt;
+                    $validatedData['start_at'] = $startAt ?? null;
                 }
                 $validatedData['end_in'] = $endIn ?? null;
             }else{

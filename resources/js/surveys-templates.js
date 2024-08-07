@@ -1,6 +1,7 @@
 import {
     toastAlert,
     sweetWizardAlert,
+    swalWithBootstrapButtons,
     maxLengthTextarea,
     ajaxContentFromURL,
     revalidationOnInput,
@@ -15,6 +16,8 @@ import {
 } from './surveys-terms.js';
 
 document.addEventListener('DOMContentLoaded', function() {
+
+    const swalWithBootstrap = swalWithBootstrapButtons();
 
     // store/update surveyTemplateForm
     document.addEventListener('click', async function(event) {
@@ -205,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 var titleText = 'Escolher outro Modelo?';
                 var htmlText = 'Os dados não salvos neste formulário serão perdidos';
 
-                Swal.fire({
+                swalWithBootstrap.fire({
                     title: titleText,
                     html: htmlText,
                     icon: 'question',

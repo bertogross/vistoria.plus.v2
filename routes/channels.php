@@ -24,7 +24,7 @@ Broadcast::channel('chat-channel.{ids}', function (User $user, $ids) {
         ];
     }
     return false;
-}, ['guards' => ['web']]);
+}, ['guards' => ['web', 'auth']]);
 
 /**
  * Authorizes users to access the 'users-online' presence channel.
@@ -40,4 +40,4 @@ Broadcast::channel('users-online', function (User $user) {
         'id' => $user->id,
         'name' => $user->name
     ];
-}, ['guards' => ['web']]);
+}, ['guards' => ['web', 'auth']]);

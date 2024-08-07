@@ -1,6 +1,7 @@
 import {
     toastAlert,
     showPreloader,
+    swalWithBootstrapButtons
 } from './helpers.js';
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -40,7 +41,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         return;
                     }
 
-                    Swal.fire({
+                    var swalWithBootstrap = swalWithBootstrapButtons();
+                    swalWithBootstrap.fire({
                         title: titleText,
                         html: htmlText,
                         icon: 'question',
@@ -48,10 +50,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         confirmButtonText: buttonText,
                             confirmButtonClass: 'btn ' + buttonClass + ' w-xs me-2',
                         cancelButtonText: 'Deixar como está',
-                            cancelButtonClass: 'btn btn-sm btn-outline-info w-xs',
                                 showCancelButton: true,
                         denyButtonText: 'Não',
-                            denyButtonClass: 'btn btn-sm btn-danger w-xs me-2',
                                 showDenyButton: false,
                         showCloseButton: false,
                         allowOutsideClick: false
