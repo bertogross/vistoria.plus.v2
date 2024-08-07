@@ -1,0 +1,105 @@
+Changelog
+=========
+
+USEFUL RESOURCES
+- How to quickly change the password for a user in Laravel: https://devdojo.com/bobbyiliev/how-to-quickly-change-the-password-for-a-user-in-laravel
+- OpenAI for Laravel: https://laravel-news.com/openai-for-laravel
+
+TODO
+- Search for "TODO dont send email" and add post-notification message to show in the top bar.
+
+Version 1.0.52
+--------------
+- Added: Webview APK for enhanced mobile compatibility.
+
+Version 1.0.51
+--------------
+- Cloned: Linode Environment migrated from development.vistoria.plus to vistoria.plus.
+
+Version 1.0.49 - 2024/04/12
+----------------------------
+- Updated: Laravel Reverb websocket integration.
+  - Modified configuration in `config/reverb.php`.
+  - Updated JavaScript files in `resources/js`:
+    - echo.js
+    - bootstrap.js
+
+Version 1.0.48 - 2024/04/03
+----------------------------
+- Updated: Upgraded Laravel from version 10 to 11.2.0.
+- Added: Websocket support via Laravel Reverb.
+  - Added configuration in `config/reverb.php`.
+  - Included new JavaScript files:
+    - echo.js
+    - bootstrap.js
+
+Version 1.0.47 - 2024/03/18 - 2024/04/03
+-----------------------------------------
+- Revision: Conducted tests and made necessary adjustments.
+
+Version 1.0.46 - 2024/03/16
+----------------------------
+- Added: Progressive Web App (PWA) functionality using silviolleite/laravel-pwa package.
+
+Version 1.0.45 - 2024/03/15
+----------------------------
+- Updated: `SurveyController` logic to handle user redirection based on connection ID.
+- Updated: `RegisterController` method `acceptOrDeclineConnection` to handle button actions.
+
+Version 1.0.44 - 2024/03/12 - 2024/03/15
+-----------------------------------------
+- Updated: `UserConnections` model for better data management.
+- Updated: `SettingsUserController` and `StripeController` for enhanced functionality.
+
+Version 1.0.43 - 2024/03/10 - 2024/03/11
+-----------------------------------------
+- Updated: Various controllers and views for better user management and subscription handling.
+
+Version 1.0.42 - 2024/03/09
+----------------------------
+- Updated: Auth-related views and controllers for enhanced security and user experience.
+
+Version 1.0.41 - 2024/03/03 - 2024/03/09
+-----------------------------------------
+- Updated: Extensive updates to controllers, models, and views for improved settings management.
+- Added: New features for company and storage settings.
+
+Version 1.0.40 - 2024/02/26 - 2024/03/02
+-----------------------------------------
+- Added: Company settings interface and enhanced user settings.
+- Removed: Obsolete `MailerSendController`.
+- Added: `PostmarkappController` for email handling.
+
+Version 1.0.39 - 2024/02/23
+----------------------------
+- Added and updated various components related to surveys, including controllers and models.
+
+Version 1.0.38 - 2024/01/20
+----------------------------
+- Changed: Updated `vpOnboard` users handling.
+- Removed: Deprecated `vpOnboard app_subusers`.
+- Added: New schema `vpAppSCHEMA`.
+
+Version 1.0.37 - 2024/01/18
+----------------------------
+- Added: `MailerSendController` for improved email handling.
+
+Version 1.0.36 - 2023/12/19 - 2023/12/22
+-----------------------------------------
+- Updated: Audits view to include new functionality.
+
+Version 1.0.35 - 2023/12/15 - 2023/12/18
+-----------------------------------------
+- Updated: Team view for enhanced collaboration features.
+- Added: Audits view to monitor system integrity.
+
+Version 1.0.34 - 2023/12/07 - 2023/12/14
+-----------------------------------------
+- Started: Code factorization to streamline operations.
+- Updated: Various system components for improved auditing capabilities.
+
+[Continued Version History...]
+
+Version 1.0.0 - 2023/07/24
+---------------------------
+- Started: Initial configuration of the localhost environment.

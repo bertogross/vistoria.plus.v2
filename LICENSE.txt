@@ -1,0 +1,35 @@
+LICENSE AGREEMENT
+
+This License Agreement (the "Agreement") is a legal agreement between you (the "Licensee") and the author (the "Licensor") of the software provided in this repository.
+
+By accessing or using this software, you agree to be bound by the terms and conditions set forth in this Agreement. If you do not agree to these terms, do not use or access the software.
+
+1. GRANT OF LICENSE
+   The Licensor grants the Licensee a non-exclusive, non-transferable, and limited license to view and use the software for personal or educational purposes only.
+
+2. RESTRICTIONS
+   a. **Commercial Use**: The Licensee may not use this software for commercial purposes without the prior written consent of the Licensor.
+   b. **Redistribution**: The Licensee may not redistribute, share, or publish the source code or any part thereof without the explicit permission of the Licensor.
+   c. **Modification**: The Licensee may not modify the source code or create derivative works based on it without the express written permission of the Licensor.
+
+3. OWNERSHIP
+   The Licensor retains all ownership and intellectual property rights to the software. The Licensee acknowledges that no ownership rights are transferred under this Agreement.
+
+4. TERMINATION
+   This License Agreement is effective until terminated. The Licensor may terminate this Agreement immediately if the Licensee fails to comply with any term or condition of this Agreement. Upon termination, the Licensee must cease all use of the software and destroy all copies of it.
+
+5. DISCLAIMER OF WARRANTIES
+   The software is provided "as-is" without any warranties of any kind, either express or implied. The Licensor does not warrant that the software will be error-free or meet the Licensee's requirements.
+
+6. LIMITATION OF LIABILITY
+   In no event shall the Licensor be liable for any indirect, incidental, special, or consequential damages arising out of or in connection with the use or inability to use the software.
+
+7. GOVERNING LAW
+   This Agreement shall be governed by and construed in accordance with the laws of the jurisdiction where the Licensor resides.
+
+For any questions or requests regarding this License Agreement, please contact [your-email@example.com](mailto:your-email@example.com).
+
+By using or accessing the software, you acknowledge that you have read, understood, and agreed to the terms and conditions of this License Agreement.
+
+Daniel Gross
+2024
